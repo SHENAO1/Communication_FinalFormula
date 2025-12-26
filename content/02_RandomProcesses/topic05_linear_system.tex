@@ -1,11 +1,61 @@
-\begin{kbox}{5. 随机过程通过线性系统}
-    设系统冲激响应为 $h(t)$，传输函数为 $H(f)$。
+% --- 上半部分：核心结论速查 (蓝色盒子) ---
+\begin{kbox}{5. 随机过程通过线性系统 (核心结论)}
+    \textbf{1. 系统定义}
+    \[ \xi_o(t) = \int_{-\infty}^{+\infty} h(\tau)\xi_i(t-\tau) d\tau \]
+    
+    \tcbline
+
+    \textbf{2. 统计特性三要素}
     \begin{itemize}
-        \item \textbf{输出均值}：
-        \[ E[\xi_o(t)] = \mu_{\xi} \cdot H(0) \quad \text{(直流增益)} \]
-        \item \textbf{输出 PSD}：
-        \[ P_{\xi o}(f) = |H(f)|^2 P_{\xi i}(f) \]
-        \item \textbf{输出自相关}：
+        \item \textbf{均值 (直流)}: 
+        \[ E[\xi_o(t)] = E[\xi_i(t)] \cdot H(0) \]
+        \item \textbf{自相关函数}: 
         \[ R_o(\tau) = R_i(\tau) * h(\tau) * h(-\tau) \]
+        \item \textbf{功率谱密度 (重点)}: 
+        \[ P_o(f) = |H(f)|^2 P_i(f) \]
+        其中 $|H(f)|^2$ 为功率增益。
     \end{itemize}
 \end{kbox}
+
+% --- 下半部分：详细推导笔记 (红色盒子) ---
+\begin{examplebox}{笔记详解：推导与证明过程}
+    \textbf{1. 均值 (期望) 推导}
+    \begin{align*}
+        E[\xi_o(t)] &= E\left[ \int_{-\infty}^{+\infty} h(\tau)\xi_i(t-\tau) d\tau \right] \\
+        &= \int_{-\infty}^{+\infty} h(\tau) \underbrace{E[\xi_i(t-\tau)]}_{a} d\tau
+    \end{align*}
+    由于输入为平稳随机过程，$E[\xi_i(t)]=a$。由系统函数定义 $H(\omega)$，令 $\omega=0$：
+    \[ \boxed{ E[\xi_o(t)] = a \cdot H(0) } \]
+
+    \tcbline
+
+    \textbf{2. 自相关函数与平稳性证明} \\
+    计算输出的自相关函数 $R_o(t_1, t_1+\tau)$：
+    \begin{align*}
+        & E\left[ \left( \int h(\alpha)\xi_i(t_1-\alpha) d\alpha \right) \left( \int h(\beta)\xi_i(t_1+\tau-\beta) d\beta \right) \right] \\
+        &= \iint h(\alpha)h(\beta) R_i(\underbrace{\tau+\alpha-\beta}_{\text{时间差}}) d\alpha d\beta
+    \end{align*}
+    \textbf{结论：} 积分后结果与 $t_1$ 无关，只与 $\tau$ 有关，故输出 $\xi_o(t)$ 仍为\textbf{广义平稳}。
+
+    \tcbline
+
+    \textbf{3. 功率谱密度 (维纳—辛钦定理)} \\
+    由 $P_o(f) = \int_{-\infty}^{+\infty} R_o(\tau) e^{-j\omega\tau} d\tau$，代入上式并换元（令 $\tau' = \tau + \alpha - \beta$）。
+    
+    \vspace{4pt}
+    \textit{注：由于公式较长，此处分行显示：}
+    \begin{align*}
+        P_o(f) &= \iiint h(\alpha)h(\beta) R_i(\tau') \\
+               &\quad \cdot e^{-j\omega(\tau'-\alpha+\beta)} \, d\alpha d\beta d\tau'
+    \end{align*}
+
+    \textbf{分离变量：}
+    \begin{align*}
+        = \quad & \underbrace{\int h(\alpha)e^{j\omega\alpha} d\alpha}_{H^*(f)} \\
+        \cdot \quad & \underbrace{\int h(\beta)e^{-j\omega\beta} d\beta}_{H(f)} \\
+        \cdot \quad & \underbrace{\int R_i(\tau')e^{-j\omega\tau'} d\tau'}_{P_i(f)}
+    \end{align*}
+
+    \textbf{最终结果：}
+    \[ \boxed{ P_o(f) = |H(f)|^2 P_i(f) } \]
+\end{examplebox}
