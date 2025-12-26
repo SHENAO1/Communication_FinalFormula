@@ -1,0 +1,142 @@
+\section{数字带通传输系统}
+
+% --- 第一部分：基础模型 ---
+\begin{kbox}{信号基础模型与通用定义}
+    \begin{itemize}
+        \item \textbf{已调信号通用形式} \pptpage{14, 16}
+        $$ u_M(t) = u_c(t) \cos[\omega_c t + \varphi_c(t)] $$
+        \item \textbf{正交表示法} \pptpage{122, 124}
+        $$ s(t) = I(t) \cos \omega_c t - Q(t) \sin \omega_c t $$
+        \item \textbf{关键参数定义}
+        \begin{itemize}
+            \item \textbf{信噪比 (SNR)}: $r = \frac{a^2}{2\sigma_n^2}$ ($a$: 幅度, $\sigma_n^2$: 噪声功率) \pptpage{55}
+            \item \textbf{速率关系}: $R_b = R_B \log_2 M$ \pptpage{100}
+            \item \textbf{频带利用率} $\eta$ (bps/Hz): \pptpage{147}
+            $$ \eta = \frac{R_b}{B} = \frac{\log_2 M}{1+\alpha} \quad (\alpha: \text{滚降系数}) $$
+        \end{itemize}
+    \end{itemize}
+\end{kbox}
+
+% --- 第二部分：二进制调制 (ASK/FSK) ---
+\begin{kbox}{二进制调制 (2ASK / 2FSK)}
+    \begin{enumerate}
+        \item \textbf{2ASK (OOK)}
+        \begin{itemize}
+            \item 时域: $e_{2ASK}(t) = s(t) \cos \omega_c t$ \pptpage{18}
+            \item \textbf{功率谱密度 (PSD)}: \pptpage{38}
+            $$ P_{2ASK}(f) = \frac{1}{4} [P_s(f+f_c) + P_s(f-f_c)] $$
+            \item 带宽: $\bm{B_{2ASK} = 2R_B}$ \pptpage{39}
+            \item 误码率 $P_e$:
+            \begin{itemize}
+                \item 相干: $\frac{1}{2} \text{erfc}(\sqrt{r/4})$ \pptpage{54}
+                \item 包络 (大信噪比): $\approx \frac{1}{2} e^{-r/4}$ \pptpage{62}
+            \end{itemize}
+        \end{itemize}
+        
+        \item \textbf{2FSK}
+        \begin{itemize}
+            \item 时域: $s_1(t) \cos \omega_1 t + s_2(t) \cos \omega_2 t$ \pptpage{23}
+            \item 带宽: $\bm{B_{2FSK} \approx |f_2 - f_1| + 2R_B}$ \pptpage{42}
+            \item 误码率 $P_e$:
+            \begin{itemize}
+                \item 相干: $\frac{1}{2} \text{erfc}(\sqrt{r/2})$ \pptpage{69}
+                \item 非相干: $\frac{1}{2} e^{-r/2}$ \pptpage{74}
+            \end{itemize}
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}
+
+% --- 第三部分：二进制调制 (PSK) ---
+\begin{kbox}{二进制相位调制 (2PSK / 2DPSK)}
+    \begin{enumerate}
+        \item \textbf{2PSK (BPSK)}
+        \begin{itemize}
+            \item 时域: $e_{2PSK}(t) = s(t) \cos \omega_c t$ ($a_n \in \{+1, -1\}$) \pptpage{29}
+            \item 带宽: $B_{2PSK} = 2R_B$ \pptpage{40}
+            \item \textcolor{alertred}{\textbf{误码率 (相干)}}: $\bm{P_e = \frac{1}{2} \text{erfc}(\sqrt{r})}$ \pptpage{83}
+            \item \textit{注：2PSK在二进制中抗噪声性能最优。}
+        \end{itemize}
+        
+        \item \textbf{2DPSK}
+        \begin{itemize}
+            \item \textbf{差分编码}: $b_n = a_n \oplus b_{n-1}$ \pptpage{33}
+            \item 误码率 $P_e$:
+            \begin{itemize}
+                \item 相干+码反变换: $\approx \frac{1}{\sqrt{\pi r}} e^{-r}$ (存在误码扩散) \pptpage{87}
+                \item 差分相干: $\frac{1}{2} e^{-r}$ \pptpage{91}
+            \end{itemize}
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}
+
+% --- 第四部分：抗噪声性能大总结 (新增表格) ---
+\begin{kbox}{二进制误码率近似公式对比表 (大信噪比) \pptpage{91-95}}
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{调制方式} & \textbf{相干解调 (近似)} & \textbf{非相干/差分 (近似)} \\
+        \hline
+        \textbf{2ASK} & $\frac{1}{\sqrt{\pi r}}e^{-r/4}$ & $\frac{1}{2}e^{-r/4}$ \\
+        \hline
+        \textbf{2FSK} & $\frac{1}{\sqrt{\pi r}}e^{-r/2}$ & $\frac{1}{2}e^{-r/2}$ \\
+        \hline
+        \textbf{2PSK} & $\frac{1}{\sqrt{\pi r}}e^{-r}$ & — \\
+        \hline
+        \textbf{2DPSK} & $\frac{1}{\sqrt{\pi r}}e^{-r}$ & $\frac{1}{2}e^{-r}$ \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{信噪比关系 (同误码率)}: 
+        $$ r_{2ASK} = 2r_{2FSK} = 4r_{2PSK} \quad (\text{分贝差 } 3dB, 6dB) $$
+    \end{itemize}
+\end{kbox}
+
+% --- 第五部分：多进制调制 ---
+\begin{kbox}{多进制调制系统 (M-ary)}
+    \begin{enumerate}
+        \item \textbf{MASK}: 
+        \begin{itemize}
+            \item 带宽: $B = \frac{2R_b}{\log_2 M}$ \pptpage{104}
+            \item 误码率: $P_e = (1 - \frac{1}{M}) \text{erfc}(\sqrt{\frac{3}{M^2-1} r})$ \pptpage{156}
+        \end{itemize}
+        
+        \item \textbf{MFSK}:
+        \begin{itemize}
+            \item 带宽: $B \approx |f_M - f_1| + 2R_B$ \pptpage{107}
+            \item 非相干误码率: $P_e \approx \frac{M-1}{2} e^{-r/2}$ \pptpage{157}
+        \end{itemize}
+
+        \item \textbf{MPSK}:
+        \begin{itemize}
+            \item QPSK带宽: $B = R_b$ (频带利用率高) \pptpage{125}
+            \item 误码率: $P_e \approx \text{erfc}(\sqrt{r} \sin \frac{\pi}{M})$ \pptpage{159}
+        \end{itemize}
+        
+        \item \textbf{MQAM (重点)}:
+        \begin{itemize}
+            \item 时域: $e(t) = I(t) \cos \omega_c t - Q(t) \sin \omega_c t$ \pptpage{141}
+            \item 带宽 (含滚降 $\alpha$): $\bm{B = \frac{(1+\alpha)R_b}{\log_2 M}}$ \pptpage{147}
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}
+
+% --- 第六部分：性能总结 ---
+\begin{kbox}{全章结论与演变规律 \pptpage{93, 161}}
+    \begin{enumerate}
+        \item \textbf{系统演变规律 (当 M 增大时)}
+        \begin{itemize}
+            \item \textbf{MASK / MPSK / MQAM}:
+            \newline $\eta \uparrow$ (有效性变好), $P_e$ 性能 $\downarrow$ (可靠性变差)
+            \item \textbf{MFSK}:
+            \newline $\eta \downarrow$ (有效性变差), \textcolor{mainblue}{\textbf{$P_e$ 性能 $\uparrow$}} (可靠性变好，特例)
+        \end{itemize}
+        
+        \item \textbf{核心一句话结论}:
+        \begin{quote}
+            \small
+            \textit{“2PSK抗噪最好；2FSK最费带宽但简单；MQAM是现代通信在带宽受限信道中兼顾效率与性能的主流。”}
+        \end{quote}
+    \end{enumerate}
+\end{kbox}

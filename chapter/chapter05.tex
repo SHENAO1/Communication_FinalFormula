@@ -1,0 +1,150 @@
+\section{数字基带传输}
+
+\subsection{数字基带信号的表示与编码}
+
+\begin{kbox}{基带信号一般表达式 (随机脉冲序列) \pptpage{15}}
+    \begin{equation*}
+        s(t) = \sum_{n=-\infty}^{\infty} a_n g(t - nT_B)
+    \end{equation*}
+    \begin{itemize}
+        \item $a_n$：第 $n$ 个码元的电平取值（统计独立的随机量）
+        \item $g(t)$：单个脉冲波形；$T_B$：码元持续时间
+    \end{itemize}
+\end{kbox}
+
+% 【修改点1】添加垂直间距，解决挨得太近的问题
+\vspace{1em} 
+
+\begin{enumerate}
+    \item \textbf{差分编码与译码（相对码）} \pptpage{13}
+    \begin{itemize}
+        \item \textbf{编码}：$b_n = a_n \oplus b_{n-1}$ （克服相位模糊）
+        \item \textbf{译码}：$a_n = b_n \oplus b_{n-1}$
+    \end{itemize}
+    
+    \item \textbf{多电平（四电平）定义} \pptpage{14}
+    \begin{itemize}
+        \item 映射关系：$00 \to +3E,\; 01 \to +E,\; 10 \to -E,\; 11 \to -3E$
+    \end{itemize}
+\end{enumerate}
+
+\subsection{基带信号的功率谱密度 (PSD)}
+
+\begin{kbox}{功率谱分解通用公式 \pptpage{17-18}}
+    \begin{equation*}
+        P_s(f) = P_u(f) + P_v(f)
+    \end{equation*}
+    \tcblower
+    \begin{itemize}
+        \item \textbf{连续谱（交变波）}：
+        \[ P_u(f) = f_B p(1-p) \left| G_1(f) - G_2(f) \right|^2 \]
+        
+        \item \textbf{离散谱（稳态波）}：
+        % 【修改点2】使用 aligned 环境换行，防止公式超出分栏宽度
+        \[
+        \begin{aligned}
+            P_v(f) = & \sum_{m=-\infty}^{\infty} \Big| f_B [  p G_1(mf_B) \\
+            & + (1-p)G_2(mf_B)] \Big|^2 \delta(f - mf_B)
+        \end{aligned}
+        \]
+        
+        \item \textbf{离散谱消失条件}：$p = \frac{1}{1 - g_1(t)/g_2(t)}$
+    \end{itemize}
+\end{kbox}
+
+\noindent\textbf{典型波形的功率谱密度：}
+\begin{itemize}
+    \item \textbf{单极性 NRZ} \pptpage{19}：
+    $P_s(f) = \frac{1}{4} T_s \mathrm{Sa}^2(\pi f T_s) + \frac{1}{4} \delta(f)$
+    
+    \item \textbf{单极性 RZ (占空比1/2)} \pptpage{20}：
+    $P_s(f) = \frac{1}{16} T_s \mathrm{Sa}^2(\frac{\pi f T_s}{2}) + \frac{1}{16} \sum_{m} \mathrm{Sa}^2(\frac{m\pi}{2}) \delta(f - mf_s)$
+    
+    \item \textbf{双极性等概 NRZ ($p=1/2$)} \pptpage{21}：
+    $P_s(f) = T_s \mathrm{Sa}^2(\pi f T_s)$ （\textcolor{alertred}{无离散谱、无直流}）
+\end{itemize}
+
+\subsection{码间干扰 (ISI) 与奈奎斯特准则}
+
+\begin{kbox}{接收抽样点信号分解 \pptpage{41-43}}
+    % 【修改点3】分三行对齐，解决长公式和下括号导致的溢出
+    \[
+    \begin{aligned}
+        r(kT_s + t_0) = & \underbrace{a_k h(t_0)}_{\text{有用信号}} \\
+        & + \underbrace{\sum_{n \neq k} a_n h(kT_s + t_0 - nT_s)}_{\text{码间干扰 ISI}} \\
+        & + \underbrace{n_R(kT_s + t_0)}_{\text{噪声}}
+    \end{aligned}
+    \]
+    其中 $h(t) = \mathcal{F}^{-1}\{G_T(\omega)C(\omega)G_R(\omega)\}$ 为系统总响应。
+\end{kbox}
+
+\subsubsection*{1. 奈奎斯特第一准则 (无ISI准则)}
+\begin{itemize}
+    \item \textbf{时域条件} \pptpage{50}：
+    \[ h(mT_s) = \begin{cases} 1, & m=0 \\ 0, & m \neq 0 \end{cases} \]
+    \item \textbf{频域条件} \pptpage{52, 55}：
+    \[ \sum_{i=-\infty}^{\infty} H\left(\omega + \frac{2\pi i}{T_s}\right) = T_s, \quad |\omega| \leq \frac{\pi}{T_s} \]
+\end{itemize}
+
+\subsubsection*{2. 系统带宽指标}
+\begin{enumerate}
+    \item \textbf{理想低通系统} \pptpage{58-59}：
+    \begin{itemize}
+        \item 奈奎斯特带宽：$B = \frac{1}{2T_B} = f_N$
+        \item 最高频带利用率：$\eta = R_B/B = 2$ (Baud/Hz)
+    \end{itemize}
+    \item \textbf{余弦滚降系统} \pptpage{61-62}：
+    \begin{itemize}
+        \item 带宽：$B = (1+\alpha)f_N$ （$\alpha$ 为滚降系数）
+        \item 利用率：$\eta = \frac{2}{1+\alpha}$ (Baud/Hz)
+    \end{itemize}
+\end{enumerate}
+
+\subsection{基带系统的抗噪声性能}
+
+\begin{itemize}
+    \item \textbf{噪声方差} \pptpage{73}：$\sigma_n^2 = \int_{-\infty}^{\infty} \frac{n_0}{2} |G_R(f)|^2 df$
+    \item \textbf{误码率 $P_e$ 与最佳门限 $V_d^*$}：
+\end{itemize}
+
+\begin{kbox}{误码率公式速查}
+    \textbf{1. 双极性基带系统} \pptpage{78-79}
+    \begin{itemize}
+        \item 最佳门限：$V_d^* = \frac{\sigma_n^2}{2A} \ln \frac{P(0)}{P(1)}$
+        \item \textbf{等概时 ($P(0)=P(1)$)}：
+        \[ V_d^* = 0, \quad P_e = \frac{1}{2} \operatorname{erfc}\left(\frac{A}{\sqrt{2}\sigma_n}\right) \]
+    \end{itemize}
+    
+    \tcblower
+    
+    \textbf{2. 单极性基带系统} \pptpage{81-82}
+    \begin{itemize}
+        \item 最佳门限：$V_d^* = \frac{A}{2} + \frac{\sigma_n^2}{A} \ln \frac{P(0)}{P(1)}$
+        \item \textbf{等概时}：
+        \[ V_d^* = \frac{A}{2}, \quad P_e = \frac{1}{2} \operatorname{erfc}\left(\frac{A}{2\sqrt{2}\sigma_n}\right) \]
+    \end{itemize}
+\end{kbox}
+
+\subsection{部分响应系统与时域均衡}
+
+\subsubsection*{1. 第I类部分响应 (奈奎斯特第二准则)}
+\begin{itemize}
+    \item \textbf{编码}：$c_k = a_k + a_{k-1}$
+    \item \textbf{频域} \pptpage{87}：$G(f) = 2T_s \cos(\pi f T_s), \quad |f| \leq \frac{1}{2T_s}$
+    \item \textbf{预编码} \pptpage{90}：$b_k = a_k \oplus b_{k-1}$ （防止差错传播）
+\end{itemize}
+
+\subsubsection*{2. 时域均衡 (TDE)}
+\begin{itemize}
+    \item \textbf{横向滤波器输出} \pptpage{98}：$y_k = \sum_{n=-N}^{N} C_n x_{k-n}$
+    \item \textbf{设计目标}：使 $y_k$ 满足无 ISI 条件。
+    \item \textbf{均衡器频率响应} \pptpage{96}：
+    \[ T(\omega) = \frac{T_B}{\sum_i H(\omega + \frac{2\pi i}{T_B})} \]
+\end{itemize}
+
+\subsection{实验评估：眼图 \pptpage{103}}
+\begin{itemize}
+    \item \textbf{眼睛张开度}：反映 ISI 和噪声强弱（开口大则ISI小）。
+    \item \textbf{最佳抽样时刻}：眼睛张开最大的时刻。
+    \item \textbf{斜边斜率}：反映对定时误差的灵敏度（斜率越大越敏感）。
+\end{itemize}

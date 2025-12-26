@@ -1,0 +1,293 @@
+\section{绪论与信号基础}
+
+% --- 模块一：傅里叶变换 ---
+\begin{kbox}{信号分析基础：傅里叶变换}
+    \begin{enumerate}
+        \item \textbf{定义} \pptpage{6}
+        \begin{itemize}
+            \item 正变换：$F(\omega)=\int_{-\infty}^{\infty} f(t) e^{-j \omega t} d t$
+            \item 反变换：$f(t)=\frac{1}{2 \pi} \int_{-\infty}^{\infty} F(\omega) e^{j \omega t} d \omega$
+        \end{itemize}
+
+        \item \textbf{常用运算特性} \pptpage{7-8}
+        \begin{itemize}
+            \item \textbf{共轭对称性}（补充）：
+            实信号 $f(t)$ 的频谱满足 $F(\omega) = F^*(-\omega)$。
+            即：\textbf{幅度谱为偶函数，相位谱为奇函数}。
+            \item \textbf{标度换算}：
+            $f(a t) \leftrightarrow \frac{1}{|a|} F\left(\frac{\omega}{a}\right)$
+            \item \textbf{时移特性}：
+            $f(t-t_{0}) \leftrightarrow e^{-j \omega t_{0}} F(\omega)$
+            \item \textbf{频移特性}：
+            $e^{j \omega_{0} t} f(t) \leftrightarrow F(\omega-\omega_{0})$
+            \item \textbf{调制特性}：
+            $f(t) \cos \omega_{0} t \leftrightarrow \frac{1}{2}[F(\omega+\omega_{0})+F(\omega-\omega_{0})]$
+            \item \textbf{时域卷积}：
+            $f_{1}(t) * f_{2}(t) \leftrightarrow F_{1}(\omega) \cdot F_{2}(\omega)$
+            \item \textbf{微分特性}：
+            $\frac{d^{n}}{d t^{n}} f(t) \leftrightarrow(j \omega)^{n} F(\omega)$
+        \end{itemize}
+
+        \item \textbf{常用信号对与推论} \pptpage{10-11}
+        \begin{itemize}
+            \item \textbf{矩形脉冲}（重要）：
+            宽度为 $\tau$ 的门函数 $g_\tau(t) \leftrightarrow \tau \operatorname{Sa}\left(\frac{\omega \tau}{2}\right)$
+            \begin{itemize}
+                \item[$\circ$] 注：$Sa(x)=\frac{\sin x}{x}$, $sinc(x)=\frac{\sin \pi x}{\pi x}$
+                \item[$\circ$] 关系：$Sa(\frac{\omega\tau}{2}) = sinc(f\tau)$
+                \item[$\circ$] \textbf{对偶特性（笔记补充）}：
+                $Sa(\tau t) \leftrightarrow \frac{\pi}{\tau} g_{2\tau}(\omega)$
+                \\ （含义：时域 Sa 函数对应频域宽度为 $2\tau$ 的矩形谱）
+            \end{itemize}
+            \item \textbf{三角脉冲}：
+            等腰三角脉冲可分解为两个矩形脉冲的卷积。
+            
+            % --- 开始插入 TikZ 绘图 ---
+            \begin{center}
+            \begin{tikzpicture}[scale=0.55, >=latex, font=\scriptsize]
+                % 定义样式：坐标轴和波形颜色
+                \tikzstyle{axis}=[->, thin, gray]
+                \tikzstyle{signal}=[thick, mainblue] 
+
+                % --- 图1：三角波 ---
+                % 坐标轴
+                \draw[axis] (-1.8,0) -- (1.8,0);
+                \draw[axis] (0,-0.2) -- (0,1.8);
+                % 波形：从 -tau 到 tau，高度为 A^2 tau
+                \draw[signal] (-1.2, 0) -- (0, 1.4) node[right, black]{$A^2\tau$} -- (1.2, 0);
+                % 刻度标签
+                \node[below] at (-1.2, 0) {$-\tau$};
+                \node[below] at (1.2, 0) {$\tau$};
+
+                % --- 等号 ---
+                \node at (2.2, 0.7) {\large $=$};
+
+                % --- 图2：矩形波1 (利用 scope 平移坐标系) ---
+                \begin{scope}[shift={(4.5,0)}]
+                    \draw[axis] (-1.2,0) -- (1.2,0);
+                    \draw[axis] (0,-0.2) -- (0,1.8);
+                    % 波形：从 -tau/2 到 tau/2，高度 A
+                    \draw[signal] (-0.6, 0) -- (-0.6, 1) -- (0.6, 1) node[midway, above, black, xshift=7pt]{$A$} -- (0.6, 0);
+                    % 刻度标签
+                    \node[below] at (-0.6, 0) {$-\frac{\tau}{2}$};
+                    \node[below] at (0.6, 0) {$\frac{\tau}{2}$};
+                \end{scope}
+
+                % --- 卷积符号 ---
+                \node at (6.2, 0.7) {\large $*$};
+
+                % --- 图3：矩形波2 (再次平移) ---
+                \begin{scope}[shift={(8,0)}]
+                    \draw[axis] (-1.2,0) -- (1.2,0);
+                    \draw[axis] (0,-0.2) -- (0,1.8);
+                    % 波形
+                    \draw[signal] (-0.6, 0) -- (-0.6, 1) -- (0.6, 1) node[midway, above, black, xshift=7pt]{$A$} -- (0.6, 0);
+                    % 刻度标签
+                    \node[below] at (-0.6, 0) {$-\frac{\tau}{2}$};
+                    \node[below] at (0.6, 0) {$\frac{\tau}{2}$};
+                \end{scope}
+            \end{tikzpicture}
+            \end{center}
+            % --- 结束插入 ---
+
+            \item \textbf{双边指数信号}：
+            $f(t) = e^{-\alpha t}u(t) - e^{\alpha t}u(-t) \leftrightarrow \frac{-2j\omega}{\alpha^2+\omega^2} \quad (\alpha>0)$
+            \item \textbf{符号函数}：
+            由上式令 $\alpha \to 0$ 可得：$\operatorname{sgn}(t) \leftrightarrow \frac{2}{j\omega}$
+            \item \textbf{单位冲激串}：
+            $\delta_{T}(t) \leftrightarrow \omega_{0} \sum_{n=-\infty}^{\infty} \delta(\omega-n \omega_{0})$
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}
+
+% --- 新增模块：常用变换速查表 ---
+\begin{kbox}{速查表：常用函数傅里叶变换对}
+    \begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|c}
+        \hline
+        \textbf{时域信号} $f(t)$ & \textbf{频域频谱} $F(\omega)$ \\
+        \hline
+        $\delta(t)$ & $1$ \\
+        $1$ & $2\pi \delta(\omega)$ \\
+        $u(t)$ & $\pi \delta(\omega) + \frac{1}{j\omega}$ \\
+        $e^{-\alpha t}u(t) \ (\alpha > 0)$ & $\frac{1}{\alpha + j\omega}$ \\
+        $e^{-\alpha |t|} \ (\alpha > 0)$ & $\frac{2\alpha}{\alpha^2 + \omega^2}$ \\
+        $e^{j \omega_0 t}$ & $2\pi \delta(\omega - \omega_0)$ \\
+        $\cos(\omega_0 t)$ & $\pi [\delta(\omega - \omega_0) + \delta(\omega + \omega_0)]$ \\
+        $\sin(\omega_0 t)$ & $j\pi [\delta(\omega + \omega_0) - \delta(\omega - \omega_0)]$ \\
+        $\operatorname{sgn}(t)$ & $\frac{2}{j\omega}$ \\
+        \hline
+    \end{tabular}
+    \end{center}
+\end{kbox}
+
+% --- 新增模块：w与f域性质对比 (本次添加) ---
+\begin{kbox}{深度对比：$\omega$ 与 $f$ 域性质差异}
+    \textbf{核心差异速记}：
+    \begin{itemize}
+        \item \textbf{积分相关}（逆变换、卷积、能量）：$\omega$ 域通常需乘 $\frac{1}{2\pi}$ 修正。
+        \item \textbf{微分相关}：$f$ 域通常需乘 $2\pi$。
+    \end{itemize}
+    
+    \begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    % 使用 resizebox 确保表格适应双栏宽度，防止溢出
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{c|c|c}
+        \hline
+        \textbf{性质} & \textbf{$\omega$ 域 (rad/s)} & \textbf{$f$ 域 (Hz)} \\
+        \hline
+        \textbf{逆变换} & $\frac{1}{2\pi} \int F(\omega)e^{j\omega t}d\omega$ & $\int F(f)e^{j2\pi ft}df$ \\
+        \hline
+        \textbf{频域卷积} & $\frac{1}{2\pi} [F_1 * F_2]$ & $F_1 * F_2$ \\
+        {\scriptsize (对应时域相乘)} & {\scriptsize (需除系数)} & {\scriptsize (无系数，对称)} \\
+        \hline
+        \textbf{能量} & $\frac{1}{2\pi} \int |F(\omega)|^2 d\omega$ & $\int |F(f)|^2 df$ \\
+        \hline
+        \textbf{时域微分} & $(j\omega)^n F(\omega)$ & $(j2\pi f)^n F(f)$ \\
+        \hline
+        \textbf{直流 DC} & $2\pi\delta(\omega)$ & $\delta(f)$ \\
+        \hline
+    \end{tabular}
+    }
+    \end{center}
+\end{kbox}
+% --------------------------------
+
+% --- 模块二：确定信号与系统 ---
+\begin{kbox}{确定信号性质与线性系统}
+    \begin{enumerate}
+        \item \textbf{能量与功率} \pptpage{14}
+        \begin{itemize}
+            \item 能量：$E=\int_{-\infty}^{\infty} s^{2}(t) d t$
+            \item 功率：$P=\lim _{T \rightarrow \infty} \frac{1}{T} \int_{-T / 2}^{T / 2} s^{2}(t) d t$
+        \end{itemize}
+
+        \item \textbf{带宽定义} \pptpage{15}
+        \begin{equation*}
+            B_{3}=\frac{\int_{-\infty}^{\infty} E(f) d f}{2 E(0)} \quad (\text{等效矩形带宽})
+        \end{equation*}
+
+        \item \textbf{线性系统响应} \pptpage{16-17}
+        \begin{itemize}
+            \item 频域：$Y(f)=H(f) X(f)$
+            \item 时域：$y(t)=\int_{-\infty}^{\infty} h(t-\tau) x(\tau) d \tau$
+        \end{itemize}
+        
+        \item \textbf{无失真传输条件} \pptpage{18} 
+        \begin{itemize}
+            \item 时域条件：$y(t)=k x(t-t_{d})$
+            \item 频域条件：$H(\omega)=K e^{-j \omega t_{d}}$
+            \item \textbf{群时延}：$\tau(\omega)=-\frac{d \varphi(\omega)}{d \omega} = \text{常数}$
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}
+
+% --- 模块三：信息论基础 ---
+\begin{kbox}{信息及其度量}
+    \begin{enumerate}
+        \item \textbf{离散消息信息量} \pptpage{50}
+        \begin{equation*}
+            I = -\ln P(x) \quad (\text{单位 nat})
+        \end{equation*}
+        \textbf{单位换算}：
+        \begin{itemize}
+            \item $I_{bit} = -\log_2 P(x) = \frac{1}{\ln 2} I_{nat}$
+            \item $1 \text{ nat} \approx 1.44 \text{ bit}$
+        \end{itemize}
+
+        \item \textbf{离散信源熵 (平均信息量)} \pptpage{52}
+        \begin{equation*}
+            H=\sum_{i=1}^{M} P(x_{i}) \log _{2} \frac{1}{P(x_{i})} \quad (\text{bit/符号})
+        \end{equation*}
+        \textbf{最大熵}：当等概率出现时，$H_{\max }=\log _{2} M$。
+
+        \item \textbf{总信息量} \pptpage{55}
+        \begin{equation*}
+            I_{\text{总}} = m \cdot H \quad (m \text{为符号总数})
+        \end{equation*}
+    \end{enumerate}
+\end{kbox}
+
+% --- 模块四：信道模型 ---
+\begin{kbox}{信道与衰落}
+    \begin{enumerate}
+        \item \textbf{调制信道模型} \pptpage{59}
+        \begin{equation*}
+            e_{o}(t)=k(t) e_{i}(t)+n(t)
+        \end{equation*}
+
+        \item \textbf{多径效应与正交分解} \pptpage{70}
+        接收信号 $R(t)$ 为多径叠加：
+        \begin{align*}
+            R(t) &= \sum_{i=1}^{n} \mu_i(t) \cos[\omega_c (t - \tau_i(t))] \\
+                 & \qquad \text{\small (原始多径公式)} \\ % <--- 修改点：将说明文字移到下一行，并略微缩小
+                 &= \sum_{i=1}^{n} \mu_i(t) \cos[\omega_c t + \varphi_i(t)] \\
+                 & \quad {\color{red}\text{其中 } \varphi_i(t) = -\omega_c \tau_i(t) } \\ 
+                 &= \sum_{i=1}^{n} \mu_i(t) \cos(\omega_c t) \cos(\varphi_i(t)) \\
+                 &\quad - \sum_{i=1}^{n} \mu_i(t) \sin(\omega_c t) \sin(\varphi_i(t)) \\
+                 &= X_c(t) \cos(\omega_c t) - X_s(t) \sin(\omega_c t) \\
+                 &= V(t) \cos[\omega_c t + \varphi(t)]
+        \end{align*}
+        \textbf{参数含义}：
+        \begin{itemize}
+            \item $\mu_i(t)$：第 $i$ 条路径接收信号的\textbf{振幅}。
+            \item $\tau_i(t)$：第 $i$ 条路径接收信号的\textbf{时延}。
+            \item $\varphi_i(t)$：第 $i$ 条路径接收信号的\textbf{相位}，且 $\varphi_i(t) = -\omega_c \tau_i(t)$。
+            \item $X_c(t), X_s(t)$：同相与正交分量，大量路径叠加时视为高斯随机过程。
+            \item $V(t)$：包络，服从瑞利分布；$\varphi(t)$：合成相位，服从均匀分布。
+        \end{itemize}
+
+        \item \textbf{衰落类型与相干带宽} \pptpage{74}
+        \begin{itemize}
+            \item 相干带宽：$\Delta f \approx 1 / \tau_{m}$ ($\tau_{m}$ 为最大多径时延差)
+            \item \textbf{平坦衰落}：信号带宽 $B < \Delta f$
+            \item \textbf{频率选择性衰落}：信号带宽 $B > \Delta f$
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}
+
+% --- 模块五：性能指标 ---
+\begin{kbox}{通信系统性能指标}
+    \begin{enumerate}
+        \item \textbf{模拟系统} \pptpage{87}
+        \begin{equation*}
+            \text{SNR}(\text{dB}) = 10 \lg (S_{i} / N_{i})
+        \end{equation*}
+
+        \item \textbf{补充定义：码元}
+        \begin{itemize}
+            \item 定义：承载信息的基本单位，是通信的“字符”或“信号”。
+            \item 形式：固定时长的脉冲或波形（二进制2种，四进制4种）。
+        \end{itemize}
+
+        \item \textbf{数字系统：有效性 (速率)} \pptpage{88-89}
+        \begin{itemize}
+            \item \textbf{码元速率 ($R_B$)}：波特率(Baud)，每秒传送的波形数（“货车”数量）。
+            \item \textbf{信息速率 ($R_b$)}：比特率(bps)，每秒传送的信息总量（“货物”总量）。
+            \item \textbf{关系}：$R_{b} = R_{B} \log _{2} M$
+                \begin{itemize}
+                    \item 仅当各码元等概出现时，单码元信息量 $I = \log_2 M$。
+                \end{itemize}
+            \item \textbf{频带利用率}：$\eta = \frac{R_{B}}{B}$ (Baud/Hz) 或 $\frac{R_{b}}{B}$ (bps/Hz)。
+        \end{itemize}
+
+        \item \textbf{数字系统：可靠性 (误码/误信)} \pptpage{90-91}
+        % --- 修改处：添加 raggedright 避免稀疏排版 ---
+        {\raggedright
+        \begin{itemize}
+            \item \textbf{误码率 ($P_e$)}：错误码元数占比，$P_e = n_{eB} / n_B$。
+                \begin{itemize}
+                    \item 二进制平均误码率：$P_e = P(0)P(1|0) + P(1)P(0|1)$。
+                \end{itemize}
+            \item \textbf{误信率 ($P_b$)}：错误比特数占比，$P_b = n_{eb} / n_b$。
+            \item \textbf{关系}：
+            \begin{itemize}
+                \item 二进制 ($M=2$)：$P_{b} = P_{e}$
+                \item 多进制 ($M>2$)：$P_{b} < P_{e}$
+            \end{itemize}
+        \end{itemize}
+        }
+    \end{enumerate}
+\end{kbox}

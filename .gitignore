@@ -1,0 +1,23 @@
+# LaTeX 编译中间文件
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.xdv
+*.dvi
+
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# VS Code 文件夹 (可选，如果你是个性化配置可以不忽略，但通常建议忽略)
+.vscode/
+
+# 最终生成的 PDF (建议忽略，因为二进制文件导致仓库体积大，且可由源码生成)
+# 如果你希望在仓库里看最终效果，可以注释掉下面这行
+*.pdf

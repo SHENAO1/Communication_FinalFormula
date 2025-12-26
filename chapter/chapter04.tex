@@ -1,0 +1,100 @@
+\section{信源编码}
+
+\begin{kbox}{抽样定理 (Sampling Theorem)}
+    \begin{itemize}
+        \item \textbf{低通模拟信号抽样定理} \pptpage{12}
+        \begin{itemize}
+            \item \textbf{条件}：为了无失真恢复原信号，抽样速率 $f_s$ 需满足：
+            \begin{equation}
+                f_s \ge 2f_H \quad \text{且} \quad T_s \le \frac{1}{2f_H}
+            \end{equation}
+            其中 $f_H$ 为信号最高频率。
+            \item \textbf{奈奎斯特速率}：$f_s = 2f_H$
+            \item \textbf{奈奎斯特间隔}：$T_s = \frac{1}{2f_H}$
+        \end{itemize}
+        
+        \item \textbf{理想抽样 (Ideal Sampling)} \pptpage{13}
+        \begin{itemize}
+            \item \textbf{时域}：利用单位冲激序列 $\delta_T(t)$ 进行乘积：
+            % --- 修正：使用 split 环境将长公式换行对齐 ---
+            \begin{equation}
+            \begin{split}
+                m_s(t) &= m(t)\sum_{n=-\infty}^{\infty}\delta(t-nT_s) \\
+                       &= \sum_{n=-\infty}^{\infty}m(nT_s)\delta(t-nT_s)
+            \end{split}
+            \end{equation}
+            \item \textbf{频域}：频谱以 $f_s$ 为周期搬移：
+            \begin{equation}
+                M_s(f) = \frac{1}{T_s}\sum_{n=-\infty}^{\infty}M(f-nf_s)
+            \end{equation}
+        \end{itemize}
+
+        \item \textbf{平顶抽样与孔径失真} \pptpage{26}
+        \begin{itemize}
+            \item \textbf{产生}：理想抽样脉冲经过形状为 $h(t)$ 的保持电路。
+            \item \textbf{频域关系}：
+            \begin{equation}
+                M_H(f) = M_s(f) \cdot H(f)
+            \end{equation}
+            \item \textbf{孔径失真}：由 $H(f) = T_s \text{Sa}(\pi f T_s)$ (矩形脉冲) 引起的高频衰减，需在接收端使用 \textbf{修正滤波器} 进行补偿。
+        \end{itemize}
+    \end{itemize}
+\end{kbox}
+
+\begin{kbox}{量化 (Quantization)}
+    \begin{itemize}
+        \item \textbf{均匀量化 (Uniform Quantization)} \pptpage{32}
+        \begin{itemize}
+            \item \textbf{量化间隔}：$\Delta v = \frac{b-a}{M}$
+            \item \textbf{量化噪声功率} (重要结论)：
+            \begin{equation}
+                N_q = \frac{(\Delta v)^2}{12}
+            \end{equation}
+            \item \textbf{信号量噪比 ($S/N_q$)} \pptpage{34}：
+            % 使用 multline 确保长公式能够适应窄栏
+            \begin{multline}
+                (S/N_q)_{\text{dB}} \approx \\ 4.8 + 6n + 10\lg(S/x_{max}^2)
+            \end{multline}
+            \textbf{结论}：编码位数 $n$ 每增加 1 bit，信噪比提高约 \textbf{6dB}。
+        \end{itemize}
+
+        \item \textbf{非均匀量化 (Non-uniform)} \pptpage{38}
+        \begin{itemize}
+            \item \textbf{原理}：先压缩 (Compress)，再均匀量化，最后扩张 (Expand)。目的：提高\textbf{小信号}的量噪比。
+            \item \textbf{A律压缩特性} (A-Law, 欧/中标准, $A=87.6$) \pptpage{44}：
+            % 微调格式，确保分数在窄栏中不溢出
+            \begin{equation}
+                y = \begin{cases} 
+                \frac{Ax}{1+\ln A}, & 0 < x \le \frac{1}{A} \\[6pt] % 增加行间距
+                \frac{1+\ln(Ax)}{1+\ln A}, & \frac{1}{A} \le x \le 1 
+                \end{cases}
+            \end{equation}
+            \item \textbf{$\mu$律压缩特性} (美/日标准, $\mu=255$)：
+            \begin{equation}
+                y = \frac{\ln(1+\mu x)}{\ln(1+\mu)}, \quad 0 \le x \le 1
+            \end{equation}
+            \item \textbf{改善度}：$[Q]_{\text{dB}} = 20\lg y'$，即取决于压缩曲线斜率。
+        \end{itemize}
+    \end{itemize}
+\end{kbox}
+
+\begin{kbox}{脉冲编码调制 (PCM)}
+    \begin{itemize}
+        \item \textbf{基本参数} \pptpage{72}
+        设模拟信号最高频率为 $f_H$，抽样率为 $f_s$，编码位数为 $N$。
+        \item \textbf{信息传输速率 (比特率)}：
+        \begin{equation}
+            R_b = f_s \cdot N \ge 2f_H \cdot N
+        \end{equation}
+        \item \textbf{传输带宽} (第一零点带宽)：
+        \begin{equation}
+            B = R_b = f_s \cdot N \quad (\text{NRZ矩形})
+        \end{equation}
+        \item \textbf{典型应用：数字电话}
+        \begin{itemize}
+            \item 话音带宽 $B \approx 3.4\text{kHz} \to f_s = 8000\text{Hz}$
+            \item 量化位数 $N=8$ (A律13折线)
+            \item \textbf{比特率}：$R_b = 8000 \times 8 = \mathbf{64\text{kbps}}$
+        \end{itemize}
+    \end{itemize}
+\end{kbox}
