@@ -34,7 +34,19 @@
 
     \tcbline
 
-    \textbf{2. 互补误差函数性质}
+    % --- 新增部分：来自图片内容 ---
+    \textbf{2. 高斯过程的重要性质}
+    \begin{itemize}
+        \item 高斯过程的 $n$ 维概率密度函数仅取决于它的\textcolor{red}{数学期望}、\textcolor{red}{方差}和\textcolor{red}{相关函数}。
+        \item 对高斯过程，\textcolor{red}{广义平稳} $\Leftrightarrow$ \textcolor{red}{严平稳}。
+        \item 高斯过程，在不同时刻的随机变量值，\textcolor{red}{互不相关} $\Leftrightarrow$ \textcolor{red}{互相独立}。
+        \item 高斯过程（变量）的\textcolor{red}{线性变换}仍为高斯过程（变量）。
+    \end{itemize}
+
+    \tcbline
+    % ---------------------------
+
+    \textbf{3. 互补误差函数性质}
     \begin{align*}
         \text{erfc}(-z) &= 1 - \text{erf}(-z) \\
         &= 1 + \text{erf}(z) \\
@@ -44,7 +56,7 @@
 
     \tcbline
 
-    \textbf{3. 分布函数 $F(x)$ 的积分推导细节} \\
+    \textbf{4. 分布函数 $F(x)$ 的积分推导细节} \\
     设正态分布概率密度函数为 $f(t)$，则分布函数 $F(x) = \int_{-\infty}^{x} f(t) dt$。
 
     \vspace{4pt}
@@ -82,7 +94,7 @@
 
     \tcbline
 
-    \textbf{4. 统一用 $\text{erfc}$ 表示}
+    \textbf{5. 统一用 $\text{erfc}$ 表示}
     
     又 $\text{erf}(x) = 1 - \text{erfc}(x)$，且 $\text{erfc}(-x) = 2 - \text{erfc}(x)$。
     
