@@ -1,0 +1,42 @@
+% --- 模块五：性能指标 ---
+\begin{kbox}{通信系统性能指标}
+    \begin{enumerate}
+        \item \textbf{模拟系统} \pptpage{87}
+        \begin{equation*}
+            \text{SNR}(\text{dB}) = 10 \lg (S_{i} / N_{i})
+        \end{equation*}
+
+        \item \textbf{补充定义：码元}
+        \begin{itemize}
+            \item 定义：承载信息的基本单位，是通信的“字符”或“信号”。
+            \item 形式：固定时长的脉冲或波形（二进制2种，四进制4种）。
+        \end{itemize}
+
+        \item \textbf{数字系统：有效性 (速率)} \pptpage{88-89}
+        \begin{itemize}
+            \item \textbf{码元速率 ($R_B$)}：波特率(Baud)，每秒传送的波形数（“货车”数量）。
+            \item \textbf{信息速率 ($R_b$)}：比特率(bps)，每秒传送的信息总量（“货物”总量）。
+            \item \textbf{关系}：$R_{b} = R_{B} \log _{2} M$
+                \begin{itemize}
+                    \item 仅当各码元等概出现时，单码元信息量 $I = \log_2 M$。
+                \end{itemize}
+            \item \textbf{频带利用率}：$\eta = \frac{R_{B}}{B}$ (Baud/Hz) 或 $\frac{R_{b}}{B}$ (bps/Hz)。
+        \end{itemize}
+
+        \item \textbf{数字系统：可靠性 (误码/误信)} \pptpage{90-91}
+        {\raggedright
+        \begin{itemize}
+            \item \textbf{误码率 ($P_e$)}：错误码元数占比，$P_e = n_{eB} / n_B$。
+                \begin{itemize}
+                    \item 二进制平均误码率：$P_e = P(0)P(1|0) + P(1)P(0|1)$。
+                \end{itemize}
+            \item \textbf{误信率 ($P_b$)}：错误比特数占比，$P_b = n_{eb} / n_b$。
+            \item \textbf{关系}：
+            \begin{itemize}
+                \item 二进制 ($M=2$)：$P_{b} = P_{e}$
+                \item 多进制 ($M>2$)：$P_{b} < P_{e}$
+            \end{itemize}
+        \end{itemize}
+        }
+    \end{enumerate}
+\end{kbox}

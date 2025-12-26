@@ -1,0 +1,37 @@
+% --- 模块四：信道模型 ---
+\begin{kbox}{信道与衰落}
+    \begin{enumerate}
+        \item \textbf{调制信道模型} \pptpage{59}
+        \begin{equation*}
+            e_{o}(t)=k(t) e_{i}(t)+n(t)
+        \end{equation*}
+
+        \item \textbf{多径效应与正交分解} \pptpage{70}
+        接收信号 $R(t)$ 为多径叠加：
+        \begin{align*}
+            R(t) &= \sum_{i=1}^{n} \mu_i(t) \cos[\omega_c (t - \tau_i(t))] \\
+                 & \qquad \text{\small (原始多径公式)} \\
+                 &= \sum_{i=1}^{n} \mu_i(t) \cos[\omega_c t + \varphi_i(t)] \\
+                 & \quad {\color{red}\text{其中 } \varphi_i(t) = -\omega_c \tau_i(t) } \\ 
+                 &= \sum_{i=1}^{n} \mu_i(t) \cos(\omega_c t) \cos(\varphi_i(t)) \\
+                 &\quad - \sum_{i=1}^{n} \mu_i(t) \sin(\omega_c t) \sin(\varphi_i(t)) \\
+                 &= X_c(t) \cos(\omega_c t) - X_s(t) \sin(\omega_c t) \\
+                 &= V(t) \cos[\omega_c t + \varphi(t)]
+        \end{align*}
+        \textbf{参数含义}：
+        \begin{itemize}
+            \item $\mu_i(t)$：第 $i$ 条路径接收信号的\textbf{振幅}。
+            \item $\tau_i(t)$：第 $i$ 条路径接收信号的\textbf{时延}。
+            \item $\varphi_i(t)$：第 $i$ 条路径接收信号的\textbf{相位}，且 $\varphi_i(t) = -\omega_c \tau_i(t)$。
+            \item $X_c(t), X_s(t)$：同相与正交分量，大量路径叠加时视为高斯随机过程。
+            \item $V(t)$：包络，服从瑞利分布；$\varphi(t)$：合成相位，服从均匀分布。
+        \end{itemize}
+
+        \item \textbf{衰落类型与相干带宽} \pptpage{74}
+        \begin{itemize}
+            \item 相干带宽：$\Delta f \approx 1 / \tau_{m}$ ($\tau_{m}$ 为最大多径时延差)
+            \item \textbf{平坦衰落}：信号带宽 $B < \Delta f$
+            \item \textbf{频率选择性衰落}：信号带宽 $B > \Delta f$
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}

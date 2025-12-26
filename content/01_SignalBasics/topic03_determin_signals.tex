@@ -1,0 +1,28 @@
+% --- 模块二：确定信号与系统 ---
+\begin{kbox}{确定信号性质与线性系统}
+    \begin{enumerate}
+        \item \textbf{能量与功率} \pptpage{14}
+        \begin{itemize}
+            \item 能量：$E=\int_{-\infty}^{\infty} s^{2}(t) d t$
+            \item 功率：$P=\lim _{T \rightarrow \infty} \frac{1}{T} \int_{-T / 2}^{T / 2} s^{2}(t) d t$
+        \end{itemize}
+
+        \item \textbf{带宽定义} \pptpage{15}
+        \begin{equation*}
+            B_{3}=\frac{\int_{-\infty}^{\infty} E(f) d f}{2 E(0)} \quad (\text{等效矩形带宽})
+        \end{equation*}
+
+        \item \textbf{线性系统响应} \pptpage{16-17}
+        \begin{itemize}
+            \item 频域：$Y(f)=H(f) X(f)$
+            \item 时域：$y(t)=\int_{-\infty}^{\infty} h(t-\tau) x(\tau) d \tau$
+        \end{itemize}
+        
+        \item \textbf{无失真传输条件} \pptpage{18} 
+        \begin{itemize}
+            \item 时域条件：$y(t)=k x(t-t_{d})$
+            \item 频域条件：$H(\omega)=K e^{-j \omega t_{d}}$
+            \item \textbf{群时延}：$\tau(\omega)=-\frac{d \varphi(\omega)}{d \omega} = \text{常数}$
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}

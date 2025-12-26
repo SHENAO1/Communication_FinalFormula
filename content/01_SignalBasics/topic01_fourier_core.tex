@@ -1,0 +1,90 @@
+\section{绪论与信号基础}
+
+% --- 模块一：傅里叶变换 (核心理论) ---
+\begin{kbox}{信号分析基础：傅里叶变换}
+    \begin{enumerate}
+        \item \textbf{定义} \pptpage{6}
+        \begin{itemize}
+            \item 正变换：$F(\omega)=\int_{-\infty}^{\infty} f(t) e^{-j \omega t} d t$
+            \item 反变换：$f(t)=\frac{1}{2 \pi} \int_{-\infty}^{\infty} F(\omega) e^{j \omega t} d \omega$
+        \end{itemize}
+
+        \item \textbf{常用运算特性} \pptpage{7-8}
+        \begin{itemize}
+            \item \textbf{共轭对称性}（补充）：
+            实信号 $f(t)$ 的频谱满足 $F(\omega) = F^*(-\omega)$。
+            即：\textbf{幅度谱为偶函数，相位谱为奇函数}。
+            \item \textbf{标度换算}：
+            $f(a t) \leftrightarrow \frac{1}{|a|} F\left(\frac{\omega}{a}\right)$
+            \item \textbf{时移特性}：
+            $f(t-t_{0}) \leftrightarrow e^{-j \omega t_{0}} F(\omega)$
+            \item \textbf{频移特性}：
+            $e^{j \omega_{0} t} f(t) \leftrightarrow F(\omega-\omega_{0})$
+            \item \textbf{调制特性}：
+            $f(t) \cos \omega_{0} t \leftrightarrow \frac{1}{2}[F(\omega+\omega_{0})+F(\omega-\omega_{0})]$
+            \item \textbf{时域卷积}：
+            $f_{1}(t) * f_{2}(t) \leftrightarrow F_{1}(\omega) \cdot F_{2}(\omega)$
+            \item \textbf{微分特性}：
+            $\frac{d^{n}}{d t^{n}} f(t) \leftrightarrow(j \omega)^{n} F(\omega)$
+        \end{itemize}
+
+        \item \textbf{常用信号对与推论} \pptpage{10-11}
+        \begin{itemize}
+            \item \textbf{矩形脉冲}（重要）：
+            宽度为 $\tau$ 的门函数 $g_\tau(t) \leftrightarrow \tau \operatorname{Sa}\left(\frac{\omega \tau}{2}\right)$
+            \begin{itemize}
+                \item[$\circ$] 注：$Sa(x)=\frac{\sin x}{x}$, $sinc(x)=\frac{\sin \pi x}{\pi x}$
+                \item[$\circ$] 关系：$Sa(\frac{\omega\tau}{2}) = sinc(f\tau)$
+                \item[$\circ$] \textbf{对偶特性（笔记补充）}：
+                $Sa(\tau t) \leftrightarrow \frac{\pi}{\tau} g_{2\tau}(\omega)$
+                \\ （含义：时域 Sa 函数对应频域宽度为 $2\tau$ 的矩形谱）
+            \end{itemize}
+            \item \textbf{三角脉冲}：
+            等腰三角脉冲可分解为两个矩形脉冲的卷积。
+            
+            % --- TikZ 绘图 ---
+            \begin{center}
+            \begin{tikzpicture}[scale=0.55, >=latex, font=\scriptsize]
+                \tikzstyle{axis}=[->, thin, gray]
+                \tikzstyle{signal}=[thick, mainblue] 
+
+                % --- 图1：三角波 ---
+                \draw[axis] (-1.8,0) -- (1.8,0);
+                \draw[axis] (0,-0.2) -- (0,1.8);
+                \draw[signal] (-1.2, 0) -- (0, 1.4) node[right, black]{$A^2\tau$} -- (1.2, 0);
+                \node[below] at (-1.2, 0) {$-\tau$};
+                \node[below] at (1.2, 0) {$\tau$};
+
+                % --- 等号 ---
+                \node at (2.2, 0.7) {\large $=$};
+                % --- 图2：矩形波1 ---
+                \begin{scope}[shift={(4.5,0)}]
+                    \draw[axis] (-1.2,0) -- (1.2,0);
+                    \draw[axis] (0,-0.2) -- (0,1.8);
+                    \draw[signal] (-0.6, 0) -- (-0.6, 1) -- (0.6, 1) node[midway, above, black, xshift=7pt]{$A$} -- (0.6, 0);
+                    \node[below] at (-0.6, 0) {$-\frac{\tau}{2}$};
+                    \node[below] at (0.6, 0) {$\frac{\tau}{2}$};
+                \end{scope}
+
+                % --- 卷积符号 ---
+                \node at (6.2, 0.7) {\large $*$};
+                % --- 图3：矩形波2 ---
+                \begin{scope}[shift={(8,0)}]
+                    \draw[axis] (-1.2,0) -- (1.2,0);
+                    \draw[axis] (0,-0.2) -- (0,1.8);
+                    \draw[signal] (-0.6, 0) -- (-0.6, 1) -- (0.6, 1) node[midway, above, black, xshift=7pt]{$A$} -- (0.6, 0);
+                    \node[below] at (-0.6, 0) {$-\frac{\tau}{2}$};
+                    \node[below] at (0.6, 0) {$\frac{\tau}{2}$};
+                \end{scope}
+            \end{tikzpicture}
+            \end{center}
+
+            \item \textbf{双边指数信号}：
+            $f(t) = e^{-\alpha t}u(t) - e^{\alpha t}u(-t) \leftrightarrow \frac{-2j\omega}{\alpha^2+\omega^2} \quad (\alpha>0)$
+            \item \textbf{符号函数}：
+            由上式令 $\alpha \to 0$ 可得：$\operatorname{sgn}(t) \leftrightarrow \frac{2}{j\omega}$
+            \item \textbf{单位冲激串}：
+            $\delta_{T}(t) \leftrightarrow \omega_{0} \sum_{n=-\infty}^{\infty} \delta(\omega-n \omega_{0})$
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}

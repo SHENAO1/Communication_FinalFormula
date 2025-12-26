@@ -1,0 +1,25 @@
+% --- 模块三：信息论基础 ---
+\begin{kbox}{信息及其度量}
+    \begin{enumerate}
+        \item \textbf{离散消息信息量} \pptpage{50}
+        \begin{equation*}
+            I = -\ln P(x) \quad (\text{单位 nat})
+        \end{equation*}
+        \textbf{单位换算}：
+        \begin{itemize}
+            \item $I_{bit} = -\log_2 P(x) = \frac{1}{\ln 2} I_{nat}$
+            \item $1 \text{ nat} \approx 1.44 \text{ bit}$
+        \end{itemize}
+
+        \item \textbf{离散信源熵 (平均信息量)} \pptpage{52}
+        \begin{equation*}
+            H=\sum_{i=1}^{M} P(x_{i}) \log _{2} \frac{1}{P(x_{i})} \quad (\text{bit/符号})
+        \end{equation*}
+        \textbf{最大熵}：当等概率出现时，$H_{\max }=\log _{2} M$。
+
+        \item \textbf{总信息量} \pptpage{55}
+        \begin{equation*}
+            I_{\text{总}} = m \cdot H \quad (m \text{为符号总数})
+        \end{equation*}
+    \end{enumerate}
+\end{kbox}

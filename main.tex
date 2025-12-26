@@ -21,7 +21,13 @@
 % --- 导入各章内容 ---
 % 注意：你的 tex 文件都在 chapter 文件夹下，所以路径要是 chapter/文件名
 
-\input{chapter/chapter01.tex}
+\section{绪论与信号基础}{绪论与信号基础} % 这里定义章节大标题
+    \input{content/01_SignalBasics/topic01_fourier_core}
+    \input{content/01_SignalBasics/topic02_fourier_ref}
+    \input{content/01_SignalBasics/topic03_determin_signals}
+    \input{content/01_SignalBasics/topic04_info_theory}
+    \input{content/01_SignalBasics/topic05_channel_models}
+    \input{content/01_SignalBasics/topic06_metrics}
 
 \clearpage  % <--- 【在这里添加这行命令】用于强制换页
 
