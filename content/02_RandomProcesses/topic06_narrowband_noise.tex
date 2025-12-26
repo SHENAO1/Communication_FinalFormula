@@ -1,0 +1,45 @@
+\begin{kbox}{6. 窄带随机过程}
+    \textbf{表达式}：
+    \begin{itemize}
+        \item 包络相位法：$\xi(t) = a_{\xi}(t) \cos[\omega_c t + \phi_{\xi}(t)]$
+        \item 同相正交法：$\xi(t) = \xi_c(t) \cos \omega_c t - \xi_s(t) \sin \omega_c t$
+    \end{itemize}
+    
+    \tcbline 
+    
+    \textbf{统计特性} (均值为0的高斯窄带过程)：
+    \begin{enumerate}
+        \item $\xi_c(t), \xi_s(t)$ 为高斯过程，均值0，方差 $\sigma_{\xi}^2$。
+        \item \textbf{包络 $a_{\xi}$ (瑞利分布)}：
+        \[ f(a_{\xi}) = \frac{a_{\xi}}{\sigma_{\xi}^2} e^{-\frac{a_{\xi}^2}{2\sigma_{\xi}^2}}, \quad a_{\xi} \geq 0 \]
+        \item \textbf{相位 $\phi_{\xi}$ (均匀分布)}：
+        \[ f(\phi_{\xi}) = \frac{1}{2\pi}, \quad 0 \leq \phi_{\xi} \leq 2\pi \]
+    \end{enumerate}
+\end{kbox}
+
+\begin{kbox}{7. 白噪声}
+    \textbf{理想白噪声}：
+    \begin{itemize}
+        \item PSD (双边)：$P_n(f) = n_0 / 2$
+        \item 自相关：$R(\tau) = \frac{n_0}{2} \delta(\tau)$
+    \end{itemize}
+    
+    \textbf{低通白噪声 (LPF, 截止 $f_H$)}：
+    \[ R(\tau) = n_0 f_H \frac{\sin 2\pi f_H \tau}{2\pi f_H \tau} \] 
+    
+    \textbf{带通白噪声 (BPF, 带宽 $B$)}：
+    \[ R(\tau) = n_0 B \frac{\sin \pi B \tau}{\pi B \tau} \cos 2\pi f_c \tau \]
+    总功率 $N = n_0 B$。
+\end{kbox}
+
+\begin{kbox}{8. 正弦波 + 窄带高斯噪声}
+    \textbf{包络 $z$ 服从莱斯 (Rice) 分布}：
+    \[ f(z) = \frac{z}{\sigma_n^2} \exp\left[-\frac{z^2 + A^2}{2\sigma_n^2}\right] I_0\left(\frac{Az}{\sigma_n^2}\right) \]
+    其中：
+    \begin{itemize}
+        \item $z \geq 0$
+        \item $A$：正弦波振幅
+        \item $\sigma_n^2$：窄带噪声方差
+        \item $I_0(\cdot)$：第一类修正贝塞尔函数
+    \end{itemize}
+\end{kbox}

@@ -1,0 +1,59 @@
+\begin{kbox}{1. 随机过程定义与统计特性}
+    \textbf{定义}：
+    随时间作随机变化的一系列随机变量的集合。
+        \begin{itemize}[leftmargin=3em]
+            \item[(1)] 结构上是：所有样本函数 $\xi_i(t)$ 的集合；
+            \item[(2)] 也是随机变量 $\xi(t)$ 的集合。
+        \end{itemize}
+
+    \tcbline
+
+    \textbf{统计特性与物理意义}：
+    \begin{itemize}
+        \item \textbf{一维分布函数}：
+        \[ F_1(x_1, t_1) = P\{\xi(t_1) \leq x_1\} \]
+        \item \textbf{一维概率密度函数 (PDF)}：
+        \[ f_1(x_1, t_1) = \frac{\partial F_1(x_1, t_1)}{\partial x_1} \]
+        \item \textbf{均值 (数学期望)} —— \textcolor{mainblue}{直流分量}：
+        \[ \mu(t) = E[\xi(t)] = \int_{-\infty}^{\infty} x f_1(x, t) dx \]
+        \item \textbf{方差} —— \textcolor{mainblue}{交流功率}：
+        \[ \sigma^2(t) = D[\xi(t)] = E\left[(\xi(t) - \mu(t))^2\right] \]
+        \item \textbf{平均功率 (二阶原点矩)}：
+        由 $DX = E(X^2) - (EX)^2$ 可知功率关系：
+        \[ \underbrace{E[\xi^2(t)]}_{\text{平均功率}} = \underbrace{\sigma^2(t)}_{\text{交流功率}} + \underbrace{\mu^2(t)}_{\text{直流功率}} \]
+        (当 $\mu(t)=0$ 时，平均功率等于交流功率)
+        
+        \item \textbf{自相关函数}：
+        描述同一过程在任意两个时刻随机变量间的关联程度。
+        \begin{align*}
+            R(t_1, t_2) &= E[\xi(t_1)\xi(t_2)] \\
+            &= \iint_{-\infty}^{\infty} x_1 x_2 f_2(x_1, x_2; t_1, t_2) dx_1 dx_2
+        \end{align*}
+        (其中 $f_2$ 为二维概率密度函数)
+        
+        \item \textbf{互相关函数}：
+        \[ R_{\xi\eta}(t_1, t_2) = E[\xi(t_1)\eta(t_2)] \]
+    \end{itemize}
+\end{kbox}
+
+% --- 核心概念辨析 ---
+\begin{kbox}{核心概念辨析：样本函数 vs 随机变量}
+    \textbf{误区}：随机过程的“样本”不是随机变量，二者观察维度不同。
+    
+    对于随机过程 $\xi(t, \omega)$：
+    \begin{itemize}
+        \item \textbf{样本函数 (Sample Function)}：\textcolor{alertred}{固定 $\omega$，变化 $t$}。
+        \\ 指随机过程的\textbf{一次具体实现}（如做了一次实验记录下的波形）。既然实验已发生，它就是一条\textbf{确定的时间函数} $x(t)$，不再具有随机性。
+        \item \textbf{随机变量 (Random Variable)}：\textcolor{alertred}{固定 $t$，变化 $\omega$}。
+        \\ 指随机过程在\textbf{某一特定时刻}的状态。它包含该时刻所有可能的取值及其概率分布，是\textbf{随机的}。
+        \item \textbf{总结}：样本函数是“时间的函数”，随机变量是“概率的函数”。二者同时固定时，唯一确定一个数值。
+    \end{itemize}
+    
+    \tcbline
+    
+    \textbf{直观总结}：
+    \begin{itemize}
+        \item “样本”是\textbf{纵向的历史轨迹}（确定的曲线）。
+        \item “随机变量”是\textbf{横向的时间切片}（统计分布）。
+    \end{itemize}
+\end{kbox}

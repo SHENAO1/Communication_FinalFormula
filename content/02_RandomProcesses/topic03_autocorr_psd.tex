@@ -1,0 +1,82 @@
+\begin{kbox}{3. 自相关函数与功率谱密度}
+    \textbf{自相关函数 $R(\tau)= E[\xi(t)\xi(t+\tau)]$ 的性质}：
+    \begin{enumerate}
+        \item 偶函数：$R(\tau) = R(-\tau)$
+        \item 最大值：$|R(\tau)| \leq R(0)$
+        \item 平均功率：$R(0) = E[\xi^2(t)]$
+        \item 直流功率：$R(\infty) = E^2[\xi(t)] = \mu^2$
+        \item 交流功率 (方差)：$\sigma^2 = R(0) - R(\infty)$
+    \end{enumerate}
+    
+    \vspace{4pt}
+    \noindent\tikz\draw[dashed, mainblue!50] (0,0) -- (\linewidth,0);
+    \vspace{4pt}
+    
+    \textbf{\small \textcolor{gray}{性质证明简述 (Proof Sketch)}}
+    \small
+    \begin{itemize}
+        \item \textbf{偶函数}：令 $t' = t-\tau$ 换元，则 $E[\xi(t)\xi(t-\tau)] \Rightarrow E[\xi(t'+\tau)\xi(t')] = R(\tau)$。
+        \item \textbf{最大值}：由柯西-施瓦茨不等式 $|E[XY]|^2 \leq E[X^2]E[Y^2]$，令 $X=\xi(t), Y=\xi(t+\tau)$，因平稳性 $E[X^2]=E[Y^2]=R(0)$，得证。
+        \item \textbf{直流功率}：当 $\tau \to \infty$，$\xi(t)$ 与 $\xi(t+\tau)$ 去相关 (独立)，期望可拆分：$E[\xi(t)\xi(t+\tau)] \approx E[\xi(t)]E[\xi(t+\tau)] = \mu^2$。
+        \item \textbf{交流功率}：由方差定义 $\sigma^2 = E[\xi^2] - (E[\xi])^2$，代入即得 $R(0) - R(\infty)$。
+    \end{itemize}
+    \normalsize
+    
+    \tcbline
+    
+    \textbf{维纳-辛钦定理 (PSD)}：
+    平稳过程的功率谱密度 $P_{\xi}(\omega)$ 与 $R(\tau)$ 互为傅里叶变换对：
+    \begin{align*}
+        P_{\xi}(\omega) &= \int_{-\infty}^{\infty} R(\tau) e^{-j\omega\tau} d\tau \\
+        R(\tau) &= \int_{-\infty}^{\infty}  P_{\xi}(f) e^{j2\pi f \tau} df
+    \end{align*}
+\end{kbox}
+
+\begin{kbox}{核心概念辨析：自相关函数值的物理意义}
+    \textbf{1. 为什么 $R(0)$ 是总平均功率？}
+    \begin{itemize}
+        \item \textbf{数学定义}：$R(0) = E[X(t)X(t)] = E[X^2(t)]$，即均方值。
+        \item \textbf{物理直观}：$\tau=0$ 时，信号与其自身完全重合，\textbf{相关性最强}。此时记录的是信号在任一时刻的总能量，包含了\textbf{恒定的直流分量}和\textbf{起伏的交流分量}。
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{2. 为什么 $R(\infty)$ 是直流功率？}
+    \begin{itemize}
+        \item \textbf{去相关性 (Decorrelation)}：
+        对于非周期的平稳过程，随着时间间隔 $\tau$ 的增大，随机起伏（交流）部分的信号会逐渐失去联系（失去“记忆”）。
+        \item \textbf{数学推导}：
+        当 $\tau \to \infty$ 时，$X(t)$ 与 $X(t+\tau)$ 变得\textbf{互不相关}。
+        \[ \lim_{\tau \to \infty} E[X(t)X(t+\tau)] = E[X(t)] \cdot E[X(t+\tau)]  = \mu^2 \]
+        \item \textbf{物理含义}：
+        时间拉得足够长后，交流波动的相关性衰减为 0，唯有\textbf{永恒不变的直流分量}依然保持完全相关。因此，剩下的“残留”相关值就是直流功率。
+    \end{itemize}
+
+    \tcbline
+    
+    \textbf{3. 总结}
+    \[ \underbrace{R(0)}_{\text{总功率}} = \underbrace{R(\infty)}_{\text{直流功率}} + \underbrace{\sigma^2}_{\text{交流功率 (方差)}} \]
+\end{kbox}
+
+
+% --- 新增部分：平稳性与变换的深入辨析 ---
+\begin{kbox}{深入辨析：维纳-辛钦定理的适用细节}
+    \textbf{1. 为什么必须是平稳过程？}
+    \begin{itemize}
+        \item \textbf{定理限制}：$P_{\xi}(\omega) = \mathcal{F}\{R(\tau)\}$ 仅对\textbf{宽平稳 (WSS)} 过程严格成立。
+        \item \textbf{非平稳情况}：若 $X(t)$ 非平稳，自相关 $R(t_1, t_2)$ 随绝对时间变化，无法定义单一的“静态”功率谱。
+        \item \textbf{工程处理}：通常采用\textbf{时间平均自相关}（求平均功率谱）或\textbf{时频分析}（如 Wigner-Ville 分布）来描述随时间变化的频谱。
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{2. 傅里叶逆变换：$\omega$ 与 $f$ 的系数之谜}
+    \begin{itemize}
+        \item \textbf{角频率 $\omega$ (需系数 $\frac{1}{2\pi}$)}：
+        \[ R(\tau) = \frac{1}{2\pi} \int_{-\infty}^{\infty} P_{\xi}(\omega) e^{j\omega\tau} d\omega \]
+        这里的 $\frac{1}{2\pi}$ 用于抵消 $d\omega$ 带来的 $2\pi$ 倍积分增益。
+        \item \textbf{频率 $f$ (系数为 1)}：
+        \[ R(\tau) = \int_{-\infty}^{\infty} P_{\xi}(f) e^{j2\pi f \tau} df \]
+        \item \textbf{物理一致性}：工程记号 $P_{\xi}(f)$ 实际上等价于数学上的 $P_{\xi}(2\pi f)$。即在同一物理频率点（例如 10Hz 与 $20\pi$ rad/s），其功率密度值是相等的。
+    \end{itemize}
+\end{kbox}

@@ -1,0 +1,40 @@
+\begin{kbox}{2. 平稳随机过程}
+    \textbf{广义平稳 (WSS) 条件}：
+    \begin{enumerate}
+        \item 均值与时间无关：$\mu(t) = \mu$
+        \item 自相关仅与间隔 $\tau$ 有关：$R(t_1, t_1 + \tau) = R(\tau)$
+    \end{enumerate}
+
+    \tcbline
+
+    \textbf{狭义平稳 (SSS) 与 广义平稳 (WSS) 对比}：
+    \begin{itemize}
+        \item \textbf{定义区别}：SSS 要求所有统计特性不变；WSS 仅要求均值和自相关不变。
+        \item \textbf{关系}：SSS (二阶矩有限) $\Rightarrow$ WSS；反之通常不成立
+        \item \textbf{特例}：对于\textbf{高斯随机过程}，WSS $\Leftrightarrow$ SSS。
+    \end{itemize}
+    
+    \tcbline 
+    
+    \textbf{各态历经性 (遍历性)}：
+    \begin{itemize}
+        \item \textbf{定义}：若平稳过程的\textbf{统计平均}等于样本的\textbf{时间平均}，则称其具有各态历经性。
+        \item \textbf{意义}：\textbf{用一次实现的时间平均取代过程的统计平均}。简化测量，因为实际往往只有一个样本波形。
+        \item \textbf{数学条件}：$\mu = \bar{\mu}$ 且 $R(\tau) = \bar{R}(\tau)$。
+    \end{itemize}
+    
+    \tcbline
+    
+    \textbf{深入理解：各态历经性与平稳性的关系}
+    \begin{itemize}
+        \item \textbf{为什么任一样本能代表整体？} \\
+        各态历经的物理含义是：\textbf{一个样本在无限长的时间内，遍历了随机过程所有可能的状态}。因此，观测这一个样本足够久，就等同于观测了整个集合。
+        
+        \item \textbf{为什么“各态历经 $\Rightarrow$ 平稳”？} \\
+        因为“时间平均”是一个常数（积分区间是无穷大），若它等于“统计平均”，则统计平均也必须是常数（不随 $t$ 变化），这正是平稳过程的定义。
+        
+        \item \textbf{为什么“平稳 $\nRightarrow$ 各态历经”？} \\
+        平稳只要求整体统计特性不变，但允许样本之间存在永久性差异（“老死不相往来”）。
+        \\ \textit{反例}：$X(t)=C$（$C$为随机常数）。样本要么恒为1，要么恒为-1。单个样本的时间平均（1或-1）不等于整体统计平均（0），它没有遍历所有状态。
+    \end{itemize}
+\end{kbox}

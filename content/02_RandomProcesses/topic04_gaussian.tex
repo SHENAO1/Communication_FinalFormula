@@ -1,0 +1,104 @@
+\begin{kbox}{4. 高斯随机过程与误差函数 (基础结论)}
+    \textbf{1. 概率密度与分布函数}
+    \begin{itemize}
+        \item \textbf{概率密度 (PDF)}:
+        \[ f(x) = \frac{1}{\sqrt{2\pi}\sigma} \exp\left[-\frac{(x-\mu)^2}{2\sigma^2}\right] \]
+        \item \textbf{分布函数 (CDF) 定义}:
+        分布函数是 PDF 的积分（即 $x$ 落在 $(-\infty, b]$ 的概率）：
+        \[ F(b) = P(x \leq b) = \int_{-\infty}^{b} \frac{1}{\sqrt{2\pi}\sigma} \exp\left[-\frac{(x-\mu)^2}{2\sigma^2}\right] dx \]
+    \end{itemize}
+    
+    \tcbline
+    
+    \textbf{2. 误差函数的由来}
+    上述积分无法用初等函数直接表示，引入定义：
+    \[ \mathrm{erf}(z) \triangleq \frac{2}{\sqrt{\pi}} \int_0^z e^{-u^2} du \]
+    {\small \textcolor{gray}{注：系数 $2/\sqrt{\pi}$ 是为了归一化，确保 $\mathrm{erf}(\infty)=1$。}}
+    
+    \tcbline
+    
+    \textbf{3. $F(x)$ 的分段表达式}
+    \[
+    F(x) = 
+    \begin{cases}
+        \displaystyle \frac{1}{2} + \frac{1}{2} \mathrm{erf}\left( \frac{x-\mu}{\sqrt{2}\sigma} \right), & x \geq \mu \\[1.2em]
+        \displaystyle 1 - \frac{1}{2} \mathrm{erfc}\left( \frac{x-\mu}{\sqrt{2}\sigma} \right), & x < \mu
+    \end{cases}
+    \]
+\end{kbox}
+
+% --- 插入详细推导部分 ---
+\begin{kbox}{补充推导：高斯分布与误差函数详解}
+    \textbf{1. 高斯随机过程定义} \\
+    随机变量 $\xi(t)$ 的任意 $n$ 维分布服从正态分布，称为高斯过程。
+
+    \tcbline
+
+    \textbf{2. 互补误差函数性质}
+    \begin{align*}
+        \text{erfc}(-z) &= 1 - \text{erf}(-z) \\
+        &= 1 + \text{erf}(z) \\
+        &= 2 - \text{erfc}(z)
+    \end{align*}
+    即：\textcolor{mainblue}{$\text{erfc}(z) + \text{erfc}(-z) = 2$}
+
+    \tcbline
+
+    \textbf{3. 分布函数 $F(x)$ 的积分推导细节} \\
+    设正态分布概率密度函数为 $f(t)$，则分布函数 $F(x) = \int_{-\infty}^{x} f(t) dt$。
+
+    \vspace{4pt}
+    \textbf{(1) 当 $x > \mu$ 时 (落在均值右侧)}
+    \[ F(x) = \int_{-\infty}^{\mu} f(t) dt + \int_{\mu}^{x} \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(t-\mu)^2}{2\sigma^2}} dt \]
+    显然由高斯分布对称性知：$\int_{-\infty}^{\mu} f(t) dt = \frac{1}{2}$。
+    
+    \textbf{换元法}：对后式，令 $y = \frac{t-\mu}{\sqrt{2}\sigma}$，则 $dy = \frac{1}{\sqrt{2}\sigma} dt$。
+    \begin{itemize}
+        \item 当 $t=x$ 时，$y=\frac{x-\mu}{\sqrt{2}\sigma}$；
+        \item 当 $t=\mu$ 时，$y=0$。
+    \end{itemize}
+    代入积分项：
+    \[ \int_{\mu}^{x} f(t) dt = \int_{0}^{\frac{x-\mu}{\sqrt{2}\sigma}} \frac{1}{\sqrt{\pi}} e^{-y^2} dy \]
+    根据 $\text{erf}(z) = \frac{2}{\sqrt{\pi}} \int_{0}^{z} e^{-u^2} du$ 的定义，上式即为 $\frac{1}{2}\text{erf}(\frac{x-\mu}{\sqrt{2}\sigma})$。
+    
+    \noindent \textbf{故当 $x > \mu$ 时：}
+    \[ \boxed{F(x) = \frac{1}{2} + \frac{1}{2} \text{erf}\left(\frac{x-\mu}{\sqrt{2}\sigma}\right)} \]
+
+    \vspace{4pt}
+    \textbf{(2) 当 $x < \mu$ 时 (落在均值左侧)}
+    \[ F(x) = \int_{-\infty}^{\mu} f(t) dt - \int_{x}^{\mu} \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(t-\mu)^2}{2\sigma^2}} dt \]
+    同样利用对称性 $\int_{-\infty}^{\mu} f(t) dt = \frac{1}{2}$。
+    
+    \textbf{换元法}：对后式，令 $y = \frac{\mu-t}{\sqrt{2}\sigma}$，则 $dt = -\sqrt{2}\sigma dy$。
+    \begin{itemize}
+        \item 当 $t=x$ 时，$y=\frac{\mu-x}{\sqrt{2}\sigma}$；
+        \item 当 $t=\mu$ 时，$y=0$。
+    \end{itemize}
+    (注意积分限变换抵消了负号)，代入有：
+    \[ \int_{x}^{\mu} f(t) dt = \int_{0}^{\frac{\mu-x}{\sqrt{2}\sigma}} \frac{1}{\sqrt{\pi}} e^{-y^2} dy = \frac{1}{2}\text{erf}\left(\frac{\mu-x}{\sqrt{2}\sigma}\right) \]
+    
+    \noindent \textbf{故当 $x < \mu$ 时：}
+    \[ F(x) = \frac{1}{2} - \frac{1}{2} \text{erf}\left(\frac{\mu-x}{\sqrt{2}\sigma}\right) \]
+
+    \tcbline
+
+    \textbf{4. 统一用 $\text{erfc}$ 表示}
+    
+    又 $\text{erf}(x) = 1 - \text{erfc}(x)$，且 $\text{erfc}(-x) = 2 - \text{erfc}(x)$。
+    
+    对于 $x < \mu$ 的情况，直接代入：
+    \[ 
+    \begin{aligned}
+        F(x) &= \frac{1}{2} \left[1 - \text{erf}\left(\frac{\mu-x}{\sqrt{2}\sigma}\right)\right] \\
+             &= \textcolor{mainblue}{\frac{1}{2} \text{erfc}\left(\frac{\mu-x}{\sqrt{2}\sigma}\right)} 
+    \end{aligned}
+    \]
+    
+    对于 $x > \mu$ 的情况：
+    \[ 
+    \begin{aligned}
+        F(x) &= \frac{1}{2} \left[2 - \text{erfc}\left(\frac{x-\mu}{\sqrt{2}\sigma}\right)\right] \\
+             &= \textcolor{mainblue}{1 - \frac{1}{2} \text{erfc}\left(\frac{x-\mu}{\sqrt{2}\sigma}\right)} 
+    \end{aligned}
+    \]
+\end{kbox}
