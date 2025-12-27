@@ -1,0 +1,136 @@
+% content/01_SignalBasics/topic01_time_freq_relation.tex
+
+\begin{intuitionbox}{核心直观：时域越窄，频域越宽}
+    \textbf{现象描述}：脉冲信号的持续时间（脉宽 $\tau$）与它所占据的频带宽度（带宽 $B$）成反比关系。
+    \[ \tau \downarrow \quad \Longrightarrow \quad B \uparrow \]
+    
+    \tcbline
+    
+    \textbf{物理直观解释（变化的快慢）}：
+    傅里叶变换的本质是将信号分解为不同频率正弦波的叠加。
+    \begin{itemize}
+        \item \textbf{长脉冲（宽）}：电平变化缓慢。要合成一个缓慢变化的波形，主要需要\textbf{低频}分量，不需要高频分量参与。因此频谱集中在低频，带宽窄。
+        \item \textbf{短脉冲（窄）}：电平在极短瞬间从 0 跳变到 1 再跳回 0。这种\textbf{极其陡峭}的斜率变化，意味着信号变化极快。只有\textbf{高频}正弦波才能提供如此快的变化率。因此需要大量高频分量叠加，带宽极宽。
+    \end{itemize}
+\end{intuitionbox}
+
+\begin{kbox}{数学推导：矩形脉冲与 Sinc 函数}
+    设矩形脉冲信号 $x(t) = \text{rect}(t/\tau)$，其宽度为 $\tau$。
+    根据傅里叶变换对：
+    \begin{equation}
+        x(t) = \text{rect}\left(\frac{t}{\tau}\right) \stackrel{\mathcal{F}}{\longleftrightarrow} X(f) = \tau \cdot \text{sinc}(f\tau)
+    \end{equation}
+    其中 $\text{sinc}(x) = \frac{\sin(\pi x)}{\pi x}$。
+
+    \begin{itemize}
+        \item \textbf{第一零点带宽}：Sinc 函数的第一个零点出现在 $f\tau = 1$ 处。
+        \item \textbf{带宽公式}：
+        \[ B = \frac{1}{\tau} \]
+    \end{itemize}
+    
+    \tcbline
+    
+    \textbf{图解演示}：
+    
+    \begin{center}
+    \begin{tikzpicture}
+        % --- 定义通用样式以保持整洁 ---
+        \pgfplotsset{
+            miniplot/.style={
+                width=3.6cm, height=2.8cm,  % [优化] 尺寸微调，防止重叠
+                axis lines=middle,
+                xtick=\empty, ytick=\empty,
+                ymin=-0.3, ymax=1.6,        % [优化] 增加上方留白，防止标签撞线
+                xmin=-3.5, xmax=3.5,
+                clip=false,                 % 允许标签超出绘图区
+                % 统一坐标轴标签位置：末端外侧
+                every axis x label/.style={at={(current axis.east)}, anchor=west, xshift=2pt},
+                every axis y label/.style={at={(current axis.north)}, anchor=south, yshift=2pt}
+            }
+        }
+
+        % ==========================================
+        % 左侧组：宽脉冲 -> 窄频谱
+        % ==========================================
+        \begin{scope}[xshift=0cm]
+            % 标题
+            \node[font=\bfseries\scriptsize, align=center, anchor=south] at (0, 2.2) {情形 A: 宽脉冲 ($\tau$ 大)};
+            
+            % 1. 时域图 (A)
+            \begin{axis}[
+                miniplot,
+                at={(0,1.2cm)},
+                xlabel={$t$}, ylabel={$x(t)$},
+                xmin=-2.5, xmax=2.5,
+            ]
+                % 绘制脉冲
+                \draw[thick, mainblue] (axis cs:-1,0) -- (axis cs:-1,1) -- (axis cs:1,1) -- (axis cs:1,0);
+                % 标注宽度 (内部)
+                \draw[<->, >=stealth, thin] (axis cs:-1, 0.5) -- (axis cs:1, 0.5) node[midway, above, font=\tiny] {$\tau$};
+            \end{axis}
+
+            % 2. 频域图 (A)
+            \begin{axis}[
+                miniplot,
+                at={(0,-1.5cm)}, % [优化] 增加垂直间距，防止上下打架
+                xlabel={$f$}, ylabel={$|X(f)|$},
+                xmin=-4.5, xmax=4.5,
+            ]
+                % 绘制窄 Sinc
+                \addplot[thick, alertred, domain=-4.2:4.2, samples=100] {abs(sin(deg(x*1.5))/(x*1.5+0.001))}; 
+                % 标注 (移动到侧边，避免遮挡)
+                \draw[->, thin, alertred] (axis cs:2.5, 0.6) -- (axis cs:0.8, 0.4);
+                \node[font=\tiny, alertred, anchor=west] at (axis cs:2.5, 0.6) {频带窄};
+            \end{axis}
+        \end{scope}
+
+        % ==========================================
+        % 右侧组：窄脉冲 -> 宽频谱
+        % ==========================================
+        \begin{scope}[xshift=4.2cm]
+            % 标题
+            \node[font=\bfseries\scriptsize, align=center, anchor=south] at (0, 2.2) {情形 B: 窄脉冲 ($\tau$ 小)};
+            
+            % 3. 时域图 (B)
+            \begin{axis}[
+                miniplot,
+                at={(0,1.2cm)},
+                xlabel={$t$},
+                xmin=-2.5, xmax=2.5,
+            ]
+                % 绘制窄脉冲
+                \draw[thick, mainblue] (axis cs:-0.3,0) -- (axis cs:-0.3,1) -- (axis cs:0.3,1) -- (axis cs:0.3,0);
+                % 标注宽度 (外部箭头，避免挤在中间)
+                \draw[->, >=stealth, thin] (axis cs:-0.8, 0.5) -- (axis cs:-0.3, 0.5);
+                \draw[->, >=stealth, thin] (axis cs:0.8, 0.5) -- (axis cs:0.3, 0.5);
+                \node[font=\tiny] at (axis cs:1.0, 0.5) {$\tau$};
+            \end{axis}
+
+            % 4. 频域图 (B)
+            \begin{axis}[
+                miniplot,
+                at={(0,-1.5cm)},
+                xlabel={$f$},
+                xmin=-4.5, xmax=4.5,
+            ]
+                % 绘制宽 Sinc
+                \addplot[thick, alertred, domain=-4.2:4.2, samples=100] {abs(sin(deg(x*0.5))/(x*0.5+0.001))};
+                % 标注 (放在曲线下方空旷处)
+                \node[font=\tiny, alertred] at (axis cs:2.2, 0.4) {频带宽};
+            \end{axis}
+        \end{scope}
+    \end{tikzpicture}
+    \end{center}
+\end{kbox}
+
+\begin{kbox}{极限情况：记忆锚点}
+    \begin{itemize}
+        \item \textbf{极端窄（$\delta$ 冲击）}：
+        时域宽度 $\tau \to 0$。为了制造这样一个无限陡峭的瞬间冲击，需要全宇宙所有的频率共同作用。
+        \[ \delta(t) \stackrel{\mathcal{F}}{\longleftrightarrow} 1 \quad (\text{带宽 } B \to \infty) \]
+        
+        \item \textbf{极端宽（直流 DC）}：
+        时域宽度 $\tau \to \infty$（永恒不变）。没有任何变化，不需要任何非零频率。
+        \[ 1 \stackrel{\mathcal{F}}{\longleftrightarrow} \delta(f) \quad (\text{带宽 } B \to 0) \]
+    \end{itemize}
+\end{kbox}
