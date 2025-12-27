@@ -23,7 +23,7 @@
     \end{equation}
 
     \textbf{3. 幅频特性 $|H(\omega)|$}：
-    利用欧拉公式 $|1+e^{-j\theta}| = |e^{-j\theta/2}(e^{j\theta/2}+e^{-j\theta/2})| = 2|\cos(\theta/2)|$：
+    利用欧拉公式 $|1+e^{-j\theta}| = |e^{-j\theta/2}(e^{j\theta/2}+e^{-j\theta/2})| [cite_start]= 2|\cos(\theta/2)|$ [cite: 10]：
     \begin{equation}
         |H(\omega)| = 2K \left| \cos\left( \frac{\omega\tau}{2} \right) \right|
     \end{equation}
@@ -31,12 +31,12 @@
 \end{intuitionbox}
 
 \begin{kbox}{多径信道幅频特性曲线与分析}
-    根据 $|H(\omega)| = 2K |\cos(\omega\tau/2)|$ 绘制幅频特性曲线：
+    根据 $|H(\omega)| [cite_start]= 2K |\cos(\omega\tau/2)|$ [cite: 12] 绘制幅频特性曲线：
 
     \begin{center}
     \begin{tikzpicture}
         \begin{axis}[
-            width=\linewidth, height=5cm, % 稍微增加高度以容纳标注
+            width=\linewidth, height=5cm,
             axis lines=middle,
             xlabel={$\omega$}, ylabel={$|H(\omega)|$},
             xmin=0, xmax=13, ymin=0, ymax=2.3,
@@ -55,15 +55,13 @@
         \node[circle,fill=alertred,inner sep=1.5pt] at (axis cs:3.14,0) {};
         \node[circle,fill=alertred,inner sep=1.5pt] at (axis cs:9.42,0) {};
         
-        % 3. 绘制垂直虚线 (新增部分)
-        % 从x轴零点画到箭头高度 (y=1.2)
+        % 3. 绘制垂直虚线
         \draw[dashed, alertred] (axis cs:3.14, 0) -- (axis cs:3.14, 1.2);
         \draw[dashed, alertred] (axis cs:9.42, 0) -- (axis cs:9.42, 1.2);
 
         % 4. 绘制相关带宽水平双向箭头
         \draw[<->, alertred, thick] (axis cs:3.14, 1.2) -- (axis cs:9.42, 1.2) node[midway, above, font=\scriptsize] {$\Delta f = 1/\tau$};
-        
-        \end{axis}
+    \end{axis}
     \end{tikzpicture}
     \end{center}
 
@@ -97,3 +95,196 @@
         \item \textbf{推论}：$T_s \uparrow \Rightarrow$ 码元速率 $R_B \downarrow \Rightarrow$ 信号带宽 $B_s \downarrow \Rightarrow$ 多径影响 $\downarrow$。
     \end{itemize}
 \end{kbox}
+
+\begin{intuitionbox}{核心辨析：为什么要选 $1/3 \sim 1/5$？如果不幸掉进“波谷”怎么办？}
+    \textbf{Q: 如果信号带宽很窄 ($B_s \ll \Delta f$)，但恰好落在信道的“谷底”（传输零点附近），信号岂不是衰减很严重？}
+    
+    \textbf{A: 是的，信号会严重衰减（深衰落），但这是“两害相权取其轻”的选择。}
+
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, height=6.5cm, % [微调] 稍微增加高度以适应更高的纵轴
+            axis lines=middle, 
+            xtick=\empty, ytick=\empty,
+            xlabel={$\omega$}, ylabel={$|H(\omega)|$},
+            xmin=0, xmax=13, 
+            ymin=0, ymax=4.0, % [修改] 纵轴上限拉高到 4.0，给文字留足空间
+            every axis y label/.style={at={(current axis.above origin)},anchor=south},
+            every axis x label/.style={at={(current axis.right of origin)},anchor=north west},
+            clip=false
+        ]
+        % 背景信道曲线
+        \addplot[thick, gray!50, domain=0:12.5, samples=100] {2*abs(cos(deg(x/2)))};
+        
+        % 情况1：宽带信号（红色区域）
+        \fill[red, opacity=0.3] (axis cs: 1.5, 0) rectangle (axis cs: 4.7, 2);
+        
+        % [修改] 红色文字：上移至 2.9 (比之前的 2.4 高，比 3.3 低)
+        % 配合 ymax=4.0，这里有充足的空间，既不压框也不撞轴
+        \node[red, align=center, font=\scriptsize] at (axis cs: 3.14, 2.9) {\textbf{宽带信号} ($B_s > \Delta f$)\\ 部分强、部分弱\\ $\downarrow$\\ \textbf{波形畸变 (ISI)}};
+        
+        % 情况2：窄带信号（落在波峰）
+        \fill[mainblue, opacity=0.6] (axis cs: 6.0, 0) rectangle (axis cs: 6.6, 2);
+        
+        % 蓝色文字
+        \node[mainblue, font=\scriptsize] at (axis cs: 6.28, 2.3) {窄带(波峰)};
+
+        % 情况3：窄带信号（落在波谷）
+        \fill[mainblue, opacity=0.6] (axis cs: 9.1, 0) rectangle (axis cs: 9.7, 0.4);
+        \draw[->, mainblue] (axis cs: 10.5, 0.8) -- (axis cs: 9.7, 0.4);
+        \node[mainblue, align=center, font=\scriptsize, anchor=west] at (axis cs: 10.0, 1.2) {\textbf{窄带(波谷)}\\ 整体变弱\\ 但\textbf{无畸变}};
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+
+    \textbf{原理分析}：
+    \begin{itemize}
+        \item \textbf{现状 A (宽带信号)}：如果不限制带宽，信号频谱一部分在波峰，一部分在波谷。接收到的频谱形状被“扭曲”，时域上产生严重的\textbf{码间串扰 (ISI)}。这种非线性畸变极难修复。
+        \item \textbf{现状 B (窄带信号)}：如果我们限制 $B_s < \Delta f$：
+        \begin{itemize}
+            \item \textbf{好处}：信号在通带内受到的衰落是“均匀”的（即\textbf{平坦衰落}），波形不畸变，无 ISI。
+            \item \textbf{代价}：如果落在谷底，能量会整体变弱。
+        \end{itemize}
+        \item \textbf{解决方案}：工程上，“能量弱”比“波形畸变”好解决。
+        \begin{itemize}
+            \item 使用 \textbf{AGC (自动增益控制)} 放大信号。
+            \item 使用 \textbf{分集接收 (Diversity)}：这根天线在谷底，另一根天线可能就在波峰。
+        \end{itemize}
+    \end{itemize}
+\end{intuitionbox}
+
+
+\begin{intuitionbox}{深度辨析：为什么“降低速率”能减轻多径效应？}
+    这是一个非常经典的通信原理问题。简单来说，降低码元速率之所以能减轻多径效应，是因为它让信号在\textbf{时域上“变长”}了，在\textbf{频域上“变窄”}了。
+    
+    我们将从频域和时域两个角度来解析这个逻辑链条：
+
+    \tcbline
+
+    \textbf{1. 为什么降低码元速率，带宽会随之减小？}
+    
+    这是信号处理的一个基本物理规律：\textbf{时域和频域是反比关系}。
+    \begin{itemize}
+        \item \textbf{码元速率 ($R_B$)}：每秒传输符号的个数。
+        \item \textbf{码元宽度 ($T_s$)}：$T_s = 1 / R_B$。
+        \item \textbf{信号带宽 ($B$)}：根据傅里叶变换原理，脉冲信号带宽与持续时间成反比，即 $B \approx 1 / T_s$。
+    \end{itemize}
+    \textbf{结论}：降低速率 $R_B \downarrow$ $\Rightarrow$ 码元变长 $T_s \uparrow$ $\Rightarrow$ \textbf{带宽变窄 $B \downarrow$}。
+
+    \tcbline
+
+    \textbf{2. 为什么带宽减小（或码元变长）能减轻多径效应？}
+
+    \textbf{A. 频域解释（躲避深坑）}
+    \begin{itemize}
+        \item \textbf{宽带信号}：带宽 > 相关带宽 ($\Delta f$)。信号频谱很宽，容易跨越信道的“深坑”（频率选择性衰落），导致波形严重失真。
+        \item \textbf{窄带信号}：带宽 < 相关带宽 ($\Delta f$)。整个信号频谱可以“躲”在信道频率响应平坦的区域。虽然可能整体衰减（平坦衰落），但\textbf{没有频率畸变}，ISI 很小。
+    \end{itemize}
+
+    \textbf{B. 时域解释（直观演示：回声变成“边角料”）}
+    
+    假设环境决定的多径最大时延为固定值 $\tau_m$。多径效应表现为：\textbf{上一码元的“回声”延迟到达，干扰了当前码元}。
+    
+    \begin{center}
+    \begin{tikzpicture}[>=Stealth, scale=0.9, transform shape, font=\footnotesize]
+        
+        % =========================================
+        % Case 1: 高速率 (短码元)
+        % =========================================
+        \node[anchor=west, text=alertred, font=\bfseries] at (-0.5, 3.7) {Case 1: 高速率 (短码元 $T_s \approx \tau_m$)};
+
+        % 坐标定义
+        \def\yBase{1.0}
+        
+        % 时间轴
+        \draw[->, thick, gray] (-0.2, 0.8) -- (6.0, 0.8) node[right] {$t$};
+
+        % 1. 当前码元 (主径) - 蓝色
+        \filldraw[fill=mainblue!15, draw=mainblue, thick] (0, \yBase) rectangle (2.0, \yBase+1.0);
+        \node[mainblue] at (1.0, \yBase+0.5) {当前码元};
+        % Ts 辅助线
+        \draw[dashed, mainblue] (0, \yBase) -- (0, 0.4);
+
+        % 2. 上一码元的回声 (多径) - 灰色虚线
+        \filldraw[fill=gray!20, draw=gray, dashed, opacity=0.8] (1.5, \yBase+0.2) rectangle (3.5, \yBase+1.2);
+        
+        % 回声说明
+        \node[text=gray!90, font=\scriptsize, align=center] (echo1) at (3.5, 2.8) {上一码元\\的延迟回声};
+        \draw[->, gray!90, thin] (echo1.south) -- (2.5, \yBase+1.2);
+
+        % 3. 干扰区域 (ISI) - 红色斜线
+        \fill[pattern=north east lines, pattern color=alertred] (1.5, \yBase) rectangle (2.0, \yBase+1.0);
+        \draw[alertred, thick] (1.5, \yBase) rectangle (2.0, \yBase+1.0);
+
+        % 4. 延迟标注
+        \draw[->, thick, alertred] (0, 0.5) -- (1.5, 0.5) node[midway, below] {延迟 $\tau_m$};
+        \draw[dashed, gray] (1.5, \yBase+0.2) -- (1.5, 0.4);
+
+        % 5. ISI 说明
+        \node[align=left, anchor=west] (desc1) at (3.3, 1.5) {
+            \textbf{\textcolor{alertred}{严重 ISI}} \\
+            \scriptsize 回声覆盖大部分区域，\\
+            \scriptsize 导致严重判决错误。
+        };
+        \draw[->, alertred, thick, shorten >=2pt] (desc1.west) to[out=180, in=0] (2.0, 1.5);
+
+
+        % =========================================
+        % Case 2: 低速率 (长码元) —— 修改版
+        % =========================================
+        \begin{scope}[yshift=-4.0cm]
+        
+        \node[anchor=west, text=textgreen, font=\bfseries] at (-0.5, 3.2) {Case 2: 低速率 (长码元 $T_s \gg \tau_m$)};
+        
+        % 时间轴 (拉长以容纳更长的图示)
+        \draw[->, thick, gray] (-0.2, 0.8) -- (7.5, 0.8) node[right] {$t$};
+
+        % 1. 当前长码元 (主径) - 蓝色
+        % [修改] 使用锯齿边效果表示“后面还有很长”
+        % 绘制左、上、下三边
+        \fill[mainblue!15] (0, \yBase) -- (6.5, \yBase) -- (6.5, \yBase+1.0) -- (0, \yBase+1.0) -- cycle;
+        \draw[thick, mainblue] (0, \yBase) -- (6.5, \yBase);       % 下边
+        \draw[thick, mainblue] (0, \yBase+1.0) -- (6.5, \yBase+1.0); % 上边
+        \draw[thick, mainblue] (0, \yBase) -- (0, \yBase+1.0);       % 左边
+        
+        % [新增] 右侧绘制锯齿波 (代表截断/未完待续)
+        \draw[thick, mainblue] (6.5, \yBase) -- (6.3, \yBase+0.2) -- (6.5, \yBase+0.4) -- (6.3, \yBase+0.6) -- (6.5, \yBase+0.8) -- (6.3, \yBase+1.0) -- (0, \yBase+1.0);
+        % 注意：上面的 fill 已经覆盖了底色，这里只画边框线增加视觉效果
+
+        % 辅助虚线
+        \draw[dashed, mainblue] (0, \yBase) -- (0, 0.4);
+
+        % 文字说明
+        \node[mainblue] at (5.0, \yBase+0.5) {当前长码元 (未画完 $\cdots$)}; 
+
+        % 2. 上一码元的回声 (多径)
+        % [修改] 保持原有大小，对比之下显得很小
+        \filldraw[fill=gray!20, draw=gray, dashed, opacity=0.8] (1.5, \yBase+0.2) rectangle (3.5, \yBase+1.2);
+        
+        % 回声说明
+        \node[text=gray!90, font=\scriptsize] (echo2) at (2.5, 2.8) {上一码元回声};
+        \draw[->, gray!90, thin] (echo2.south) -- (2.5, \yBase+1.2);
+
+        % 3. 干扰区域 (ISI)
+        % 这一块的大小是由“延迟”决定的，是物理客观存在的，不能变小，但放在巨大的蓝色背景下就显得小了
+        \fill[pattern=north east lines, pattern color=alertred] (1.5, \yBase) rectangle (3.5, \yBase+1.0);
+        \draw[alertred, thick] (1.5, \yBase) rectangle (3.5, \yBase+1.0);
+
+        % 4. 延迟标注
+        \draw[->, thick, alertred] (0, 0.5) -- (1.5, 0.5) node[midway, below] {延迟 $\tau_m$};
+        \draw[dashed, gray] (1.5, \yBase+0.2) -- (1.5, 0.4);
+
+        % 5. ISI 说明
+        \node[align=left, anchor=north west] (desc2) at (2.5, 0.2) {
+            \textbf{\textcolor{textgreen}{轻微 ISI}} \\
+            \scriptsize 干扰仅占极小比例，\\ 
+            \scriptsize 主体纯净且漫长。
+        };
+        \draw[->, textgreen, thick, shorten >=2pt] (desc2.north) -- (2.5, 1.0);
+
+        \end{scope}
+
+    \end{tikzpicture}
+    \end{center}
+\end{intuitionbox}

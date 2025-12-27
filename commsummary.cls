@@ -11,7 +11,8 @@
 
 % --- 绘图支持 ---
 \RequirePackage{tikz}
-\usetikzlibrary{arrows.meta, positioning, calc} 
+% [修改] 在这里增加了 patterns 库，解决 "You need to say \usetikzlibrary{patterns}" 错误
+\usetikzlibrary{arrows.meta, positioning, calc, patterns} 
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
 
@@ -76,9 +77,6 @@
     left=2pt, right=2pt, top=2pt, bottom=2pt,
     toptitle=2pt, bottomtitle=2pt,
     drop shadow, after skip=10pt,
-    overlay unbroken and first={
-        \node[anchor=north east, inner sep=2pt] at (frame.north east) {\scriptsize \itshape 物理直观};
-    }
 }
 
 % --- 列表与章节设置 ---

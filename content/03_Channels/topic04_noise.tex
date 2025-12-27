@@ -1,15 +1,62 @@
-\begin{kbox}{4. 信道噪声 (高斯白噪声)}
-    \textbf{统计特性}：
+\begin{kbox}{4. 信道噪声与等效带宽}
+    \textbf{1. 高斯白噪声统计特性}：
     \begin{itemize}
         \item 双边 PSD：$P_n(f) = n_0 / 2$ (W/Hz)
         \item 自相关：$R_n(\tau) = \frac{n_0}{2} \delta(\tau)$
-        \item 一维 PDF (正态分布)：
+        \item 一维 PDF (正态分布，均值为0)：
         \[ f_n(v) = \frac{1}{\sqrt{2\pi}\sigma_n} \exp\left(-\frac{v^2}{2\sigma_n^2}\right) \]
     \end{itemize}
     
-    \textbf{功率计算}：
+    \tcbline
+    
+    \textbf{2. 噪声等效带宽 ($B_n$)}：
+    
+    \begin{center}
+    \begin{tikzpicture}[scale=0.85, >=stealth]
+        % 定义坐标轴
+        \draw[->] (-3.5,0) -- (3.5,0) node[right] {$f$};
+        \draw[->] (0,0) -- (0,3) node[left] {$P_n(f)$};
+        
+        % 定义参数
+        \def\fzero{2.0}
+        \def\peak{2.0}
+        \def\width{0.6} % 视觉上的半宽
+        
+        % 绘制实际噪声功率谱 (钟形曲线) - 右侧
+        \draw[thick, mainblue] plot[domain=0.5:3.5, samples=50] (\x, {\peak * exp(-(\x-\fzero)^2 / (2*\width^2))});
+        % 左侧
+        \draw[thick, mainblue] plot[domain=-3.5:-0.5, samples=50] (\x, {\peak * exp(-(\x+\fzero)^2 / (2*\width^2))});
+        
+        % 绘制等效矩形 (虚线) - 右侧
+        \draw[thick, dashed, alertred] (\fzero - 0.75, 0) -- (\fzero - 0.75, \peak) -- (\fzero + 0.75, \peak) -- (\fzero + 0.75, 0);
+        % 左侧
+        \draw[thick, dashed, alertred] (-\fzero - 0.75, 0) -- (-\fzero - 0.75, \peak) -- (-\fzero + 0.75, \peak) -- (-\fzero + 0.75, 0);
+        
+        % 标注
+        \node[below] at (\fzero, 0) {$f_0$};
+        \node[below] at (-\fzero, 0) {$-f_0$};
+        \node[below left] at (0,0) {0};
+        
+        % 标注中心高度 Pn(f0)
+        \draw[dotted] (\fzero, \peak) -- (0, \peak) node[left, font=\small] {$P_n(f_0)$};
+        
+        % 标注带宽 Bn
+        \draw[<->] (\fzero - 0.75, \peak + 0.2) -- (\fzero + 0.75, \peak + 0.2) node[midway, above, font=\small] {$B_n$};
+        
+        % 箭头指向
+        \node[font=\footnotesize, align=center, mainblue] at (0, 1.2) {实际谱\\ $P_n(f)$};
+        \node[font=\footnotesize, align=center, alertred] at (0, 0.5) {等效矩形};
+        
+    \end{tikzpicture}
+    \end{center}
+
     \begin{itemize}
-        \item 噪声功率：$N = \int_{-\infty}^{\infty} P_n(f) df$
-        \item 等效带宽：$B_n = \frac{\int_0^{\infty} P_n(f) df}{P_n(f_0)}$
+        \item \textbf{定义公式}：保持噪声总功率不变，将实际滤波特性等效为理想矩形滤波器。
+        \[
+            B_n = \frac{\int_{-\infty}^{\infty} P_n(f) df}{2 P_n(f_0)} = \frac{\int_{0}^{\infty} P_n(f) df}{P_n(f_0)}
+        \]
+        \item \textbf{物理意义}：
+        通过宽度为 $B_n$ 的理想矩形滤波器的噪声功率 \textbf{等于} 通过实际接收滤波器的噪声功率。
+        \[ N = \int_{-\infty}^{\infty} P_n(f) df = \underbrace{2 \cdot B_n \cdot P_n(f_0)}_{\text{矩形面积}} \]
     \end{itemize}
 \end{kbox}
