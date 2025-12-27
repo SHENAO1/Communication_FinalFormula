@@ -1,0 +1,44 @@
+% content/04_SourceCoding/topic01_sampling.tex
+
+\begin{kbox}{抽样定理 (Sampling Theorem)}
+    \begin{itemize}
+        \item \textbf{低通模拟信号抽样定理} \pptpage{12}
+        \begin{itemize}
+            \item \textbf{条件}：为了无失真恢复原信号，抽样速率 $f_s$ 需满足：
+            \begin{equation}
+                f_s \ge 2f_H \quad \text{且} \quad T_s \le \frac{1}{2f_H}
+            \end{equation}
+            其中 $f_H$ 为信号最高频率。
+            \item \textbf{奈奎斯特速率}：$f_s = 2f_H$
+            \item \textbf{奈奎斯特间隔}：$T_s = \frac{1}{2f_H}$
+        \end{itemize}
+        
+        \item \textbf{理想抽样 (Ideal Sampling)} \pptpage{13}
+        \begin{itemize}
+            \item \textbf{时域}：利用单位冲激序列 $\delta_T(t)$ 进行乘积：
+            % --- 修正：使用 split 环境将长公式换行对齐 ---
+            \begin{equation}
+            \begin{split}
+                m_s(t) &= m(t)\sum_{n=-\infty}^{\infty}\delta(t-nT_s) \\
+                       &= \sum_{n=-\infty}^{\infty}m(nT_s)\delta(t-nT_s)
+            \end{split}
+            \end{equation}
+          
+            \item \textbf{频域}：频谱以 $f_s$ 为周期搬移：
+            \begin{equation}
+                M_s(f) = \frac{1}{T_s}\sum_{n=-\infty}^{\infty}M(f-nf_s)
+            \end{equation}
+        \end{itemize}
+
+        \item \textbf{平顶抽样与孔径失真} \pptpage{26}
+        \begin{itemize}
+            \item \textbf{产生}：理想抽样脉冲经过形状为 $h(t)$ 的保持电路。
+            
+            \item \textbf{频域关系}：
+            \begin{equation}
+                M_H(f) = M_s(f) \cdot H(f)
+            \end{equation}
+            \item \textbf{孔径失真}：由 $H(f) = T_s \text{Sa}(\pi f T_s)$ (矩形脉冲) 引起的高频衰减，需在接收端使用 \textbf{修正滤波器} 进行补偿。
+        \end{itemize}
+    \end{itemize}
+\end{kbox}

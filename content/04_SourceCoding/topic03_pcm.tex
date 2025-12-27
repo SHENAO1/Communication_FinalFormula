@@ -1,0 +1,22 @@
+% content/04_SourceCoding/topic03_pcm.tex
+
+\begin{kbox}{脉冲编码调制 (PCM)}
+    \begin{itemize}
+        \item \textbf{基本参数} \pptpage{72}
+        设模拟信号最高频率为 $f_H$，抽样率为 $f_s$，编码位数为 $N$。
+        \item \textbf{信息传输速率 (比特率)}：
+        \begin{equation}
+            R_b = f_s \cdot N \ge 2f_H \cdot N
+        \end{equation}
+        \item \textbf{传输带宽} (第一零点带宽)：
+        \begin{equation}
+            B = R_b = f_s \cdot N \quad (\text{NRZ矩形})
+        \end{equation}
+        \item \textbf{典型应用：数字电话}
+        \begin{itemize}
+            \item 话音带宽 $B \approx 3.4\text{kHz} \to f_s = 8000\text{Hz}$
+            \item 量化位数 $N=8$ (A律13折线)
+            \item \textbf{比特率}：$R_b = 8000 \times 8 = \mathbf{64\text{kbps}}$
+        \end{itemize}
+    \end{itemize}
+\end{kbox}
