@@ -1,19 +1,37 @@
-\begin{kbox}{6. 窄带随机过程}
-    \textbf{表达式}：
-    \begin{itemize}
-        \item 包络相位法：$\xi(t) = a_{\xi}(t) \cos[\omega_c t + \phi_{\xi}(t)]$
-        \item 同相正交法：$\xi(t) = \xi_c(t) \cos \omega_c t - \xi_s(t) \sin \omega_c t$
-    \end{itemize}
+\begin{kbox}{6. 窄带随机过程 (核心结论)}
+    \textbf{定义}：带宽 $\Delta f \ll f_c$ 且远离零频的随机过程。
     
+    \tcbline
+    
+    \begin{minipage}{0.65\linewidth}
+        \textbf{表达式}：
+        \begin{itemize}
+            \item \textbf{包络相位法}：
+            \[ \xi(t) = a_{\xi}(t) \cos[\omega_c t + \phi_{\xi}(t)] \]
+            \item \textbf{同相正交法}：
+            \[ \xi(t) = \xi_c(t) \cos \omega_c t - \xi_s(t) \sin \omega_c t \]
+        \end{itemize}
+    \end{minipage}%
+    \begin{minipage}{0.35\linewidth}
+        \centering
+        % 融入笔记中的矢量三角形
+        \begin{tikzpicture}[scale=1.2]
+            \draw[thick, ->] (0,0) -- (1.5,0) node[midway, below] {\small $\xi_c$};
+            \draw[thick, ->] (1.5,0) -- (1.5,1.0) node[midway, right] {\small $\xi_s$};
+            \draw[thick, ->] (0,0) -- (1.5,1.0) node[midway, above left] {\small $a_\xi$};
+            \draw (0.4,0) arc (0:33.69:0.4);
+            \node at (0.6,0.2) {\scriptsize $\phi_\xi$};
+        \end{tikzpicture}
+    \end{minipage}
+
     \tcbline 
     
-    \textbf{统计特性} (均值为0的高斯窄带过程)：
+    \textbf{统计特性} (设 $\xi(t)$ 均值0，方差 $\sigma_{\xi}^2$)：
     \begin{enumerate}
-        \item $\xi_c(t), \xi_s(t)$ 为高斯过程，均值0，方差 $\sigma_{\xi}^2$。
-        \item \textbf{包络 $a_{\xi}$ (瑞利分布)}：
-        \[ f(a_{\xi}) = \frac{a_{\xi}}{\sigma_{\xi}^2} e^{-\frac{a_{\xi}^2}{2\sigma_{\xi}^2}}, \quad a_{\xi} \geq 0 \]
-        \item \textbf{相位 $\phi_{\xi}$ (均匀分布)}：
-        \[ f(\phi_{\xi}) = \frac{1}{2\pi}, \quad 0 \leq \phi_{\xi} \leq 2\pi \]
+        \item $\xi_c(t), \xi_s(t)$ 均为高斯过程，均值0，方差 $\sigma_{\xi}^2$。
+        \item \textbf{重要结论}：同一时刻，$\xi_c$ 与 $\xi_s$ \textbf{互不相关} (即统计独立)。
+        \item \textbf{包络 $a_{\xi}$ (瑞利分布)}：$f(a_{\xi}) = \frac{a_{\xi}}{\sigma_{\xi}^2} e^{-\frac{a_{\xi}^2}{2\sigma_{\xi}^2}}, \ (a_{\xi} \geq 0)$
+        \item \textbf{相位 $\phi_{\xi}$ (均匀分布)}：$f(\phi_{\xi}) = \frac{1}{2\pi}, \ (0 \leq \phi_{\xi} \leq 2\pi)$
     \end{enumerate}
 \end{kbox}
 
@@ -28,18 +46,11 @@
     \[ R(\tau) = n_0 f_H \frac{\sin 2\pi f_H \tau}{2\pi f_H \tau} \] 
     
     \textbf{带通白噪声 (BPF, 带宽 $B$)}：
-    \[ R(\tau) = n_0 B \frac{\sin \pi B \tau}{\pi B \tau} \cos 2\pi f_c \tau \]
-    总功率 $N = n_0 B$。
+    \[ R(\tau) = n_0 B \frac{\sin \pi B \tau}{\pi B \tau} \cos 2\pi f_c \tau, \quad N = n_0 B \]
 \end{kbox}
 
 \begin{kbox}{8. 正弦波 + 窄带高斯噪声}
     \textbf{包络 $z$ 服从莱斯 (Rice) 分布}：
     \[ f(z) = \frac{z}{\sigma_n^2} \exp\left[-\frac{z^2 + A^2}{2\sigma_n^2}\right] I_0\left(\frac{Az}{\sigma_n^2}\right) \]
-    其中：
-    \begin{itemize}
-        \item $z \geq 0$
-        \item $A$：正弦波振幅
-        \item $\sigma_n^2$：窄带噪声方差
-        \item $I_0(\cdot)$：第一类修正贝塞尔函数
-    \end{itemize}
+    ($A$: 信号振幅, $\sigma_n^2$: 噪声方差, $I_0$: 修正贝塞尔)
 \end{kbox}

@@ -1,0 +1,86 @@
+\definecolor{mainblue}{RGB}{20, 80, 180}
+\definecolor{fillblue}{RGB}{220, 230, 255}
+
+\begin{examplebox}{补充：窄带过程推导与图解}
+    \textbf{1. 正交分解推导细节}：
+    利用三角公式展开 $\xi(t) = a_\xi(t) \cos[\omega_c t + \phi_\xi(t)]$：
+    \begin{align*}
+        \xi(t) &= a_\xi [\cos \phi_\xi \cos \omega_c t - \sin \phi_\xi \sin \omega_c t] \\
+               &= \underbrace{[a_\xi \cos \phi_\xi]}_{\xi_c(t)} \cos \omega_c t - \underbrace{[a_\xi \sin \phi_\xi]}_{\xi_s(t)} \sin \omega_c t
+    \end{align*}
+    转换关系：
+    \[ a_\xi = \sqrt{\xi_c^2 + \xi_s^2}, \quad \phi_\xi = \arctan(\xi_s / \xi_c) \]
+
+    \tcbline
+
+    \textbf{2. 概率密度函数图示}：
+    \begin{center}
+        \begin{tikzpicture}[font=\small]
+            % --- 左图：瑞利分布 ---
+            \begin{axis}[
+                name=plot1,
+                width=0.48\textwidth, height=5.5cm,
+                axis lines=middle,
+                xmin=0, xmax=4.2, ymin=0, ymax=0.75,
+                xlabel={$a_\xi$}, ylabel={$f(a_\xi)$},
+                ticks=none,
+                axis line style={-latex, thick, black!80},
+                xlabel style={right}, ylabel style={above},
+                title={\textbf{瑞利分布 (包络)}},
+                % --- 修改处：向上移动标题 15pt，并稍微加大字号 ---
+                title style={yshift=15pt, font=\large}, 
+                clip=false
+            ]
+                % 1. 绘制面积条带
+                \fill[fillblue] (axis cs:1.2, 0) rectangle (axis cs:1.35, 0.48);
+                
+                % 2. 瑞利曲线
+                \addplot[thick, mainblue, domain=0:4.0, samples=200] {x*exp(-x^2/2)};
+                
+                % 3. 均值虚线
+                \draw[dashed, thick, black!60] (axis cs:1.253, 0) -- (axis cs:1.253, 0.455);
+                
+                % 4. 底部坐标标注
+                \node[below] at (axis cs:1.253, 0) {$\sqrt{\frac{\pi}{2}}\sigma_\xi$};
+                
+                % 5. 文本公式
+                \node[right, align=left] at (axis cs:1.8, 0.5) {
+                    均值 $=\sqrt{\frac{\pi}{2}}\sigma_\xi$ \\[0.5em]
+                    方差 $=\frac{4-\pi}{2}\sigma_\xi^2$
+                };
+                
+                % 6. "等面积" 标注
+                \node[coordinate, pin={[pin edge={black, thin}, align=center]120:等面积}] at (axis cs:1.27, 0.25) {};
+                
+            \end{axis}
+
+            % --- 右图：均匀分布 ---
+            \begin{axis}[
+                at={(plot1.outer east)}, anchor=outer west,
+                width=0.48\textwidth, height=5.5cm,
+                axis lines=middle,
+                xmin=0, xmax=7.5, ymin=0, ymax=0.35,
+                xlabel={$\phi_\xi$}, ylabel={$f(\phi_\xi)$},
+                ticks=none,
+                axis line style={-latex, thick, black!80},
+                xlabel style={right}, ylabel style={above},
+                title={\textbf{均匀分布 (相位)}},
+                % --- 修改处：同样向上移动标题 15pt ---
+                title style={yshift=15pt, font=\large},
+                clip=false
+            ]
+                % 1. 均匀分布矩形
+                \draw[thick, mainblue, fill=fillblue!30] (axis cs:0, 0) -- (axis cs:0, 0.2) -- (axis cs:6.283, 0.2) -- (axis cs:6.283, 0);
+                
+                % 2. 坐标标注
+                \node[below left] at (axis cs:0,0) {$0$};
+                \node[below] at (axis cs:6.283,0) {$2\pi$};
+                \node[left] at (axis cs:0, 0.2) {$\frac{1}{2\pi}$};
+                
+                % 3. 装饰虚线
+                \draw[dashed, black!40] (axis cs:6.283, 0) -- (axis cs:6.283, 0.2);
+                
+            \end{axis}
+        \end{tikzpicture}
+    \end{center}
+\end{examplebox}
