@@ -35,7 +35,16 @@
     \end{enumerate}
 \end{kbox}
 
-\begin{kbox}{7. 白噪声}
+\begin{kbox}{7. 白噪声与带限噪声}
+    \textbf{基本概念}：
+    \begin{itemize}
+        \item \textbf{白噪声}：在整个频带内功率谱密度 (PSD) 都平坦的噪声。
+        \item \textbf{高斯白噪声}：概率分布服从高斯分布，且 PSD 均匀的噪声。
+        \item \textbf{带限白噪声}：白噪声通过有限带宽信道或滤波器后的噪声。
+    \end{itemize}
+
+    \tcbline
+
     \textbf{理想白噪声}：
     \begin{itemize}
         \item PSD (双边)：$P_n(f) = n_0 / 2$
@@ -43,7 +52,7 @@
     \end{itemize}
     
     \textbf{低通白噪声 (LPF, 截止 $f_H$)}：
-    \[ R(\tau) = n_0 f_H \frac{\sin 2\pi f_H \tau}{2\pi f_H \tau} \] 
+    \[ R(\tau) = n_0 f_H \frac{\sin 2\pi f_H \tau}{2\pi f_H \tau} = n_0 f_H \operatorname{Sa}(2\pi f_H \tau) \] 
     
     \textbf{带通白噪声 (BPF, 带宽 $B$)}：
     \[ R(\tau) = n_0 B \frac{\sin \pi B \tau}{\pi B \tau} \cos 2\pi f_c \tau, \quad N = n_0 B \]

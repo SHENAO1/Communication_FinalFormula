@@ -1,0 +1,124 @@
+% ==========================================
+% 文件名: topic06_whitenoise_detail.tex
+% 描述: 白噪声详细推导 (包含低通与带通，修复遮挡与完整推导版)
+% ==========================================
+
+\providecommand{\Sa}{\operatorname{Sa}}
+
+% ------------------------------------------
+% 第一部分：低通白噪声
+% ------------------------------------------
+\begin{examplebox}{补充1：低通白噪声图解与 $R(\tau)$ 推导}
+    % 使用 TikZ 绘制功率谱密度图
+    \begin{center}
+    \begin{tikzpicture}[>=latex, scale=0.9, font=\small]
+        % 坐标轴
+        \draw[->] (-3.5, 0) -- (3.5, 0) node[right] {$f$};
+        \draw[->] (0, -0.5) -- (0, 2.0) node[above] {$P_n(f)$};
+    
+        % 矩形波
+        \draw[thick, mainblue, fill=mainblue, fill opacity=0.1] (-1.5, 0) -- (-1.5, 1.2) -- (1.5, 1.2) -- (1.5, 0);
+        
+        % 标注幅值
+        \draw[dashed, black!60] (-1.5, 1.2) -- (0, 1.2) node[above right, black] {$\frac{n_0}{2}$};
+        
+        % 刻度标签
+        \node[below] at (-1.5, 0) {$-f_H$};
+        \node[below] at (1.5, 0) {$f_H$};
+        \node[below left] at (0, 0) {$0$};
+    
+        % 标注
+        \node[above right, font=\footnotesize] at (1.5, 0.5) {$f_H$: 截止频率};
+    \end{tikzpicture}
+    \end{center}
+    
+    \textbf{1. 功率谱密度函数 $P_n(f)$}
+    \begin{equation*}
+        P_n(f) = \frac{n_0}{2} g_{2f_H}(f) = 
+        \begin{cases} 
+            \frac{n_0}{2} & |f| < f_H \\ 
+            0 & \text{其他} 
+        \end{cases} 
+    \end{equation*}
+    
+    \tcbline
+    
+    \textbf{2. 自相关函数 $R(\tau)$ 推导}
+    利用维纳-辛钦定理及变换对 $g_{2f_H}(f) \Longleftrightarrow 2f_H \Sa(2\pi f_H \tau)$：
+    \[ R(\tau) = \mathcal{F}^{-1}\left[ \frac{n_0}{2} g_{2f_H}(f) \right] = n_0 f_H \Sa(2\pi f_H \tau) \]
+\end{examplebox}
+
+% ------------------------------------------
+% 第二部分：带通白噪声 (修复遮挡 + 完整推导)
+% ------------------------------------------
+\begin{examplebox}{补充2：带通白噪声图解与 $R(\tau)$ 详细推导}
+    \textbf{1. 功率谱密度 (由低通平移得到)}
+    
+    \begin{center}
+    \begin{tikzpicture}[>=latex, scale=0.9, font=\small]
+        % 坐标轴
+        \draw[->] (-3.5, 0) -- (3.5, 0) node[right] {$f$};
+        \draw[->] (0, -0.2) -- (0, 1.8) node[right] {$P_n(f)$};
+        
+        % 【修复】幅值 n0/2：移动文字位置，增加白色背景防止遮挡
+        \draw[dashed, black!60] (-2.5, 1.2) -- (2.5, 1.2);
+        \node[fill=white, inner sep=1pt, anchor=south east] at (0, 1.2) {$\frac{n_0}{2}$};
+        
+        % 右侧矩形
+        \draw[thick, mainblue, fill=fillblue!40] (1.2, 0) -- (1.2, 1.2) -- (2.2, 1.2) -- (2.2, 0);
+        \node at (1.7, 0) [below] {$f_c$};
+        \draw[<->] (1.2, 1.4) -- (2.2, 1.4);
+        \node at (1.7, 1.4) [above] {$B$};
+        
+        % 左侧矩形
+        \draw[thick, mainblue, fill=fillblue!40] (-1.2, 0) -- (-1.2, 1.2) -- (-2.2, 1.2) -- (-2.2, 0);
+        \node at (-1.7, 0) [below] {$-f_c$};
+        
+        % 蓝色虚线装饰
+        \draw[dashed, mainblue] (1.7, 0) -- (1.7, 1.2);
+        \draw[dashed, mainblue] (-1.7, 0) -- (-1.7, 1.2);
+    \end{tikzpicture}
+    \end{center}
+
+    数学表达式：
+    \[ P_n(f) = \frac{n_0}{2} g_B(f) * [\delta(f+f_c) + \delta(f-f_c)] \]
+
+    \tcbline
+
+    \textbf{2. 详细推导过程}
+    
+    \textbf{第一步：确立基础变换对} 
+    \begin{itemize}
+        \item 基础性质：$\Sa(\alpha t) \leftrightarrow \frac{\pi}{\alpha} g_{2\alpha}(\omega)$
+        \item 这里的 $g_B(f)$ 对应宽度为 $B$。
+        \item 最终使用的变换对：
+        \[ B \Sa(B\pi \tau) \longleftrightarrow g_B(f) \]
+        \item 针对本题幅度 $\frac{n_0}{2}$：
+        \[ \frac{n_0 B}{2} \Sa(B\pi \tau) \longleftrightarrow \frac{n_0}{2} g_B(f) \]
+    \end{itemize}
+
+    \textbf{第二步：频域卷积 $\rightarrow$ 时域相乘}
+    \[ R(\tau) = \mathcal{F}^{-1} \left\{ \frac{n_0}{2} g_B(f) * [\delta(f+f_c) + \delta(f-f_c)] \right\} \]
+    
+    分解为两部分相乘：
+    \begin{enumerate}
+        \item \textbf{包络项}：$\frac{n_0}{2} g_B(f)$ 对应的时域信号为 $\frac{n_0 B}{2} \Sa(B \pi \tau)$。
+        \item \textbf{载波项}：$[\delta(f+f_c) + \delta(f-f_c)]$ 对应的时域信号为 $2 \cos(2\pi f_c \tau)$。
+    \end{enumerate}
+    
+    \textbf{第三步：合并结果}
+    \begin{align*}
+        R(\tau) &= \left[ \frac{n_0 B}{2} \Sa(B \pi \tau) \right] \cdot \left[ 2 \cos(2\pi f_c \tau) \right] \\
+        &= n_0 B \Sa(B \pi \tau) \cos(2\pi f_c \tau)
+    \end{align*}
+
+    \tcbline
+    
+    \textbf{注意：$\omega$ 与 $f$ 域的系数差异 (红框重点)}
+    在使用余弦函数的频域变换时，注意 $2\pi$ 系数的归一化：
+    \begin{itemize}
+        \item 角频率域 ($\omega$)：$\cos(\omega_c t) \leftrightarrow \pi [\delta(\omega + \omega_c) + \delta(\omega - \omega_c)]$
+        \item 频率域 ($f$)：$\cos(2\pi f_c t) \leftrightarrow \frac{1}{2} [\delta(f + f_c) + \delta(f - f_c)]$ 
+        \item[] \hfill \textcolor{red}{\small (变换到 $f$ 域时，系数 $\pi$ 被除去/变为 $1/2$)}
+    \end{itemize}
+\end{examplebox}
