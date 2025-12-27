@@ -1,7 +1,7 @@
 \begin{kbox}{4. 信道噪声与等效带宽}
     \textbf{1. 高斯白噪声统计特性}：
     \begin{itemize}
-        \item 双边 PSD：$P_n(f) = n_0 / 2$ (W/Hz)
+        \item 双边 PSD：$P_n(f) = \frac{n_0}{2}$ (W/Hz)
         \item 自相关：$R_n(\tau) = \frac{n_0}{2} \delta(\tau)$
         \item 一维 PDF (正态分布，均值为0)：
         \[ f_n(v) = \frac{1}{\sqrt{2\pi}\sigma_n} \exp\left(-\frac{v^2}{2\sigma_n^2}\right) \]
@@ -60,3 +60,76 @@
         \[ N = \int_{-\infty}^{\infty} P_n(f) df = \underbrace{2 \cdot B_n \cdot P_n(f_0)}_{\text{矩形面积}} \]
     \end{itemize}
 \end{kbox}
+
+% --- 新增部分：核心概念直观理解 (修正为垂直布局) ---
+
+\begin{intuitionbox}{直观理解：为什么是 $0$ 均值与 $n_0/2$？}
+    \textbf{1. 为什么总是研究 0 均值高斯噪声？}
+    \begin{itemize}
+        \item \textbf{分解视角}：任意非零均值噪声 $X(t)$ 均可分解为确定性直流分量 $\mu$ 与零均值随机分量 $N(t)$ 的叠加：
+        \[ X(t) = \mu + N(t) \]
+        \item \textbf{工程理由}：均值 $\mu$ 本质是直流偏置（DC Offset），不具备随机性，在接收端易于通过隔直电容或算法去除。通信系统核心对抗的是不可预测的随机波动（即方差），因此模型简化为仅研究 $N(t)$。
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{2. 为什么功率谱密度是 $n_0/2$？}
+    
+    $n_0$ (或 $N_0$) 代表\textbf{单边噪声功率谱密度}（物理热噪声 $N_0=kT$，其中 $k$ 为玻尔兹曼常数，系统温度为 $T$）。系数 $1/2$ 源于\textbf{物理实测}与\textbf{数学模型}为了保持\textbf{总功率守恒}所做的等效转换。
+
+    \begin{center}
+    \begin{tikzpicture}[scale=0.85, >=stealth]
+        % --- 上图：物理单边谱 ---
+        \begin{scope}[shift={(0, 3.2)}]
+            % 坐标轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[->] (0,0) -- (0,1.8) node[left] {$P_{single}$};
+            
+            % 图像 (单边)
+            \fill[mainblue!20] (0,0) rectangle (2.0, 1.2);
+            \draw[thick, mainblue] (0, 1.2) -- (2.0, 1.2);
+            \draw[thick, mainblue] (0,0) -- (0,1.2); % y轴重合
+            
+            % 标注
+            \node at (1.0, 0.6) {总功率 $P$};
+            \node[left, mainblue] at (0, 1.2) {$n_0$};
+            \node[right, mainblue, font=\small] at (1.5, 1.5) {\textbf{物理世界 (单边)}};
+            \node[right, gray, font=\scriptsize] at (2.5, -0.3) {$f \ge 0$};
+        \end{scope}
+
+        % --- 转换箭头 ---
+        % 从上图向下指
+        \draw[->, thick, dashed, gray] (1.0, 2.9) -- (1.0, 1.9) node[midway, right, font=\scriptsize, color=black] {能量平分};
+        % 为了直观，画出分叉效果
+        \draw[->, thick, dashed, gray!50] (1.0, 1.9) -- (-1.0, 0.8);
+        \draw[->, thick, dashed, gray!50] (1.0, 1.9) -- (1.0, 0.8);
+
+        % --- 下图：数学双边谱 ---
+        \begin{scope}[shift={(0, 0)}]
+            % 坐标轴
+            \draw[->] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[->] (0,0) -- (0,1.8) node[left] {$P_{double}$};
+            
+            % 负半轴
+            \fill[alertred!20] (-2.0,0) rectangle (0, 0.6);
+            \draw[thick, alertred] (-2.0, 0.6) -- (0, 0.6);
+            
+            % 正半轴
+            \fill[alertred!20] (0,0) rectangle (2.0, 0.6);
+            \draw[thick, alertred] (0, 0.6) -- (2.0, 0.6);
+            
+            % 标注
+            \node at (-1.0, 0.3) {\footnotesize $P/2$};
+            \node at (1.0, 0.3) {\footnotesize $P/2$};
+            \node[left, alertred] at (0, 1) {$\frac{n_0}{2}$};
+            \node[right, alertred, font=\small] at (1.5, 0.9) {\textbf{数学模型 (双边)}};
+            \node[right, gray, font=\scriptsize] at (2.5, -0.3) {$f \in (-\infty, +\infty)$};
+        \end{scope}
+    \end{tikzpicture}
+    \end{center}
+
+    \begin{itemize}
+        \item \textbf{积分守恒}：数学上引入负频率后，为了保证积分算出的总功率（面积）与物理真实功率一致，必须将高度减半：
+        \[ P_{total} = \int_{0}^{\infty} n_0 \, df = \int_{-\infty}^{\infty} \frac{n_0}{2} \, df \]
+    \end{itemize}
+\end{intuitionbox}
