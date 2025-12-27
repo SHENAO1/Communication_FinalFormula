@@ -1,0 +1,19 @@
+% content/03_Channels/topic03_random_param.tex
+
+\begin{kbox}{3. 随参信道与多径效应}
+    \textbf{接收信号模型} ($n$ 条路径)：
+    \[ r(t) = \sum_{i=1}^n a_i(t) \cos \omega_c [t - \tau_i(t)] = V(t) \cos[\omega_c t + \varphi(t)] \]
+    多径效应导致信号包络 $V(t)$ 和相位 $\varphi(t)$ 随机起伏。
+    
+    \tcbline
+    
+    \textbf{频率选择性衰落}：
+    \begin{itemize}
+        \item \textbf{相关带宽}：$\Delta f = 1/\tau_m$ ($\tau_m$ 为最大多径时延差)
+        \item \textbf{工程经验公式} (避免频选衰落)：
+        \begin{itemize}
+            \item 信号带宽：$B_s \leq (1/3 \sim 1/5) \Delta f$
+            \item 码元宽度：$T_s \geq (3 \sim 5) \tau_m$
+        \end{itemize}
+    \end{itemize}
+\end{kbox}
