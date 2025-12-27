@@ -1,0 +1,93 @@
+% content/03_Channels/topic05_capacity.tex
+
+\begin{kbox}{5. 离散信道容量 (Discrete Channel Capacity)}
+    
+    \textbf{1. 互信息与熵的关系}
+    \begin{itemize}
+        \item \textbf{发送熵 (Source Entropy)}：$H(x) = -\sum_{i} P(x_i)\log_2 P(x_i)$
+        \item \textbf{损失熵 (Conditional Entropy)}：因噪声损失的信息量。
+        \[ H(x/y) = -\sum_{j}\sum_{i} P(y_j)P(x_i/y_j)\log_2 P(x_i/y_j) \]
+        \item \textbf{平均互信息}：接收端实际获得的平均信息量。
+        \[ I(X;Y) = H(x) - H(x/y) \quad (\text{b/符号}) \]
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{2. 传输速率与信道容量}
+    
+    % [修改] 调整 minipage 宽度比例，防止溢出，并设置 [c] 垂直居中
+    \begin{minipage}[c]{0.55\linewidth}
+        \textbf{信息传输速率 $R$} (b/s)：
+        \[ R = r \cdot [H(x) - H(x/y)] \]
+        \footnotesize{其中 $r$ 为符号速率 (符号/秒)。}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[c]{0.40\linewidth}
+        \centering
+        % [修改] 减小 TikZ 的水平间距，使其更紧凑
+        \begin{tikzpicture}[scale=0.65, >=Stealth]
+            % 定义间距变量
+            \def\hdist{1.8} % 水平间距 (减小)
+            \def\vdist{0.8} % 垂直间距
+
+            % 左侧节点 (发送)
+            \foreach \i in {1,2,3} {
+                \coordinate (x\i) at (0, {-\i*\vdist});
+                \filldraw[mainblue] (x\i) circle (2pt);
+            }
+            \node[left] at (x1) {\scriptsize $x_1$};
+            \node[left] at (x2) {\scriptsize $x_2$};
+            \node[left] at (x3) {\scriptsize $x_3$};
+            \node[left=0.35cm] at (x2) {\scriptsize $P(x)$};
+
+            % 右侧节点 (接收)
+            \foreach \j in {1,2,3} {
+                \coordinate (y\j) at (\hdist, {-\j*\vdist});
+                \filldraw[alertred] (y\j) circle (2pt);
+            }
+            \node[right] at (y1) {\scriptsize $y_1$};
+            \node[right] at (y2) {\scriptsize $y_2$};
+            \node[right] at (y3) {\scriptsize $y_3$};
+            % P(y) 标签省略或放近一点以节省空间
+
+            % 连线 (示意图)
+            \draw[->, gray!50] (x1) -- (y1);
+            \draw[->, gray!50] (x1) -- (y2);
+            \draw[->, gray!50] (x2) -- (y2);
+            \draw[->, gray!50] (x3) -- (y2);
+            \draw[->, gray!50] (x3) -- (y3);
+            
+            % 顶部标签
+            \node[font=\tiny, gray] at (\hdist/2, -0.4) {$P(y|x)$};
+        \end{tikzpicture}
+    \end{minipage}
+
+    \vspace{5pt}
+    \textbf{信道容量 $C$}：指\textbf{信息传输速率}（或平均互信息）在\textbf{一切可能的信源概率分布 $P(x)$} 下的\textbf{最大值}。
+    
+    \begin{enumerate}
+        \item \textbf{每秒容量 ($C_t$)}：最大信息传输速率。
+        \[ C_t = \max_{P(x)} \{ R \} = \max_{P(x)} \{ r[H(x) - H(x/y)] \} \quad (\text{b/s}) \]
+        \item \textbf{每符号容量 ($C$)}：每个符号能传输的最大平均信息量。
+        \[ C = \max_{P(x)} [H(x) - H(x/y)] \quad (\text{b/符号}) \]
+    \end{enumerate}
+    \small{\textit{*若信道每秒传输符号数 $r$ 已知，则 $C_t = r \cdot C$。}}
+
+\end{kbox}
+
+\begin{kbox}{6. 连续信道容量 (Shannon Formula)}
+    \textbf{香农公式}：即使在有噪声的信道中，只要传输速率小于 $C$，理论上就存在无误码传输。
+    \[ C = B \log_2 \left( 1 + \frac{S}{N} \right) = B \log_2 \left( 1 + \frac{S}{n_0 B} \right) \quad (\text{b/s}) \]
+    \begin{itemize}
+        \item $B$：带宽 (Hz) \quad $S/N$：信噪比 (线性值)
+        \item $n_0$：噪声单边功率谱密度 (W/Hz)
+    \end{itemize}
+    
+    \tcbline
+    
+    \textbf{重要极限}：
+    \[ \lim_{B \to \infty} C \approx 1.44 \frac{S}{n_0} \]
+    这意味着：
+    1. 增加带宽 $B$ 可以增加容量，但不能无限增加 (受限于 $S/n_0$)。
+    2. 增加信号功率 $S$ 可以无上限地增加容量。
+\end{kbox}

@@ -1,0 +1,69 @@
+% content/03_Channels/topic05_mutual_info_analysis.tex
+
+\begin{intuitionbox}{1. 互信息的物理直观：不确定性的消除}
+    \textbf{核心概念}：信息量 = 不确定度的减小量。
+    
+    \begin{itemize}
+        \item \textbf{发送前}：对发送端 $X$ 的不确定度是 $H(X)$。
+        \item \textbf{接收后}：收到符号 $y$ 后，对 $X$ 依然存在的不确定度是 $H(X|Y)$（条件熵）。
+        \item \textbf{获得的信息}：
+        \[
+            \begin{aligned}
+            I(X;Y) &= \text{原本不确定度} - \text{剩余不确定度} \\
+                   &= H(X) - H(X|Y)
+            \end{aligned}
+        \]
+    \end{itemize}
+\end{intuitionbox}
+
+\begin{kbox}{2. 平均互信息的严格推导 (Derivation)}
+    \textbf{定义}：平均互信息是对互信息随机变量 $I(x_i; y_j)$ 求\textbf{数学期望}。
+    \[ I(X;Y) = E[I(x_i; y_j)] \]
+    
+    \tcbline
+    
+    \textbf{详细推导过程}：
+    利用互信息定义 $I(x_i; y_j) = I(x_i) - I(x_i|y_j)$ 及期望的线性性质：
+    
+    \[
+    \begin{aligned}
+        I(X;Y) &= E[\, I(x_i) - I(x_i|y_j) \,] \\
+               &= E[I(x_i)] - E[I(x_i|y_j)] \\
+               % 展开第一项
+               &= \underbrace{\sum_{i=1}^n P(x_i) \log_2 \frac{1}{P(x_i)}}_{H(X)} - E \left[ \log_2 \frac{1}{P(x_i|y_j)} \right] \\
+               % 展开第二项为双重求和
+               &= H(X) - \sum_{i=1}^n \sum_{j=1}^m \underbrace{P(x_i, y_j)}_{\text{联合概率}} \log_2 \frac{1}{P(x_i|y_j)} \\
+    \end{aligned}
+    \]
+
+    \textbf{关键代换步骤}：
+    利用贝叶斯公式 \textcolor{mainblue}{$P(x_i, y_j) = P(y_j)P(x_i|y_j)$} 将联合概率展开：
+
+    \[
+    \begin{aligned}
+        \text{上式第二项} &= \sum_{j=1}^m P(y_j) \underbrace{\left[ \sum_{i=1}^n P(x_i|y_j) \log_2 \frac{1}{P(x_i|y_j)} \right]}_{H(X|Y=y_j) \text{ (特定条件下的熵)}} \\
+        &= \sum_{j=1}^m P(y_j) H(X|Y=y_j) \\
+        &= H(X|Y) \quad (\text{平均条件熵})
+    \end{aligned}
+    \]
+
+    \textbf{最终结论}：
+    \[ I(X;Y) = H(X) - H(X|Y) \]
+\end{kbox}
+
+\begin{kbox}{3. 互信息的对称性 (Symmetry)}
+    根据推导结果和熵的关系，互信息具有对称性：
+    
+    \[
+    \begin{aligned}
+        I(X;Y) &= H(X) - H(X|Y) \quad (\text{发送熵} - \text{损失熵}) \\
+               &= H(Y) - H(Y|X) \quad (\text{接收熵} - \text{噪声熵})
+    \end{aligned}
+    \]
+    
+    \textbf{物理意义}：
+    \begin{itemize}
+        \item $H(X|Y)$：\textbf{损失熵}（疑义度），因信道噪声导致发送信息丢失的部分。
+        \item $H(Y|X)$：\textbf{噪声熵}，接收端收到的不含发送信息、纯粹由噪声产生的信息量。
+    \end{itemize}
+\end{kbox}
