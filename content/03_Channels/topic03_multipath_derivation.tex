@@ -1,0 +1,99 @@
+% content/03_Channels/topic03_multipath_derivation.tex
+
+% --- 深度解析：多径效应的机理 ---
+
+\begin{intuitionbox}{深度解析：两径模型与频率选择性衰落}
+    为了深入理解频率选择性衰落，我们建立一个具体的\textbf{两径信道模型}进行推导。
+    
+    \textbf{1. 模型建立}：
+    设发射信号为 $f(t)$，两条路径衰减均为 $K$，时延分别为 $\tau_1, \tau_2$。
+    接收信号 $f_o(t)$ 为：
+    \[ f_o(t) = K f(t - \tau_1) + K f(t - \tau_2) \]
+    
+    \textbf{2. 频域传输函数推导}：
+    令相对时延差 \textcolor{alertred}{$\tau = \tau_2 - \tau_1$}。
+    对 $f_o(t)$ 做傅里叶变换：
+    \begin{align*}
+        F_o(\omega) &= K F(\omega)e^{-j\omega\tau_1} + K F(\omega)e^{-j\omega\tau_2} \\
+                    &= K F(\omega)e^{-j\omega\tau_1} \left[ 1 + e^{-j\omega(\tau_2 - \tau_1)} \right]
+    \end{align*}
+    信道传输函数 $H(\omega) = F_o(\omega)/F(\omega)$：
+    \begin{equation}
+        H(\omega) = \underbrace{K e^{-j\omega\tau_1}}_{\text{固定时延/衰减}} \cdot \underbrace{(1 + e^{-j\omega\tau})}_{\text{\textcolor{alertred}{频率选择性项}}}
+    \end{equation}
+
+    \textbf{3. 幅频特性 $|H(\omega)|$}：
+    利用欧拉公式 $|1+e^{-j\theta}| = |e^{-j\theta/2}(e^{j\theta/2}+e^{-j\theta/2})| = 2|\cos(\theta/2)|$：
+    \begin{equation}
+        |H(\omega)| = 2K \left| \cos\left( \frac{\omega\tau}{2} \right) \right|
+    \end{equation}
+    这表明衰减不仅与 $K$ 有关，还与\textbf{频率 $\omega$} 和\textbf{时延差 $\tau$} 密切相关。
+\end{intuitionbox}
+
+\begin{kbox}{多径信道幅频特性曲线与分析}
+    根据 $|H(\omega)| = 2K |\cos(\omega\tau/2)|$ 绘制幅频特性曲线：
+
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, height=5cm, % 稍微增加高度以容纳标注
+            axis lines=middle,
+            xlabel={$\omega$}, ylabel={$|H(\omega)|$},
+            xmin=0, xmax=13, ymin=0, ymax=2.3,
+            xtick={3.14, 9.42},
+            xticklabels={$\frac{\pi}{\tau}$, $\frac{3\pi}{\tau}$},
+            ytick={2}, yticklabels={$2K$},
+            every axis x label/.style={at={(current axis.right of origin)},anchor=north west},
+            label style={font=\footnotesize},
+            tick label style={font=\footnotesize}
+        ]
+        
+        % 1. 绘制余弦模值曲线
+        \addplot[thick, mainblue, domain=0:12.5, samples=100] {2*abs(cos(deg(x/2)))};
+        
+        % 2. 绘制传输零点 (红点)
+        \node[circle,fill=alertred,inner sep=1.5pt] at (axis cs:3.14,0) {};
+        \node[circle,fill=alertred,inner sep=1.5pt] at (axis cs:9.42,0) {};
+        
+        % 3. 绘制垂直虚线 (新增部分)
+        % 从x轴零点画到箭头高度 (y=1.2)
+        \draw[dashed, alertred] (axis cs:3.14, 0) -- (axis cs:3.14, 1.2);
+        \draw[dashed, alertred] (axis cs:9.42, 0) -- (axis cs:9.42, 1.2);
+
+        % 4. 绘制相关带宽水平双向箭头
+        \draw[<->, alertred, thick] (axis cs:3.14, 1.2) -- (axis cs:9.42, 1.2) node[midway, above, font=\scriptsize] {$\Delta f = 1/\tau$};
+        
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+
+    \begin{itemize}
+        \item \textbf{频率选择性衰落}：信道对不同频率成分衰减不同。
+        \item \textbf{传输零点}：当 $\omega = (2n+1)\pi/\tau$ 时，信号完全无法通过。
+        \item \textbf{相关带宽} $\Delta f = 1/\tau_m$：相邻传输零点的频率间隔。
+    \end{itemize}
+\end{kbox}
+
+\begin{kbox}{抗频率选择性衰落的措施}
+    为了使信号基本不受多径影响（即让信号频谱落在信道特性的平坦区域），需满足以下条件：
+
+    \tcbline
+    
+    \textbf{1. 频域条件：限制信号带宽}
+    \begin{itemize}
+        \item 要求信号带宽 $B_s$ \textbf{远小于} 信道相关带宽 $\Delta f$。
+        \item \textbf{工程经验公式}：
+        \[ \boxed{ B_s = \left( \frac{1}{3} \sim \frac{1}{5} \right) \Delta f } \]
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{2. 时域条件：限制码元速率}
+    多径效应在时域表现为\textbf{码间串扰 (ISI)}。
+    \begin{itemize}
+        \item 为减小 ISI，数字信号码元宽度 $T_s$ 应远大于最大多径时延 $\tau_m$。
+        \item \textbf{工程经验公式}：
+        \[ \boxed{ T_s = (3 \sim 5) \tau_m } \]
+        \item \textbf{推论}：$T_s \uparrow \Rightarrow$ 码元速率 $R_B \downarrow \Rightarrow$ 信号带宽 $B_s \downarrow \Rightarrow$ 多径影响 $\downarrow$。
+    \end{itemize}
+\end{kbox}

@@ -1,0 +1,15 @@
+\begin{kbox}{4. 信道噪声 (高斯白噪声)}
+    \textbf{统计特性}：
+    \begin{itemize}
+        \item 双边 PSD：$P_n(f) = n_0 / 2$ (W/Hz)
+        \item 自相关：$R_n(\tau) = \frac{n_0}{2} \delta(\tau)$
+        \item 一维 PDF (正态分布)：
+        \[ f_n(v) = \frac{1}{\sqrt{2\pi}\sigma_n} \exp\left(-\frac{v^2}{2\sigma_n^2}\right) \]
+    \end{itemize}
+    
+    \textbf{功率计算}：
+    \begin{itemize}
+        \item 噪声功率：$N = \int_{-\infty}^{\infty} P_n(f) df$
+        \item 等效带宽：$B_n = \frac{\int_0^{\infty} P_n(f) df}{P_n(f_0)}$
+    \end{itemize}
+\end{kbox}
