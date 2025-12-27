@@ -11,20 +11,53 @@
         \item \textbf{群迟延}：$\tau(\omega) = \frac{d\varphi(\omega)}{d\omega} = t_d$ (常数)
     \end{itemize}
     
-    \textbf{3. 时域响应 (物理意义)}
+    \textbf{3. 时域响应}
+    \par 冲激响应仅是延迟和缩放：$h(t) = K\delta(t - t_d)$
+\end{kbox}
+
+\begin{kbox}{2. 线性畸变：幅频失真与相频失真}
+    % --- 幅频失真部分 ---
+    \textbf{1. 幅频失真}
     \begin{itemize}
-        \item 冲激响应仅是延迟和缩放：$h(t) = K\delta(t - t_d)$
-        \item 输出波形无形状改变，仅有滞后：$s_o(t) = K s(t - t_d)$
+        \item \textbf{定义}：$|H(\omega)| \neq K$（信道对不同频率分量的增益不同）。
+        \item \textbf{影响}：
+            \begin{itemize}
+                \item \textbf{模拟信号}：波形畸变 $\longrightarrow$ 信噪比 ($S/N$) 下降。
+                \item \textbf{数字信号}：波形拖尾 $\longrightarrow$ 码间串扰 (ISI) $\longrightarrow$ 误码率增大。
+            \end{itemize}
+        \item \textbf{措施}：利用线性网络（均衡器）补偿，使其合成幅频特性在频带内为\textbf{水平直线}。
+    \end{itemize}
+
+    \tcbline % 分割线
+
+    % --- 相频失真部分 ---
+    \textbf{2. 相频失真 (群迟延失真)}
+    \begin{itemize}
+        \item \textbf{定义}：$\varphi(\omega)$ 非线性 $\iff$ 群迟延 $\tau(\omega)$ 不恒定。
+        \item \textbf{影响}：
+            \begin{itemize}
+                \item \textbf{模拟信号}：语音影响较小（人耳不敏感），视频信号会产生重影/畸变。
+                \item \textbf{数字信号}：不同频率分量传输快慢不一 $\longrightarrow$ \textbf{严重的码间串扰 (ISI)}。
+            \end{itemize}
+        \item \textbf{措施}：使用相位均衡器进行校正。
     \end{itemize}
 \end{kbox}
 
-\begin{examplebox}{2. 失真类型辨析}
+\begin{examplebox}{3. 深度分析：为什么失真会导致串扰？本质是什么？}
+    \textbf{1. 核心机制：从频域到时域的连锁反应}
+    \par \textbf{频域视角（成因）：} 数字信号（如方波）包含丰富的高频谐波。若信道带宽受限（幅频失真，通常为低通特性），高频分量被衰减或切除。
+    \par \textbf{时域视角（现象）：} 缺失了高频分量，方波的陡峭边缘变缓，脉冲在时间轴上\textbf{“展宽” (Spreading)}并出现\textbf{“拖尾” (Tailing)}。
+    \par \textbf{结果（ISI）：} 前一个码元的“拖尾”延伸到了当前码元的时隙内，叠加在当前信号上。若干扰过大，判决器会将 "0" 误判为 "1"（或反之），导致\textbf{误码率增大}。
+
+    \tcbline
+
+    \textbf{2. 本质辨析：同一物理过程，不同工程视角}
+    \par “模拟信号的波形失真”和“数字信号的码间串扰”本质上是\textbf{同一物理过程}（线性系统对频谱的改变），只是关注的指标（KPI）不同：
     \begin{itemize}
-        \item \textbf{幅频失真}：$|H(\omega)| \neq K$。
-        \par 会导致模拟信号波形畸变。对数字信号影响相对较小（数字通信主要看判决时刻的电平）。
-        
-        \item \textbf{相频失真}：$\varphi(\omega)$ 非线性（即 $\tau(\omega)$ 不恒定）。
-        \par 不同频率分量“跑”得快慢不一，导致波形在时间轴上“散开”（色散）。
-        \par \textbf{后果}：产生严重的\textbf{码间串扰 (ISI)}，是高速数字传输的大敌。
+        \item \textbf{模拟通信}关注\textbf{保真度 (Fidelity)}：
+        \par 我们在乎波形“像不像”。高频丢失导致声音变“闷”、图像变“糊”，这直接破坏了信息本身，故称“失真”。
+        \item \textbf{数字通信}关注\textbf{可分性 (Separability)}：
+        \par 我们不在乎波形是否方正，只在乎\textbf{抽样时刻}能否分清 0 和 1。
+        \par 只有当失真导致波形\textbf{展宽}并干扰到相邻码元（即“拖尾”打架）时，才构成问题。因此，我们特意用\textbf{码间串扰 (ISI)} 来强调这种相邻脉冲重叠的工程后果。
     \end{itemize}
 \end{examplebox}
