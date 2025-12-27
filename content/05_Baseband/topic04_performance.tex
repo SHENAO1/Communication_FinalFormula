@@ -1,0 +1,26 @@
+% content/05_Baseband/topic04_performance.tex
+
+\subsection{基带系统的抗噪声性能}
+
+\begin{itemize}
+    \item \textbf{噪声方差} \pptpage{73}：$\sigma_n^2 = \int_{-\infty}^{\infty} \frac{n_0}{2} |G_R(f)|^2 df$
+    \item \textbf{误码率 $P_e$ 与最佳门限 $V_d^*$}：
+\end{itemize}
+
+\begin{kbox}{误码率公式速查}
+    \textbf{1. 双极性基带系统} \pptpage{78-79}
+    \begin{itemize}
+        \item 最佳门限：$V_d^* = \frac{\sigma_n^2}{2A} \ln \frac{P(0)}{P(1)}$
+        \item \textbf{等概时 ($P(0)=P(1)$)}：
+        \[ V_d^* = 0, \quad P_e = \frac{1}{2} \operatorname{erfc}\left(\frac{A}{\sqrt{2}\sigma_n}\right) \]
+    \end{itemize}
+    
+    \tcblower
+    
+    \textbf{2. 单极性基带系统} \pptpage{81-82}
+    \begin{itemize}
+        \item 最佳门限：$V_d^* = \frac{A}{2} + \frac{\sigma_n^2}{A} \ln \frac{P(0)}{P(1)}$
+        \item \textbf{等概时}：
+        \[ V_d^* = \frac{A}{2}, \quad P_e = \frac{1}{2} \operatorname{erfc}\left(\frac{A}{2\sqrt{2}\sigma_n}\right) \]
+    \end{itemize}
+\end{kbox}

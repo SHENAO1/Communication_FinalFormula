@@ -1,0 +1,37 @@
+% content/05_Baseband/topic02_psd.tex
+
+\subsection{基带信号的功率谱密度 (PSD)}
+
+\begin{kbox}{功率谱分解通用公式 \pptpage{17-18}}
+    \begin{equation*}
+        P_s(f) = P_u(f) + P_v(f)
+    \end{equation*}
+    \tcblower
+    \begin{itemize}
+        \item \textbf{连续谱（交变波）}：
+        \[ P_u(f) = f_B p(1-p) \left| G_1(f) - G_2(f) \right|^2 \]
+        
+        \item \textbf{离散谱（稳态波）}：
+        % 【修改点2】使用 aligned 环境换行，防止公式超出分栏宽度
+        \[
+        \begin{aligned}
+            P_v(f) = & \sum_{m=-\infty}^{\infty} \Big| f_B [  p G_1(mf_B) \\
+            & + (1-p)G_2(mf_B)] \Big|^2 \delta(f - mf_B)
+        \end{aligned}
+        \]
+        
+        \item \textbf{离散谱消失条件}：$p = \frac{1}{1 - g_1(t)/g_2(t)}$
+    \end{itemize}
+\end{kbox}
+
+\noindent\textbf{典型波形的功率谱密度：}
+\begin{itemize}
+    \item \textbf{单极性 NRZ} \pptpage{19}：
+    $P_s(f) = \frac{1}{4} T_s \mathrm{Sa}^2(\pi f T_s) + \frac{1}{4} \delta(f)$
+    
+    \item \textbf{单极性 RZ (占空比1/2)} \pptpage{20}：
+    $P_s(f) = \frac{1}{16} T_s \mathrm{Sa}^2(\frac{\pi f T_s}{2}) + \frac{1}{16} \sum_{m} \mathrm{Sa}^2(\frac{m\pi}{2}) \delta(f - mf_s)$
+    
+    \item \textbf{双极性等概 NRZ ($p=1/2$)} \pptpage{21}：
+    $P_s(f) = T_s \mathrm{Sa}^2(\pi f T_s)$ （\textcolor{alertred}{无离散谱、无直流}）
+\end{itemize}

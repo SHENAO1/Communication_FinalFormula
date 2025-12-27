@@ -1,0 +1,18 @@
+% content/05_Baseband/topic05_partial_response.tex
+
+\subsection{部分响应系统与时域均衡}
+
+\subsubsection*{1. 第I类部分响应 (奈奎斯特第二准则)}
+\begin{itemize}
+    \item \textbf{编码}：$c_k = a_k + a_{k-1}$
+    \item \textbf{频域} \pptpage{87}：$G(f) = 2T_s \cos(\pi f T_s), \quad |f| \leq \frac{1}{2T_s}$
+    \item \textbf{预编码} \pptpage{90}：$b_k = a_k \oplus b_{k-1}$ （防止差错传播）
+\end{itemize}
+
+\subsubsection*{2. 时域均衡 (TDE)}
+\begin{itemize}
+    \item \textbf{横向滤波器输出} \pptpage{98}：$y_k = \sum_{n=-N}^{N} C_n x_{k-n}$
+    \item \textbf{设计目标}：使 $y_k$ 满足无 ISI 条件。
+    \item \textbf{均衡器频率响应} \pptpage{96}：
+    \[ T(\omega) = \frac{T_B}{\sum_i H(\omega + \frac{2\pi i}{T_B})} \]
+\end{itemize}

@@ -1,0 +1,29 @@
+% content/05_Baseband/topic01_codes.tex
+
+\subsection{数字基带信号的表示与编码}
+
+\begin{kbox}{基带信号一般表达式 (随机脉冲序列) \pptpage{15}}
+    \begin{equation*}
+        s(t) = \sum_{n=-\infty}^{\infty} a_n g(t - nT_B)
+    \end{equation*}
+    \begin{itemize}
+        \item $a_n$：第 $n$ 个码元的电平取值（统计独立的随机量）
+        \item $g(t)$：单个脉冲波形；$T_B$：码元持续时间
+    \end{itemize}
+\end{kbox}
+
+% 【修改点1】添加垂直间距，解决挨得太近的问题
+\vspace{1em} 
+
+\begin{enumerate}
+    \item \textbf{差分编码与译码（相对码）} \pptpage{13}
+    \begin{itemize}
+        \item \textbf{编码}：$b_n = a_n \oplus b_{n-1}$ （克服相位模糊）
+        \item \textbf{译码}：$a_n = b_n \oplus b_{n-1}$
+    \end{itemize}
+    
+    \item \textbf{多电平（四电平）定义} \pptpage{14}
+    \begin{itemize}
+        \item 映射关系：$00 \to +3E,\; 01 \to +E,\; 10 \to -E,\; 11 \to -3E$
+    \end{itemize}
+\end{enumerate}
