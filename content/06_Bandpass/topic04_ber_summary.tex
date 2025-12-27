@@ -1,0 +1,24 @@
+% content/06_Bandpass/topic04_ber_summary.tex
+
+\begin{kbox}{二进制误码率近似公式对比表 (大信噪比) \pptpage{91-95}}
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{调制方式} & \textbf{相干解调 (近似)} & \textbf{非相干/差分 (近似)} \\
+        \hline
+        \textbf{2ASK} & $\frac{1}{\sqrt{\pi r}}e^{-r/4}$ & $\frac{1}{2}e^{-r/4}$ \\
+        \hline
+        \textbf{2FSK} & $\frac{1}{\sqrt{\pi r}}e^{-r/2}$ & $\frac{1}{2}e^{-r/2}$ \\
+        \hline
+        \textbf{2PSK} & $\frac{1}{\sqrt{\pi r}}e^{-r}$ & — \\
+        \hline
+        \textbf{2DPSK} & $\frac{1}{\sqrt{\pi r}}e^{-r}$ & $\frac{1}{2}e^{-r}$ \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item \textbf{信噪比关系 (同误码率)}: 
+        $$ r_{2ASK} = 2r_{2FSK} = 4r_{2PSK} \quad (\text{分贝差 } 3dB, 6dB) $$
+    \end{itemize}
+\end{kbox}

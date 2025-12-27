@@ -1,0 +1,29 @@
+% content/06_Bandpass/topic05_mary_mod.tex
+
+\begin{kbox}{多进制调制系统 (M-ary)}
+    \begin{enumerate}
+        \item \textbf{MASK}: 
+        \begin{itemize}
+            \item 带宽: $B = \frac{2R_b}{\log_2 M}$ \pptpage{104}
+            \item 误码率: $P_e = (1 - \frac{1}{M}) \text{erfc}(\sqrt{\frac{3}{M^2-1} r})$ \pptpage{156}
+        \end{itemize}
+     
+        \item \textbf{MFSK}:
+        \begin{itemize}
+            \item 带宽: $B \approx |f_M - f_1| + 2R_B$ \pptpage{107}
+            \item 非相干误码率: $P_e \approx \frac{M-1}{2} e^{-r/2}$ \pptpage{157}
+        \end{itemize}
+
+        \item \textbf{MPSK}:
+        \begin{itemize}
+            \item QPSK带宽: $B = R_b$ (频带利用率高) \pptpage{125}
+            \item 误码率: $P_e \approx \text{erfc}(\sqrt{r} \sin \frac{\pi}{M})$ \pptpage{159}
+        \end{itemize}
+        
+        \item \textbf{MQAM (重点)}:
+        \begin{itemize}
+            \item 时域: $e(t) = I(t) \cos \omega_c t - Q(t) \sin \omega_c t$ \pptpage{141}
+            \item 带宽 (含滚降 $\alpha$): $\bm{B = \frac{(1+\alpha)R_b}{\log_2 M}}$ \pptpage{147}
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}

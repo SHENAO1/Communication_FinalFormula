@@ -1,0 +1,29 @@
+% content/06_Bandpass/topic02_binary_ask_fsk.tex
+
+\begin{kbox}{二进制调制 (2ASK / 2FSK)}
+    \begin{enumerate}
+        \item \textbf{2ASK (OOK)}
+        \begin{itemize}
+            \item 时域: $e_{2ASK}(t) = s(t) \cos \omega_c t$ \pptpage{18}
+            \item \textbf{功率谱密度 (PSD)}: \pptpage{38}
+            $$ P_{2ASK}(f) = \frac{1}{4} [P_s(f+f_c) + P_s(f-f_c)] $$
+            \item 带宽: $\bm{B_{2ASK} = 2R_B}$ \pptpage{39}
+            \item 误码率 $P_e$:
+            \begin{itemize}
+                \item 相干: $\frac{1}{2} \text{erfc}(\sqrt{r/4})$ \pptpage{54}
+                \item 包络 (大信噪比): $\approx \frac{1}{2} e^{-r/4}$ \pptpage{62}
+            \end{itemize}
+        \end{itemize}
+        
+        \item \textbf{2FSK}
+        \begin{itemize}
+            \item 时域: $s_1(t) \cos \omega_1 t + s_2(t) \cos \omega_2 t$ \pptpage{23}
+            \item 带宽: $\bm{B_{2FSK} \approx |f_2 - f_1| + 2R_B}$ \pptpage{42}
+            \item 误码率 $P_e$:
+            \begin{itemize}
+                \item 相干: $\frac{1}{2} \text{erfc}(\sqrt{r/2})$ \pptpage{69}
+                \item 非相干: $\frac{1}{2} e^{-r/2}$ \pptpage{74}
+            \end{itemize}
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}

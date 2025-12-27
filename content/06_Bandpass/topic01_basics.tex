@@ -1,0 +1,17 @@
+% content/06_Bandpass/topic01_basics.tex
+
+\begin{kbox}{信号基础模型与通用定义}
+    \begin{itemize}
+        \item \textbf{已调信号通用形式} \pptpage{14, 16}
+        $$ u_M(t) = u_c(t) \cos[\omega_c t + \varphi_c(t)] $$
+        \item \textbf{正交表示法} \pptpage{122, 124}
+        $$ s(t) = I(t) \cos \omega_c t - Q(t) \sin \omega_c t $$
+        \item \textbf{关键参数定义}
+        \begin{itemize}
+            \item \textbf{信噪比 (SNR)}: $r = \frac{a^2}{2\sigma_n^2}$ ($a$: 幅度, $\sigma_n^2$: 噪声功率) \pptpage{55}
+            \item \textbf{速率关系}: $R_b = R_B \log_2 M$ \pptpage{100}
+            \item \textbf{频带利用率} $\eta$ (bps/Hz): \pptpage{147}
+            $$ \eta = \frac{R_b}{B} = \frac{\log_2 M}{1+\alpha} \quad (\alpha: \text{滚降系数}) $$
+        \end{itemize}
+    \end{itemize}
+\end{kbox}

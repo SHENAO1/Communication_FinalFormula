@@ -1,0 +1,23 @@
+% content/06_Bandpass/topic03_binary_psk.tex
+
+\begin{kbox}{二进制相位调制 (2PSK / 2DPSK)}
+    \begin{enumerate}
+        \item \textbf{2PSK (BPSK)}
+        \begin{itemize}
+            \item 时域: $e_{2PSK}(t) = s(t) \cos \omega_c t$ ($a_n \in \{+1, -1\}$) \pptpage{29}
+            \item 带宽: $B_{2PSK} = 2R_B$ \pptpage{40}
+            \item \textcolor{alertred}{\textbf{误码率 (相干)}}: $\bm{P_e = \frac{1}{2} \text{erfc}(\sqrt{r})}$ \pptpage{83}
+            \item \textit{注：2PSK在二进制中抗噪声性能最优。}
+        \end{itemize}
+        
+        \item \textbf{2DPSK}
+        \begin{itemize}
+            \item \textbf{差分编码}: $b_n = a_n \oplus b_{n-1}$ \pptpage{33}
+            \item 误码率 $P_e$:
+            \begin{itemize}
+                \item 相干+码反变换: $\approx \frac{1}{\sqrt{\pi r}} e^{-r}$ (存在误码扩散) \pptpage{87}
+                \item 差分相干: $\frac{1}{2} e^{-r}$ \pptpage{91}
+            \end{itemize}
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}
