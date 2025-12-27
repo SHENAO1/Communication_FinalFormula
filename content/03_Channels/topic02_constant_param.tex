@@ -1,15 +1,30 @@
 % content/03_Channels/topic02_constant_param.tex
 
-\begin{kbox}{2. 恒参信道特性}
-    \textbf{传输函数}：$H(\omega) = |H(\omega)| e^{j\varphi(\omega)}$
-    
-    \textbf{无失真传输条件}：
-    \begin{enumerate}
+\begin{kbox}{1. 恒参信道特性定义}
+    \textbf{1. 传输函数}
+    \[ H(\omega) = |H(\omega)| e^{j\varphi(\omega)} \]
+
+    \textbf{2. 无失真传输条件}
+    \begin{itemize}
         \item \textbf{幅频特性}：$|H(\omega)| = K$ (常数)
-        \item \textbf{相频特性}：$\varphi(\omega) = \omega t_d$ (通过原点的直线)
+        \item \textbf{相频特性}：$\varphi(\omega) = \omega t_d$ (过原点的直线)
         \item \textbf{群迟延}：$\tau(\omega) = \frac{d\varphi(\omega)}{d\omega} = t_d$ (常数)
-    \end{enumerate}
+    \end{itemize}
     
-    \textbf{时域响应}：
-    \[ h(t) = K\delta(t - t_d) \Longrightarrow s_o(t) = K s(t - t_d) \]
+    \textbf{3. 时域响应 (物理意义)}
+    \begin{itemize}
+        \item 冲激响应仅是延迟和缩放：$h(t) = K\delta(t - t_d)$
+        \item 输出波形无形状改变，仅有滞后：$s_o(t) = K s(t - t_d)$
+    \end{itemize}
 \end{kbox}
+
+\begin{examplebox}{2. 失真类型辨析}
+    \begin{itemize}
+        \item \textbf{幅频失真}：$|H(\omega)| \neq K$。
+        \par 会导致模拟信号波形畸变。对数字信号影响相对较小（数字通信主要看判决时刻的电平）。
+        
+        \item \textbf{相频失真}：$\varphi(\omega)$ 非线性（即 $\tau(\omega)$ 不恒定）。
+        \par 不同频率分量“跑”得快慢不一，导致波形在时间轴上“散开”（色散）。
+        \par \textbf{后果}：产生严重的\textbf{码间串扰 (ISI)}，是高速数字传输的大敌。
+    \end{itemize}
+\end{examplebox}

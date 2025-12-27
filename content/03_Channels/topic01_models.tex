@@ -1,18 +1,58 @@
-\begin{kbox}{1. 信道模型}
-    \textbf{调制信道 (Modulation Channel)研究调制系统}：
+% content/03_Channels/topic01_models.tex
+
+\begin{kbox}{1. 信道模型定义}
+    \textbf{1. 调制信道 (Modulation Channel)}：研究模拟波形的传输
     \begin{itemize}
-        \item 入出关系：
+        \item \textbf{范围}：调制器输出端 $\to$ 解调器输入端
+        \item \textbf{模型}：
         \[ r(t) = k(t) \cdot s_i(t) + n(t) \]
-        \item $k(t)$：乘性干扰 (反映信道时变特性)
-        \item $n(t)$：加性噪声
+        \item $k(t)$：乘性干扰 (反映信道特性如衰落，若 $k(t)=C$ 则为恒参信道)
+        \item $n(t)$：加性噪声 (通常假设为高斯白噪声)
     \end{itemize}
     
     \tcbline
     
-    \textbf{编码信道 (Encoding Channel)讨论信道编码}(二进制)：
+    \textbf{2. 编码信道 (Coding Channel)}：研究数字序列的转移
     \begin{itemize}
-        \item 正确传输概率：$P(0/0) + P(1/0) = 1$
+        \item \textbf{范围}：编码器输出端 $\to$ 译码器输入端 (包含调制信道)
+        \item \textbf{模型}：用转移概率描述 (如二进制对称信道 BSC)
         \item \textbf{误码率}：
-        \[ P_e = P(0)P(1/0) + P(1)P(0/1) \]
+        \[ P_e = P(0)P(1|0) + P(1)P(0|1) \]
+    \end{itemize}
+\end{kbox}
+
+\begin{kbox}{2. 核心辨析：调制信道 vs 编码信道}
+    \textbf{1. 层级与包含关系}
+    \[ \text{编码} = \text{调制器} + \underbrace{\text{物理媒介} + \text{噪声}}_{\text{调制信道}} + \text{解调器} \]
+    
+    \tcbline
+    
+    \textbf{2. 关键区别对比}
+    \begin{center}
+    % 【优化】缩小字号，减小列间距，使用p列允许换行
+    \footnotesize 
+    \setlength{\tabcolsep}{2pt} 
+    \renewcommand{\arraystretch}{1.3} % 稍微增加行高，避免换行后文字挤在一起
+    
+    % 计算逻辑：第一列占15%，后两列各占42%，总和约100%
+    \begin{tabular}{c|p{0.4\linewidth}|p{0.4\linewidth}}
+        \hline
+        \textbf{维度} & \centering\textbf{调制信道}\par(内层/物理) & \centering\textbf{编码信道}\par(外层/逻辑) \tabularnewline
+        \hline
+        \textbf{信号} & 连续模拟波形 $s(t)$ & 离散数字序列 $0, 1$ \\
+        \textbf{对象} & 物理特性\par (噪声、带宽) & 逻辑特性\par (误码率、容量) \\
+        \textbf{参数} & 信噪比 $S/N$, $N_0$ & 误码率 $P_e$, 转移概率 \\
+        \hline
+    \end{tabular}
+    \end{center}
+
+    \tcbline
+    
+    \textbf{3. 因果关系 (为什么错码归咎于调制信道？)}
+    \begin{itemize}
+        \item \textbf{调制信道是“病因”}：物理世界的噪声 $n(t)$ 和衰落 $k(t)$ 导致模拟波形畸变。
+        \item \textbf{编码信道是“症状”}：解调器对畸变波形进行判决，产生逻辑错误。
+        \item \textbf{数学联系}：编码信道的 $P_e$ 是调制信道 $N_0$ 的函数。
+        \[ \text{BPSK:} \quad P_e = Q\left(\sqrt{\frac{2E_b}{N_0}}\right) \]
     \end{itemize}
 \end{kbox}

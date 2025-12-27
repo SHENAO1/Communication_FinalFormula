@@ -1,0 +1,72 @@
+% content/03_Channels/topic02_constant_param_intuition.tex
+
+\begin{intuitionbox}{1. 核心概念辨析：频率、角频率与速度}
+    \textbf{1. 三个易混淆概念的物理本质}
+    \begin{itemize}
+        \item \textbf{频率 ($f$)}：描述\textbf{“重复的快慢”} (Hz)。
+        \item \textbf{角频率 ($\omega$)}：描述\textbf{“旋转的角度速度”} (rad/s)。$\omega = 2\pi f$。
+        \item \textbf{波速 ($v$) vs 群迟延 ($t_d$)}：
+        \par \textbf{误区}：“频率越高，速度越快”。\textbf{错！}在同一介质中，波速 $v$ 通常与频率无关。
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{2. “为了保持相同的时间延迟”的理解}
+    \begin{itemize}
+        \item 既然速度相同，走过相同的距离，\textbf{耗时（群迟延 $t_d$）必然相同}。
+        \item 公式：$\text{相位偏移} (\varphi) = \text{角速度}(\omega) \times \text{时间}(t_d)$。
+        \item 因为 $t_d$ 固定（大家都跑1秒）：
+        \begin{itemize}
+            \item \textbf{低频} ($\omega$ 小) $\to$ 跑的圈数少 $\to$ \textbf{相位 $\varphi$ 小}。
+            \item \textbf{高频} ($\omega$ 大) $\to$ 跑的圈数多 $\to$ \textbf{相位 $\varphi$ 大}。
+        \end{itemize}
+    \end{itemize}
+\end{intuitionbox}
+
+\begin{kbox}{2. 核心深度解析：群时延与相位的物理本质}
+    \textbf{1. 深度辨析：为什么说相位不是“尺子”？}
+    \begin{itemize}
+        \item \textbf{尺子 (绝对性)}：刻度统一。1米永远是1米，1秒永远是1秒。
+        \item \textbf{相位 (相对性)}：相位的“时间刻度”是弹性的，不能仅看读数。
+        \begin{itemize}
+            \item 对于低频 ($1\text{Hz}$)：转半圈 ($180^\circ$) 代表走了 \textbf{0.5秒}。
+            \item 对于高频 ($100\text{Hz}$)：转半圈 ($180^\circ$) 仅代表走了 \textbf{0.005秒}。
+        \end{itemize}
+        \item \textit{结论：相位标尺随频率变化，不能仅凭“度数大小”来判断时间长短。}
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{2. 本质回归：相位是“圈数” }
+    \par 相位本质是计数器：$\text{周期数} = \varphi / 2\pi$。
+    \par \textbf{场景}：大家都要经历 \textbf{1秒} ($t_d$, 时间同步)。
+    \begin{itemize}
+        \item \textbf{慢车 (低频)}：车轮转得慢。1秒钟只够它开 \textbf{1圈} ($\varphi=2\pi$)。
+        \item \textbf{快车 (高频)}：车轮转得快。1秒钟足够它开 \textbf{100圈} ($\varphi=200\pi$)。
+    \end{itemize}
+    \textit{结论：高频分量相位大，不是因为它用的时间长，而是因为它“车轮转得快”，必须在相同时间里积累更多的“圈数”。}
+
+    \tcbline
+
+    \textbf{3. 视觉类比：螺旋弹簧}
+    \par 想象将两根弹簧拉长到同样的 \textbf{1米} (代表时间同步 $t_d=1\text{s}$)：
+    \begin{itemize}
+        \item \textbf{弹簧A (低频，疏松)}：绕得很松。拉到1米长，它可能只绕了 \textbf{2圈}。
+        \item \textbf{弹簧B (高频，紧密)}：绕得很密。拉到1米长，它可能绕了 \textbf{200圈}。
+    \end{itemize}
+    \textbf{对应关系}：
+    \begin{itemize}
+        \item \textbf{1米} = \textbf{绝对时间 $t_d$} (这是尺子，大家都一样长)。
+        \item \textbf{圈数} = \textbf{相位 $\varphi$} (这是结构密度，随频率变化)。
+    \end{itemize}
+    \textit{警示：不要因为弹簧B的圈数多100倍，就误以为它比A长100倍。它们其实一样长！}
+
+    \tcbline
+
+    \textbf{4. 另一种视角：钟表的“秒针 vs 分针”}
+    \par 设想两根指针都需要经历相同的\textbf{物理时间 (1分钟)}：
+    \begin{itemize}
+        \item \textbf{分针 (低频)}：转速慢。只挪动一小格 ($6^\circ$) $\to$ 相位小。
+        \item \textbf{秒针 (高频)}：转速快。必须扫过整整一圈 ($360^\circ$) $\to$ 相位大。
+    \end{itemize}
+\end{kbox}

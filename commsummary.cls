@@ -11,7 +11,6 @@
 
 % --- 绘图支持 ---
 \RequirePackage{tikz}
-% 【修改1】在此处统一加载 positioning 库
 \usetikzlibrary{arrows.meta, positioning, calc} 
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
@@ -33,7 +32,11 @@
 \definecolor{alertred}{RGB}{204, 0, 0}
 \definecolor{examplebg}{RGB}{255, 245, 245}
 
-% 【修改2】将特定于"正弦波+噪声"主题的颜色移至此处，保持全局整洁
+% [新增] 直观理解盒子的颜色
+\definecolor{intuitiongreen}{RGB}{0, 128, 128} % 蓝绿色
+\definecolor{intuitionbg}{RGB}{240, 255, 250}  % 极淡的绿色背景
+
+% 其他颜色
 \definecolor{boxbg}{RGB}{225, 245, 255} 
 \definecolor{procblue}{RGB}{0, 102, 204}
 \definecolor{textred}{RGB}{180, 0, 0}
@@ -62,6 +65,20 @@
     left=2pt, right=2pt, top=2pt, bottom=2pt,
     toptitle=2pt, bottomtitle=2pt,
     drop shadow, after skip=10pt
+}
+
+% [新增] 环境：直观理解盒子 (Green Box) ---
+\newtcolorbox{intuitionbox}[1]{
+    breakable, enhanced,
+    colframe=intuitiongreen, colback=intuitionbg, coltitle=white,
+    fonttitle=\bfseries\sffamily, title={#1},
+    arc=3pt, boxrule=1pt,
+    left=2pt, right=2pt, top=2pt, bottom=2pt,
+    toptitle=2pt, bottomtitle=2pt,
+    drop shadow, after skip=10pt,
+    overlay unbroken and first={
+        \node[anchor=north east, inner sep=2pt] at (frame.north east) {\scriptsize \itshape 物理直观};
+    }
 }
 
 % --- 列表与章节设置 ---
