@@ -1,0 +1,30 @@
+% --- 模块一补充：笔记推导细节 ---
+\begin{examplebox}{笔记补充：Sa函数与门函数的对偶性推导}
+    \textbf{1. 基础变换回顾}
+    \begin{itemize}
+        \item 门函数 $\to$ Sa函数：
+        \[ g_{\tau}(t) \longleftrightarrow \tau Sa\left(\frac{\omega \tau}{2}\right) \]
+        \item Sa函数 $\to$ 门函数（利用对偶性）：
+        \[ Sa(\Omega t) \longleftrightarrow \frac{\pi}{\Omega} g_{2\Omega}(\omega) \]
+    \end{itemize}
+    
+    \tcbline % 分割线
+    
+    \textbf{2. 频域 $f$ 下的对应关系推导}
+    
+    \textit{问题：如何将 $Sa(\Omega t)$ 的频谱表示为关于 $f$ 的门函数？}
+    
+    \begin{itemize}
+        \item \textbf{变量代换}：
+        已知角频率与频率关系为 $w = 2\pi f$。
+        \item \textbf{带宽边界映射}：
+        对于频域门函数 $g_{2\Omega}(\omega)$，其截止角频率为 $w = \pm \Omega$（宽度为 $2\Omega$）。
+        \item \textbf{计算 $f$ 域宽度}：
+        当 $w = \Omega$ 时，对应的频率 $f$ 为：
+        \[ f = \frac{w}{2\pi} = \frac{\Omega}{2\pi} \]
+        因此，总宽度（即门函数的下标）为：
+        \[ \text{Width}_f = \frac{\Omega}{2\pi} - \left(-\frac{\Omega}{2\pi}\right) = \frac{\Omega}{\pi} \]
+        \item \textbf{最终结论}：
+        \[ \frac{\Omega}{\pi} Sa(\Omega t) \longleftrightarrow g_{\frac{\Omega}{\pi}}(f) \]
+    \end{itemize}
+\end{examplebox}

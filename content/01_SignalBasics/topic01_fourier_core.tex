@@ -29,14 +29,14 @@
         \item \textbf{常用信号对与推论} \pptpage{10-11}
         \begin{itemize}
             \item \textbf{矩形脉冲}（重要）：
-            宽度为 $\tau$ 的门函数 $g_\tau(t) \leftrightarrow \tau \operatorname{Sa}\left(\frac{\omega \tau}{2}\right)$
             \begin{itemize}
-                \item[$\circ$] 注：$Sa(x)=\frac{\sin x}{x}$, $sinc(x)=\frac{\sin \pi x}{\pi x}$
-                \item[$\circ$] 关系：$Sa(\frac{\omega\tau}{2}) = sinc(f\tau)$
-                \item[$\circ$] \textbf{对偶特性（笔记补充）}：
-                $Sa(\tau t) \leftrightarrow \frac{\pi}{\tau} g_{2\tau}(\omega)$
-                \\ （含义：时域 Sa 函数对应频域宽度为 $2\tau$ 的矩形谱）
+                \item \textbf{时域门函数}：
+                \[ g_{\tau}(t) \longleftrightarrow \tau \operatorname{Sa}\left(\frac{\omega \tau}{2}\right) \quad \text{或} \quad \tau \operatorname{Sa}(\pi f \tau) \]
+                \item \textbf{时域 Sa 函数 (对偶性)}：
+                \[ \operatorname{Sa}(\Omega t) \longleftrightarrow \frac{\pi}{\Omega} g_{2\Omega}(\omega) \]
+                （含义：时域 Sa 函数对应频域宽度为 $2\Omega$ 的矩形谱）
             \end{itemize}
+            
             \item \textbf{三角脉冲}：
             等腰三角脉冲可分解为两个矩形脉冲的卷积。
             
@@ -55,6 +55,7 @@
 
                 % --- 等号 ---
                 \node at (2.2, 0.7) {\large $=$};
+
                 % --- 图2：矩形波1 ---
                 \begin{scope}[shift={(4.5,0)}]
                     \draw[axis] (-1.2,0) -- (1.2,0);
@@ -66,6 +67,7 @@
 
                 % --- 卷积符号 ---
                 \node at (6.2, 0.7) {\large $*$};
+
                 % --- 图3：矩形波2 ---
                 \begin{scope}[shift={(8,0)}]
                     \draw[axis] (-1.2,0) -- (1.2,0);
