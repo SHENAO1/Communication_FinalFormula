@@ -39,7 +39,7 @@
     \textbf{第一步：求傅里叶系数 $F_n$}
     在一个周期 $[-T_s/2, T_s/2]$ 内，$\delta_T(t)$ 仅在 $t=0$ 处有一个 $\delta(t)$。
     \begin{equation}
-        F_n = \frac{1}{T_s} \int_{\frac{-T_s}{2}}^{\frac{T_s}{2}} \delta(t) e^{-j n \omega_s t} dt \overset{\text{筛分性质}}{=} \frac{1}{T_s} \cdot 1 \cdot e^{0} = \frac{1}{T_s}
+        F_n = \frac{1}{T_s} \int_{-T_s/2}^{T_s/2} \delta(t) e^{-j n \omega_s t} dt \overset{\text{筛分性质}}{=} \frac{1}{T_s} \cdot 1 \cdot e^{0} = \frac{1}{T_s}
     \end{equation}
     可见，时域冲激串的傅里叶系数是常数 $\frac{1}{T_s}$。
     代入指数形式级数：
@@ -61,7 +61,7 @@
         \end{equation}
         
         \item \textbf{频率 $f$ 域结果} (常用，注意系数变化)：
-        利用 $\delta(ax) = \frac{1}{|a|}\delta(x)$，这里 $\omega = 2\pi f$，则 $\delta(\omega) = \delta(2\pi f) = \frac{1}{2\pi}\delta(f)$
+        利用 $\delta(ax) = \frac{1}{|a|}\delta(x)$，这里 $\omega = 2\pi f$，则 $\delta(\omega) = \delta(2\pi f) = \frac{1}{2\pi}\delta(f)$。
         \begin{equation}
             \Delta_T(f) = \mathcal{F}[\delta_T(t)] = \frac{1}{T_s} \sum_{n=-\infty}^{\infty} \delta(f - n f_s)
         \end{equation}
@@ -78,113 +78,122 @@
 
     \centering
     % [调整] 将 xscale 调整为 1.1 以利用全宽空间
-    \begin{tikzpicture}[xscale=1.1, yscale=0.8, >=Latex]
-        % 定义样式
-        \tikzstyle{signal} = [thick, mainblue]
-        \tikzstyle{spectrum} = [thick, mainblue, fill=mainblue!10]
-        \tikzstyle{axis} = [->, gray]
+    \begin{tikzpicture}[>=Latex, xscale=1.1, yscale=1]
+        % --- 颜色与样式定义 ---
+        \definecolor{myblue}{RGB}{0, 114, 189} 
+        \definecolor{mygreen}{RGB}{119, 172, 48} 
+        \tikzstyle{signal} = [thick, myblue]
+        \tikzstyle{spectrum} = [thick, myblue, fill=myblue!10]
+        \tikzstyle{axis} = [->, gray, thin]
+        \tikzstyle{labeltext} = [font=\small]
         
-        % --- 第一行：原始信号 ---
-        % 时域 m(t)
-        \begin{scope}[xshift=-5cm, yshift=3cm]
+        % --- 布局参数 ---
+        \def\yRowA{4.2}   % 第一行 Y 坐标
+        \def\yRowB{0}     % 第二行 Y 坐标
+        \def\yRowC{-5.0}  % 第三行 Y 坐标
+        \def\xColL{-5}    % 左列 X 坐标
+        \def\xColR{5}     % 右列 X 坐标
+
+        % =================================================
+        % 第一行：模拟信号
+        % =================================================
+        \begin{scope}[shift={(\xColL, \yRowA)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
             \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$m(t)$};
-            \draw[signal] plot[domain=-2:2, samples=50] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
-            \node at (0, -0.8) {\small (a) 模拟信号};
+            \draw[signal] plot[domain=-2:2, samples=100] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+            \node[labeltext] at (0, -0.8) {(a) 模拟信号};
         \end{scope}
-        
-        % 箭头：转换
-        \draw[<->, thick, gray] (-0.8, 3.5) -- (0.8, 3.5);
 
-        % 频域 M(f)
-        \begin{scope}[xshift=5cm, yshift=3cm]
+        \draw[<->, thick, gray!50] (\xColL+4, \yRowA+0.5) -- (\xColR-4, \yRowA+0.5);
+
+        \begin{scope}[shift={(\xColR, \yRowA)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
             \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$|M(f)|$};
             \draw[spectrum] (-1.2,0) -- (0,1.2) -- (1.2,0) -- cycle;
             \node[below] at (-1.2,0) {$-f_H$};
             \node[below] at (1.2,0) {$f_H$};
-            \node at (0, -0.8) {\small (b) 信号频谱};
+            \node[labeltext] at (0, -0.8) {(b) 信号频谱};
         \end{scope}
 
-        % --- 运算符号 ---
-        \node[font=\bfseries\large, text=textgreen] at (-5, 1.8) {$\times$ (相乘)};
-        \node[font=\bfseries\large, text=textgreen] at (5, 1.8) {$*$ (卷积)};
+        % =================================================
+        % [修改处] 运算符号 (乘法与卷积) - 上移且放大
+        % =================================================
+        % 计算新的 Y 位置：在两行中间的基础上，增加 0.5 的偏移量向上提
+        \def\opY{{(\yRowA+\yRowB)/2 + 0.5}} 
 
-        % --- 第二行：抽样脉冲 ---
-        % 时域 delta_T(t)
-        \begin{scope}[xshift=-5cm, yshift=0cm]
+        % 左侧：乘法
+        \node[font=\bfseries\huge, text=mygreen] at (\xColL, \opY) {$\times$};
+        % 增大文字字号至 small 并加粗，稍微右移至 1.0 防止和变大的符号重叠
+        \node[align=center, font=\bfseries\small, text=mygreen] at (\xColL+1.0, \opY) {时域\\相乘};
+        
+        % 右侧：卷积
+        \node[font=\bfseries\huge, text=mygreen] at (\xColR, \opY) {$*$};
+        \node[align=center, font=\bfseries\small, text=mygreen] at (\xColR+1.0, \opY) {频域\\卷积};
+
+        % =================================================
+        % 第二行：冲激序列
+        % =================================================
+        \begin{scope}[shift={(\xColL, \yRowB)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
             \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$\delta_T(t)$};
             \foreach \x in {-2,-1.5,...,2} {
-                \draw[->, thick] (\x,0) -- (\x,1);
+                \draw[->, thick, black] (\x,0) -- (\x,1);
             }
-            \node[below, text=red] at (0.5,0) {$T_s$}; 
+            \node[below, text=red] at (0.5,0) {$T_s$};
             \node[below, text=red] at (-0.5,0) {$-T_s$};
-            \node at (0, -0.8) {\small (c) 冲激序列};
+            \node[labeltext] at (0, -0.8) {(c) 冲激序列};
         \end{scope}
         
-        \draw[<->, thick, gray] (-0.8, 0.5) -- (0.8, 0.5);
+        \draw[<->, thick, gray!50] (\xColL+4, \yRowB+0.5) -- (\xColR-4, \yRowB+0.5);
 
-        % 频域 Delta(f)
-        \begin{scope}[xshift=5cm, yshift=0cm]
+        \begin{scope}[shift={(\xColR, \yRowB)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
             \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$\delta_T(f)$};
             \foreach \x in {-2,-1,0,1,2} {
-                \draw[->, thick] (\x,0) -- (\x,1);
+                \draw[->, thick, black] (\x,0) -- (\x,1);
             }
+            \draw[<->, red, dashed] (0, 0.6) -- (1, 0.6) node[midway, above, font=\scriptsize] {$f_s$};
             \node[below, text=red] at (1,0) {$f_s$};
-            % 标注带宽 f_s
-            \draw[<->, red, dashed] (0, 0.6) -- (1, 0.6) node[midway, above] {$f_s$};
-            \node at (0, -0.8) {\small (d) 脉冲频谱};
+            \node[labeltext] at (0, -0.8) {(d) 脉冲频谱};
         \end{scope}
 
-        % --- 等号 ---
-        \draw[double, double distance=2pt, gray] (-5, -1.2) -- (-5, -1.8);
-        \draw[double, double distance=2pt, gray] (5, -1.2) -- (5, -1.8);
+        % =================================================
+        % 等号
+        % =================================================
+        \draw[double, double distance=2pt, gray] (\xColL, {\yRowB - 1.2}) -- (\xColL, {\yRowB - 1.8});
+        \draw[double, double distance=2pt, gray] (\xColR, {\yRowB - 1.2}) -- (\xColR, {\yRowB - 1.8});
 
-        % --- 第三行：已抽样信号 ---
-        % 时域 m_s(t)
-        \begin{scope}[xshift=-5cm, yshift=-3.5cm]
+        % =================================================
+        % 第三行：已抽样信号
+        % =================================================
+        \begin{scope}[shift={(\xColL, \yRowC)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
-            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$m_s(t)$};
-            % 包络虚线
-            \draw[dashed, gray] plot[domain=-2.2:2.2, samples=50] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
-            % 抽样点
+            \draw[axis] (0,-0.5) -- (0,1.6) node[above] {$m_s(t)$};
+            \draw[dashed, gray!80] plot[domain=-2.2:2.2, samples=100] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
             \foreach \x in {-2,-1.5,...,2} {
-                \draw[->, thick, mainblue] (\x,0) -- (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
-                \fill[mainblue] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)}) circle (1.5pt);
+                \draw[-, thick, myblue] (\x,0) -- (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+                \fill[myblue] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)}) circle (1.8pt);
             }
-            \node[right, font=\footnotesize] at (0.2, 1.2) {$m(nT_s)$};
-            \node at (0, -0.8) {\small (e) 抽样信号波形};
+            \node[right, font=\footnotesize, fill=white, inner sep=1pt] at (0.2, 1.3) {$m(nT_s)$};
+            \node[labeltext] at (0, -0.8) {(e) 抽样信号波形};
         \end{scope}
         
-        \draw[<->, thick, gray] (-0.8, -3) -- (0.8, -3);
+        \draw[<->, thick, gray!50] (\xColL+4, \yRowC+0.5) -- (\xColR-4, \yRowC+0.5);
 
-        % 频域 M_s(f)
-        \begin{scope}[xshift=5cm, yshift=-3.5cm]
+        \begin{scope}[shift={(\xColR, \yRowC)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
-            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$M_s(f)$};
-            
-            % 周期性频谱
+            \draw[axis] (0,-0.5) -- (0,1.6) node[above] {$M_s(f)$};
             \foreach \k in {-2,-1,0,1,2} {
                 \draw[spectrum] (\k-0.4, 0) -- (\k, 1.2) -- (\k+0.4, 0) -- cycle;
             }
-            
-            % 滤波器框
-            \draw[thick, dashed, red] (-0.5, -0.1) rectangle (0.5, 1.4);
-            \node[red, font=\footnotesize] at (0.7, 1.3) {低通滤波};
-            
-            % 标注
+            \draw[thick, dashed, red] (-0.55, -0.1) rectangle (0.55, 1.45);
+            \node[red, font=\scriptsize, fill=white, inner sep=1pt] at (0, 1.45) {低通滤波};
             \node[below] at (0,0) {$0$};
             \node[below] at (1,0) {$f_s$};
             \node[below] at (-1,0) {$-f_s$};
             \node[below, font=\scriptsize] at (0.4,0) {$f_H$};
-            \node[below, font=\scriptsize] at (0.6,0) {}; 
-            
-            % 混叠条件标注
-            \node[draw, rounded corners, fill=gray!10, font=\bfseries\small] at (1.8, 1.8) {$f_s \ge 2f_H$};
-            
-            \node at (0, -0.8) {\small (f) 周期延拓频谱};
+            \node[draw, rounded corners, fill=yellow!10, font=\bfseries\small, text=red] at (1.8, 1.5) {$f_s \ge 2f_H$};
+            \node[labeltext] at (0, -0.8) {(f) 周期延拓频谱};
         \end{scope}
 
     \end{tikzpicture}
