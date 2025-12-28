@@ -48,6 +48,14 @@
 % --- 自定义命令 ---
 \newcommand{\pptpage}[1]{\hfill {\scriptsize\sffamily\color{gray} (P#1)}}
 
+% [新增] 定义 Sa 函数算子
+% 需要 amsmath 宏包支持 (前面已经加载了)
+\DeclareMathOperator{\Sa}{Sa}
+
+% [可选] 如果你也用 sinc，可以顺便定义一下
+\DeclareMathOperator{\sinc}{sinc}
+
+
 % --- 核心环境：知识点盒子 (Blue Box) ---
 \newtcolorbox{kbox}[1]{
     breakable, enhanced,

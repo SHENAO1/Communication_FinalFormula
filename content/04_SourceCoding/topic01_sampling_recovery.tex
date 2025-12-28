@@ -1,39 +1,148 @@
 % content/04_SourceCoding/topic01_sampling_recovery.tex
-\begin{kbox}{信号的无失真恢复：时域内插与频域滤波}
-    抽样定理不仅规定了“怎么抽”，更告诉我们“怎么复原”。
-    理想低通滤波器在时域上等效于\textbf{内插 (Interpolation)} 过程。
 
-    \subsubsection*{1. 频域分析：理想低通滤波}
-    在频域，我们要从周期延拓的频谱 $M_s(f)$ 中提取出原始频谱 $M(f)$。
-    只需让信号通过一个截止频率为 $f_c$ 的\textbf{理想低通滤波器} $H(f)$：
+\begin{kbox}{信号的无失真恢复：从框图到公式}
+    抽样定理不仅规定了“怎么抽”（$f_s \ge 2f_H$），更通过重建原理告诉我们“怎么复原”。
+    
+    \subsubsection*{1. 抽样与恢复原理框图}
+    信号的恢复过程是将抽样信号 $m_s(t)$ 通过一个理想低通滤波器 $H_L(f)$。
+    
+    \begin{center}
+    \resizebox{\linewidth}{!}{
+    \begin{tikzpicture}[node distance=2.0cm, auto, >=Latex]
+        % 样式定义
+        \tikzstyle{block} = [draw, rectangle, minimum height=1.2cm, minimum width=2.0cm, align=center, thick, draw=mainblue, fill=subbg]
+        \tikzstyle{input} = [coordinate]
+        \tikzstyle{output} = [coordinate]
+
+        % 节点
+        \node [input] (input) {};
+        \node [block, right=1.2cm of input] (multiplier) {$\times$\\ \footnotesize 乘法器};
+        \node [input, below=0.8cm of multiplier] (pulse) {};
+        \node [block, right=1.5cm of multiplier] (lpf) {理想低通\\ $H_L(f)$};
+        \node [output, right=1.2cm of lpf] (output) {};
+
+        % 连线
+        \draw [->, thick] (input) -- node [above] {$m(t)$} (multiplier);
+        \draw [->, thick] (pulse) -- node [right] {$\delta_T(t)$} (multiplier);
+        \draw [->, thick] (multiplier) -- node [above] {$m_s(t)$} (lpf);
+        \draw [->, thick] (lpf) -- node [above] {$m(t)$} (output);
+    \end{tikzpicture}
+    }
+    \end{center}
+
+    \begin{itemize}
+        \item \textbf{频域关系}：抽样信号频谱 $M_s(f)$ 是 $M(f)$ 的周期延拓。
+        \begin{equation}
+            M_s(f) = \frac{1}{T_s} \sum_{n=-\infty}^{\infty} M(f - n f_s)
+        \end{equation}
+        \item \textbf{恢复条件}：利用理想低通滤波器 $H_L(f)$ 滤出基带分量。
+        \begin{equation}
+            H_L(f) = \begin{cases} 
+                T_s, & |f| \le f_H \\
+                0, & |f| > f_H 
+            \end{cases}
+            \quad (\text{理想低通})
+        \end{equation}
+    \end{itemize}
+
+    \subsubsection*{2. 重建滤波器的时域推导 (手写笔记解析)}
+    \textbf{目标}：求解理想低通滤波器 $H_L(f)$ 的时域冲击响应 $h_L(t)$。
+    
+    根据手写笔记，重建在频域表示为 $M_s(f) \cdot H_L(f)$，对应时域卷积。我们需要找到频域门函数对应的时域信号。推导过程严格如下：
+
+    \textbf{Step 1: 引入基础变换对}
+    设 $g_{2\tau}(t)$ 为时域宽度为 $2\tau$ 的门函数。已知其傅里叶变换为：
     \begin{equation}
-        H(f) = \begin{cases} 
-            T_s, & |f| \le f_c \\
-            0, & \text{其他}
-        \end{cases}
-        \quad \text{其中 } f_H \le f_c \le f_s - f_H
+        g_{2\tau}(t) \longleftrightarrow 2\tau \Sa(\omega \tau)
     \end{equation}
-    通常取 $f_c = f_s/2$ (奈奎斯特频率)。输出频谱为 $M(f) = M_s(f) \cdot H(f)$。
+    其中 $\omega = 2\pi f$。
 
-    \subsubsection*{2. 时域分析：Sinc 函数内插 (图解核心)}
-    根据卷积定理：\textbf{频域相乘，对应时域卷积}。
-    理想低通滤波器 $H(f)$ 的时域冲激响应是 Sinc 函数：
+    \textbf{Step 2: 利用对偶性 (Duality)}
+    根据傅里叶变换的对偶性，并整理系数，可以得到 $Sa$ 函数的变换对：
     \begin{equation}
-        h(t) = \text{sinc}\left( \frac{t}{T_s} \right) = \frac{\sin(\pi t/T_s)}{\pi t/T_s}
+        \Sa(\tau t) \longleftrightarrow \frac{\pi}{\tau} g_{2\tau}(\omega)
+    \end{equation}
+    移项整理，将幅度系数移至左侧：
+    \begin{equation}
+        \frac{\tau}{\pi} \Sa(\tau t) \longleftrightarrow g_{2\tau}(\omega)
+    \end{equation}
+
+    \textbf{Step 3: 频域变量代换与参数匹配}
+    将频域变量由 $\omega$ 转换为 $f$（注意 $\omega$ 域的宽度 $2\tau$ 对应 $f$ 域的宽度为 $\frac{2\tau}{2\pi} = \frac{\tau}{\pi}$）：
+    \begin{equation}
+        \frac{\tau}{\pi} \Sa(\tau t) \longleftrightarrow g_{\frac{\tau}{\pi}}(f)
     \end{equation}
     
-    恢复出的模拟信号 $m(t)$ 是抽样序列与 $h(t)$ 的卷积。这导出了著名的 \textbf{Whittaker–Shannon 插值公式}：
+    此时，我们需要对应到理想低通滤波器 $H_L(f)$。$H_L(f)$ 是一个截止频率为 $f_H$ 的门函数，其总带宽宽度为 $2f_H$。
+    
+    \begin{equation}
+        \boxed{ \frac{\tau}{\pi} = 2f_H } \quad \Longrightarrow \quad \tau = 2\pi f_H
+    \end{equation}
+
+    \textbf{Step 4: 代入得出结论}
+    将 $\tau = 2\pi f_H$ 代入 Step 3 的左侧公式：
+    \begin{equation}
+        2f_H \Sa(2\pi f_H t) \longleftrightarrow g_{2f_H}(f)
+    \end{equation}
+    这正是截止频率为 $f_H$ 的理想低通滤波器 $H_L(f)$。
+    
+    因此，时域冲击响应为：
+    \begin{equation}
+        h_L(t) = 2f_H \Sa(2\pi f_H t)
+    \end{equation}
+    或者写作 Sinc 形式（$\Sa(x) = \text{sinc}(x/\pi)$）：
+    \begin{equation}
+        h_L(t) = 2f_H \text{sinc}(2 f_H t)
+    \end{equation}
+
+    \textbf{问题}：为什么频域的理想矩形滤波器，时域对应 Sinc 插值？
+    
+    根据手写笔记，我们利用傅里叶变换的\textbf{对偶性}和\textbf{尺度变换}性质进行详细推导。
+
+    \textbf{Step 1: 基础变换对 (门函数 $\leftrightarrow$ Sa函数)}
+    设 $g_{2\tau}(t)$ 为宽度为 $2\tau$ 的门函数（矩形脉冲）。
+    \begin{equation}
+        g_{2\tau}(t) \longleftrightarrow 2\tau \Sa(\omega \tau), \quad \text{其中 } \Sa(x) = \frac{\sin x}{x}
+    \end{equation}
+    
+    \textbf{Step 2: 利用对偶性}
+    利用对偶性 $X(t) \leftrightarrow 2\pi x(-\omega)$，并考虑到门函数是偶函数：
+    \begin{equation}
+        2\tau \Sa(t \tau) \longleftrightarrow 2\pi g_{2\tau}(\omega)
+    \end{equation}
+    
+    \textbf{Step 3: 尺度变换与代入}
+    我们的目标是求 $H_L(f)$ 的时域形式。$H_L(f)$ 是频域上宽度为 $2f_H$ 的门函数。
+    \begin{itemize}
+        \item 令频域门宽参数对应截止频率：$\tau \rightarrow \pi f_H$ (因 $\omega=2\pi f$)。
+        \item 或者更直接地，对 $H_L(f) = \text{rect}(f/2f_H)$ 进行逆变换：
+    \end{itemize}
+    \begin{equation}
+        h_L(t) = \int_{-f_H}^{f_H} 1 \cdot e^{j2\pi f t} df = \frac{e^{j2\pi f_H t} - e^{-j2\pi f_H t}}{j2\pi t}
+    \end{equation}
+    化简得到笔记中的核心结论：
+    \begin{equation}
+        h_L(t) = \frac{\sin(2\pi f_H t)}{\pi t} = 2f_H \Sa(2\pi f_H t)
+    \end{equation}
+    
+    当 $f_s = 2f_H$ 且取增益 $T_s = 1/f_s$ 时：
+    \begin{equation}
+        h(t) = T_s \cdot 2f_H \Sa(2\pi f_H t) = \Sa\left(\frac{\pi t}{T_s}\right) = \text{sinc}\left(\frac{t}{T_s}\right)
+    \end{equation}
+
+    \subsubsection*{3. 时域内插公式与几何解释}
+    根据卷积定理，$m(t) = m_s(t) * h(t)$。
+    将 $m_s(t) = \sum m(nT_s)\delta(t-nT_s)$ 代入，得到 \textbf{Whittaker–Shannon 插值公式}：
     
     \begin{equation}
         \boxed{ m(t) = \sum_{n=-\infty}^{\infty} m(nT_s) \cdot \text{sinc}\left( \frac{t - nT_s}{T_s} \right) }
     \end{equation}
 
-    \textbf{图解分析}：原始模拟信号可以看作是无穷多个\textbf{移位 Sinc 函数}的线性叠加，每个 Sinc 函数的幅度由该点的抽样值 $m(nT_s)$ 决定。
+    \textbf{图解}：原信号是无穷多个\textbf{移位 Sinc 函数}的线性叠加。
 
     \vspace{0.5em}
     \centering
-    % === Sinc 插值叠加图 (复现 image_fbffce.jpg 右下角) ===
-    % [修复] 使用 resizebox 包裹，确保图片宽度严格适应文档宽度，不会超出边界
+    % === Sinc 插值叠加图 (复现原有代码) ===
     \resizebox{\linewidth}{!}{
     \begin{tikzpicture}[>=Latex]
         % --- 样式定义 ---
@@ -41,10 +150,9 @@
         \definecolor{myred}{RGB}{217, 83, 25}
         \tikzstyle{stem} = [thick, myblue, ->]
         \tikzstyle{sinc} = [thin, gray!70, samples=100, smooth]
-        \tikzstyle{sum} = [line width=1.5pt, myred, samples=100, smooth] % 加粗合成线
+        \tikzstyle{sum} = [line width=1.5pt, myred, samples=100, smooth] 
         
         % --- 坐标轴 ---
-        % 稍微缩短 x 轴范围，使图形更紧凑
         \draw[->, thick] (-3.8, 0) -- (3.8, 0) node[right] {$t$};
         \draw[->, thick] (0, -0.5) -- (0, 1.5) node[above] {$m(t)$};
 
@@ -62,62 +170,33 @@
             }
         }
 
-        % --- 1. 绘制 Sinc 分量 (灰色细线) ---
+        % --- 1. 绘制 Sinc 分量 ---
         \foreach \n/\val in {-2/\valA, -1/\valB, 0/\valC, 1/\valD, 2/\valE} {
-            % 绘制 Sinc 曲线
             \draw[sinc] plot[domain=-3.5:3.5] (\x, {\val * sinc(\x - \n)});
         }
 
-        % --- 2. 绘制合成曲线 (红色粗线) ---
+        % --- 2. 绘制合成曲线 ---
         \draw[sum] plot[domain=-3.5:3.5] (\x, {
-            \valA * sinc(\x + 2) +
-            \valB * sinc(\x + 1) +
-            \valC * sinc(\x) +
-            \valD * sinc(\x - 1) +
-            \valE * sinc(\x - 2)
+            \valA * sinc(\x + 2) + \valB * sinc(\x + 1) +
+            \valC * sinc(\x) + \valD * sinc(\x - 1) + \valE * sinc(\x - 2)
         });
 
-        % --- 3. 绘制抽样点 (蓝色箭头) - 放在最上层
+        % --- 3. 绘制抽样点 ---
         \foreach \n/\val in {-2/\valA, -1/\valB, 0/\valC, 1/\valD, 2/\valE} {
             \draw[stem] (\n, 0) -- (\n, \val);
-            \fill[myblue] (\n, \val) circle (2pt); % 稍微加大圆点
+            \fill[myblue] (\n, \val) circle (2pt);
             
-            % 坐标刻度
-            \ifnum\n=0
-                \node[below, font=\small] at (\n, 0) {$0$};
-            \else
-                \ifnum\n=1
-                    \node[below, font=\small] at (\n, 0) {$T_s$};
-                \else
-                    \ifnum\n=-1
-                        \node[below, font=\small] at (\n, 0) {$-T_s$};
-                    \else
-                        \node[below, font=\small] at (\n, 0) {$\n T_s$};
-                    \fi
-                \fi
-            \fi
+            \ifnum\n=0 \node[below, font=\small] at (\n, 0) {$0$};
+            \else \ifnum\n=1 \node[below, font=\small] at (\n, 0) {$T_s$};
+            \else \ifnum\n=-1 \node[below, font=\small] at (\n, 0) {$-T_s$};
+            \else \node[below, font=\small] at (\n, 0) {$\n T_s$};
+            \fi \fi \fi
         }
 
         % --- 标注 ---
-        % 重构信号标签
-        \node[myred, right, font=\bfseries] at (1.5, 1.2) {重构信号 $m(t)$};
-        
-        % Sinc 分量标签
-        \node[gray, right, font=\footnotesize] at (2.4, 0.3) {Sinc 分量};
+        \node[myred, right, font=\bfseries] at (1.5, 1.2) {重构信号};
+        \node[gray, right, font=\footnotesize] at (2.4, 0.3) {Sinc分量};
         \draw[->, thin, gray] (2.4, 0.3) -- (1.8, 0.2);
-
-        % 中心点值
-        \node[myblue, font=\footnotesize, inner sep=1pt, fill=white] at (0, 1.1) {$m(0)$};
-
     \end{tikzpicture}
-    } % 结束 resizebox
-    
-    \tcblower
-    
-    \textbf{总结}：
-    \begin{itemize}
-        \item 抽样是将连续信号分解为加权冲激序列。
-        \item 恢复是将这些冲激序列每一个都变成 Sinc 函数，然后叠加。
-        \item 如果抽样速率不够 ($f_s < 2f_H$)，Sinc 函数之间会发生混叠，导致叠加后的波形无法还原。
-    \end{itemize}
+    }
 \end{kbox}
