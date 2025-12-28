@@ -1,0 +1,113 @@
+% file: content/03_Channels/topic06_discrete_capacity.tex
+
+\begin{kbox}{5. 离散信道容量基础}
+    
+    \textbf{1. 互信息的两种物理视角}
+    根据熵的定义，互信息 $I(X;Y)$ 可以从两个角度理解：
+    
+    % 使用直观理解盒子强调笔记中的概念
+    \begin{intuitionbox}{辨析：损失熵 vs 噪声熵}
+        \begin{itemize}
+            \item \textbf{观察输入端 ($H(X) - H(X|Y)$)}：
+            \begin{itemize}
+                \item $H(X)$：信源原本的信息量（发送的干货）。
+                \item \textbf{$H(X|Y)$ (损失熵/疑义度)}：接收到 $Y$ 后，对 $X$ 仍然存在的不确定性。代表在传输过程中\textbf{损失}掉的信息。
+            \end{itemize}
+            
+            \item \textbf{观察输出端 ($H(Y) - H(Y|X)$)}：
+            \begin{itemize}
+                \item $H(Y)$：接收端收到的总信息量（包含干货和噪声）。
+                \item \textbf{$H(Y|X)$ (噪声熵)}：给定发送 $X$ 的情况下，$Y$ 的不确定性。这完全是由信道\textbf{噪声}引起的随机性。
+            \end{itemize}
+        \end{itemize}
+    \end{intuitionbox}
+
+    % [修复] 使用 align* 环境并拆分长公式，防止溢出
+    \textbf{2. 深入理解：逻辑连接与实际意义}
+    
+    \textbf{(1) 为什么两者相等？（快递包裹类比）}
+    虽然发送和接收的总熵不同，但扣除各自的无效成分后，剩余部分守恒：
+    
+    \begin{align*}
+        \text{互信息} &= \underbrace{\text{发送总量} - \text{路上丢件}}_{\text{输入端视角}} \\
+                      &= \underbrace{\text{收到总重} - \text{填充垃圾}}_{\text{输出端视角}}
+    \end{align*}
+    这在数学上对应韦恩图（Venn Diagram）的交集部分。
+
+    \textbf{(2) 工程指导意义}
+    \begin{itemize}
+        \item \textbf{针对 $H(X|Y)$ (损失)}：
+        \begin{itemize}
+            \item \textit{通信目标}：通过信道编码，使 $H(X|Y) \to 0$。
+            \item \textit{保密目标}：加密通信希望 $H(X|Y)$ 极大化。
+        \end{itemize}
+        \item \textbf{针对 $H(Y|X)$ (噪声)}：
+        \begin{itemize}
+            \item 物理信道确定时，$H(Y|X)$ 通常固定。
+            \item \textbf{容量策略}：既然减数（噪声）固定，要提高容量 $C$，只能调整发送策略使\textbf{被减数 $H(Y)$ 最大化}。
+        \end{itemize}
+    \end{itemize}
+
+    \tcbline
+
+    \textbf{3. 信道容量定义}
+    \[ C = \max_{P(x)} I(X;Y) = \max_{P(x)} [H(Y) - H(Y|X)] \]
+    \footnotesize{注：信道容量是针对\textbf{所有可能的信源分布 $P(x)$} 寻找最大互信息。}
+\end{kbox}
+
+\begin{examplebox}{推导实例：二进对称信道 (BSC) 的容量}
+    \textbf{1. 模型定义}
+    假设信道是对称的，误码率为 $\epsilon$ (或 $p$)：
+    \begin{itemize}
+        \item 正确传输：$P(0|0) = P(1|1) = 1 - \epsilon$
+        \item 错误传输：$P(1|0) = P(0|1) = \epsilon$
+    \end{itemize}
+
+    \begin{center}
+    \begin{tikzpicture}[scale=0.8, >=Stealth]
+        \node (x0) at (0, 1.5) {$0$};
+        \node (x1) at (0, 0) {$1$};
+        \node (y0) at (3, 1.5) {$0$};
+        \node (y1) at (3, 0) {$1$};
+        
+        \draw[->, thick, mainblue] (x0) -- (y0) node[midway, above] {\scriptsize $1-\epsilon$};
+        \draw[->, thick, mainblue] (x1) -- (y1) node[midway, below] {\scriptsize $1-\epsilon$};
+        \draw[->, thick, alertred, dashed] (x0) -- (y1) node[pos=0.25, below] {\scriptsize $\epsilon$};
+        \draw[->, thick, alertred, dashed] (x1) -- (y0) node[pos=0.25, above] {\scriptsize $\epsilon$};
+        
+        \node at (-0.5, 0.75) {Input $X$};
+        \node at (3.5, 0.75) {Output $Y$};
+    \end{tikzpicture}
+    \end{center}
+
+    \textbf{2. 计算噪声熵 $H(Y|X)$}
+    \[ H(Y|X) = \sum_{x} P(x) H(Y|X=x) \]
+    由于信道对称，无论发送 0 还是 1，其条件熵都是一样的。
+    % [修复] 使用 align* 拆分过长的熵公式
+    \begin{align*}
+        H(Y|X=0) &= H(Y|X=1) \\
+                 &= -[\epsilon \log_2 \epsilon + (1-\epsilon)\log_2(1-\epsilon)] \\
+                 &\triangleq H(\epsilon)
+    \end{align*}
+    \textbf{关键点}：$H(Y|X) = H(\epsilon)$ 仅取决于信道特性，与信源分布 $P(x)$ \textbf{无关}。
+
+    \tcbline
+
+    \textbf{3. 计算输出熵 $H(Y)$ 并最大化}
+    \[ C = \max_{P(x)} [H(Y) - H(\epsilon)] = \max_{P(x)} H(Y) - H(\epsilon) \]
+    
+    设信源概率 $P(X=0) = \alpha$，则 $P(X=1) = 1-\alpha$。由全概率公式：
+    % [修复] 使用 align* 拆分过长的全概率公式
+    \begin{align*}
+        P(Y=0) &= P(0|0)\alpha + P(0|1)(1-\alpha) \\
+               &= (1-\epsilon)\alpha + \epsilon(1-\alpha)
+    \end{align*}
+    
+    \textbf{分析}：
+    要使 $C$ 最大，需使 $H(Y)$ 最大。对于二进制变量，$H(Y)$ 的最大值为 1 bit，条件是输出概率相等，即 $P(Y=0)=P(Y=1)=0.5$。
+    
+    \textbf{4. 最终容量公式}
+    当信源等概分布 ($P(X=0)=0.5$) 且信道对称时，输出也等概，此时达到容量：
+    \[ \Large \boxed{ C = 1 - H(\epsilon) \quad (\text{b/symbol}) } \]
+    
+\end{examplebox}

@@ -1,0 +1,30 @@
+% file: content/03_Channels/topic07_continuous_capacity.tex
+
+\begin{kbox}{6. 连续信道容量 (Shannon Formula)}
+    
+    对于带宽受限、存在高斯白噪声的连续信道，其容量由\textbf{香农公式}给出：
+    
+    \[ C = B \log_2 \left( 1 + \frac{S}{N} \right) \quad (\text{b/s}) \]
+    
+    \begin{itemize}
+        \item $B$：信道带宽 (Hz)。
+        \item $S$：信号平均功率 (W)。
+        \item $N = n_0 B$：噪声功率 (W)，其中 $n_0$ 为单边噪声功率谱密度。
+    \end{itemize}
+
+    \tcbline
+    
+    \textbf{物理意义与权衡 (Trade-off)}：
+    \begin{enumerate}
+        \item \textbf{带宽与信噪比互换}：为了保持 $C$ 不变，可以降低信噪比 $S/N$，但必须增加带宽 $B$（扩频通信的基础）。
+        \item \textbf{无误码传输}：只要信息传输速率 $R \le C$，理论上就存在某种编码方式，可以实现无误码传输。
+    \end{enumerate}
+\end{kbox}
+
+\begin{intuitionbox}{极限情况分析：带宽 $B \to \infty$}
+    当带宽趋于无穷大时，信道容量\textbf{不会}趋于无穷大，而是趋于一个定值。这是因为噪声功率 $N=n_0 B$ 也会随带宽增加而增加。
+    
+    \[ \lim_{B \to \infty} C = \lim_{B \to \infty} B \log_2 \left( 1 + \frac{S}{n_0 B} \right) \approx 1.44 \frac{S}{n_0} \]
+    
+    这表明：在给定信号功率 $S$ 和噪声密度 $n_0$ 的情况下，仅靠增加带宽所能获得的容量是有上限的。
+\end{intuitionbox}

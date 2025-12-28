@@ -1,34 +1,31 @@
-% 文件路径: content/03_Channels/run_chapter03.tex
+% file: content/03_Channels/run_chapter03.tex
 
-% 1. 调用根目录 cls (../../ 指向项目根目录)
 \documentclass{../../commsummary}
-
-% 2. 修正图片路径
 \graphicspath{{./figures/}{../../figures/}}
 
 \begin{document}
 
-% 3. 临时标题 (Dev Mode)
 \section{信道 (独立编译)}
-
-% 4. 导入本章 Topic (按逻辑顺序排列)
 
 % --- 信道模型定义 ---
 \input{topic01_models}
 
 % --- 恒参信道 ---
 \input{topic02_constant_param}
-\input{topic02_constant_param_intuition} % 物理直观补充
+\input{topic02_constant_param_intuition}
 
 % --- 随参信道 ---
 \input{topic03_random_param}
-\input{topic03_multipath_derivation}     % 多径效应数学推导
+\input{topic03_multipath_derivation}
 
 % --- 信道噪声 ---
 \input{topic04_noise}
 
 % --- 信息论分析 ---
-\input{topic05_mutual_info_analysis}     % 互信息分析
-\input{topic06_capacity}                 % 信道容量
+\input{topic05_mutual_info_analysis}
+
+% [修改] 拆分为离散和连续两个部分
+\input{topic06_discrete_capacity}    % 新增：离散容量 & BSC推导
+\input{topic07_continuous_capacity}  % 新增：香农公式
 
 \end{document}
