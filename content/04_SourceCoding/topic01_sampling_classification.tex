@@ -8,13 +8,15 @@
     \begin{tikzpicture}[
         grow=right,
         level 1/.style={sibling distance=3.5cm, level distance=3.5cm},
-        level 2/.style={sibling distance=1.2cm, level distance=4.5cm}, % 稍微增加 level distance 以容纳更长的灰色文字
+        % 修改点 1: 增加 sibling distance (垂直间距) 以容纳下方的文字
+        % 修改点 2: 减小 level distance (水平间距)，因为右侧没有文字了
+        level 2/.style={sibling distance=1.8cm, level distance=3.5cm}, 
         edge from parent/.style={draw, thick, gray},
         root/.style={rectangle, rounded corners, draw=mainblue, fill=mainblue!10, text centered, font=\bfseries\large, inner sep=10pt},
         node1/.style={rectangle, rounded corners, draw=blue!80, fill=blue!5, text centered, font=\bfseries, minimum height=0.8cm},
         node2/.style={rectangle, rounded corners, draw=gray!60, fill=white, text centered, font=\small, minimum height=0.6cm},
-        % 定义一个统一的 label 样式，方便复用
-        note/.style={label={[font=\scriptsize, text=gray, align=left, xshift=0.1cm]right:#1}}
+        % 修改点 3: 将 label 方向改为 below，去除 xshift，改为 yshift 微调（可选）
+        note/.style={label={[font=\scriptsize, text=gray, align=center]below:#1}}
         ]
 
         % 根节点
@@ -41,20 +43,20 @@
     \begin{itemize}
         \item \textbf{1. 信号类型 (频谱特性)}：
         \begin{itemize}
-            \item \textbf{低通抽样}：针对基带信号，满足 $f_s \ge 2f_H$ 
-            \item \textbf{带通抽样}：针对频谱在 $[f_L, f_H]$ 的信号，采样率可低于 $2f_H$
+            \item \textbf{低通抽样}：针对基带信号，满足 $f_s \ge 2f_H$ (本章重点)。
+            \item \textbf{带通抽样}：针对频谱在 $[f_L, f_H]$ 的信号，采样率可低于 $2f_H$。
         \end{itemize}
         
         \item \textbf{2. 抽样间隔 (时间特性)}：
         \begin{itemize}
-            \item \textbf{均匀抽样}：抽样时刻 $t_n = nT_s$，间隔恒定。通信原理主要讨论此类
-            \item \textbf{非均匀抽样}：间隔随机或变化
+            \item \textbf{均匀抽样}：抽样时刻 $t_n = nT_s$，间隔恒定。通信原理主要讨论此类。
+            \item \textbf{非均匀抽样}：间隔随机或变化。
         \end{itemize}
 
         \item \textbf{3. 脉冲序列 (物理实现)}：
         \begin{itemize}
-            \item \textbf{理想抽样}：使用冲激脉冲序列 $\delta_T(t)$，便于理论分析
-            \item \textbf{实际抽样}：使用具有一定宽度的脉冲（如矩形脉冲），会引入孔径失真（如平顶抽样）
+            \item \textbf{理想抽样}：使用冲激脉冲序列 $\delta_T(t)$，便于理论分析。
+            \item \textbf{实际抽样}：使用具有一定宽度的脉冲（如矩形脉冲），会引入孔径失真（如平顶抽样）。
         \end{itemize}
     \end{itemize}
 \end{kbox}

@@ -1,0 +1,253 @@
+% content/04_SourceCoding/topic01_sampling_derivation.tex
+
+% --- Part 1: 数学基础回顾 ---
+\begin{intuitionbox}{数学预备：从傅里叶级数到冲激串变换}
+    理解抽样定理频谱搬移的关键，在于掌握\textbf{周期信号的频谱特性}。
+    
+    \subsubsection*{1. 傅里叶级数 (Fourier Series, FS) 回顾}
+    对于周期为 $T_0$ 的周期信号 $f(t)$，角频率 $\omega_0 = \frac{2\pi}{T_0}$ (或基频 $f_0 = \frac{1}{T_0}$)。
+    
+    \begin{itemize}
+        \item \textbf{三角形式}：将信号分解为直流分量与不同频率的正弦/余弦波之和。
+        \begin{equation}
+            f(t) = a_0 + \sum_{n=1}^{\infty} \left[ a_n \cos(n\omega_0 t) + b_n \sin(n\omega_0 t) \right]
+        \end{equation}
+        
+        % [修改1] 使用 cases 环境大括号包裹系数，并使用 displaystyle 优化积分显示
+        其中系数为：
+        \begin{equation}
+        \begin{cases}
+            \displaystyle a_0 = \frac{1}{T_0}\int_{T_0} f(t)dt \\[10pt]
+            \displaystyle a_n = \frac{2}{T_0}\int_{T_0} f(t)\cos(n\omega_0 t)dt \\[10pt]
+            \displaystyle b_n = \frac{2}{T_0}\int_{T_0} f(t)\sin(n\omega_0 t)dt
+        \end{cases}
+        \end{equation}
+
+        \item \textbf{指数形式}：利用欧拉公式 $e^{j\theta} = \cos\theta + j\sin\theta$，形式更为简洁，便于推导。
+        \begin{equation}
+            f(t) = \sum_{n=-\infty}^{\infty} F_n e^{j n \omega_0 t}
+        \end{equation}
+        \textbf{傅里叶系数} $F_n$ (频谱幅度) 计算公式：
+        \begin{equation}
+            F_n = \frac{1}{T_0} \int_{-T_0/2}^{T_0/2} f(t) e^{-j n \omega_0 t} dt
+        \end{equation}
+    \end{itemize}
+
+    \subsubsection*{2. 周期单位冲激串的傅里叶变换 (关键推导)}
+    设周期单位冲激串为 $\delta_T(t) = \sum_{n=-\infty}^{\infty} \delta(t - nT_s)$，周期为 $T_s$，抽样角频率 $\omega_s = \frac{2\pi}{T_s}$。
+    
+    \textbf{第一步：求傅里叶系数 $F_n$}
+    在一个周期 $[-T_s/2, T_s/2]$ 内，$\delta_T(t)$ 仅在 $t=0$ 处有一个 $\delta(t)$。
+    \begin{equation}
+        F_n = \frac{1}{T_s} \int_{\frac{-T_s}{2}}^{\frac{T_s}{2}} \delta(t) e^{-j n \omega_s t} dt \overset{\text{筛分性质}}{=} \frac{1}{T_s} \cdot 1 \cdot e^{0} = \frac{1}{T_s}
+    \end{equation}
+    可见，时域冲激串的傅里叶系数是常数 $\frac{1}{T_s}$。
+    代入指数形式级数：
+    \begin{equation}
+        \delta_T(t) = \frac{1}{T_s} \sum_{n=-\infty}^{\infty} e^{j n \omega_s t}
+    \end{equation}
+
+    \textbf{第二步：求傅里叶变换 (FT)}
+    对上式两边取傅里叶变换 $\mathcal{F}\{\cdot\}$。利用频移性质 $\mathcal{F}\{e^{j\omega_0 t}\} = 2\pi \delta(\omega - \omega_0)$。
+    
+    \begin{itemize}
+        \item \textbf{角频率 $\omega$ 域结果}：
+        % [修改2] 使用 split 环境进行多行公式对齐，防止超出单栏宽度
+        \begin{equation}
+        \begin{split}
+            \mathcal{F}[\delta_T(t)] &= \frac{1}{T_s} \sum_{n=-\infty}^{\infty} 2\pi \delta(\omega - n\omega_s) \\
+                                     &= \frac{2\pi}{T_s} \sum_{n=-\infty}^{\infty} \delta(\omega - n\omega_s)
+        \end{split}
+        \end{equation}
+        
+        \item \textbf{频率 $f$ 域结果} (常用，注意系数变化)：
+        利用 $\delta(ax) = \frac{1}{|a|}\delta(x)$，这里 $\omega = 2\pi f$，则 $\delta(\omega) = \delta(2\pi f) = \frac{1}{2\pi}\delta(f)$
+        \begin{equation}
+            \Delta_T(f) = \mathcal{F}[\delta_T(t)] = \frac{1}{T_s} \sum_{n=-\infty}^{\infty} \delta(f - n f_s)
+        \end{equation}
+        \textcolor{textred}{\textbf{结论}}：时域是周期为 $T_s$ 的冲激串，频域是周期为 $f_s$ 的冲激串，且幅度加权为 $f_s$ (即 $1/T_s$)。
+    \end{itemize}
+\end{intuitionbox}
+
+% --- Part 2: 理想抽样定理图解与推导 ---
+% [修改3] 使用 figure* 环境 (带星号) 实现跨双栏显示
+\begin{figure*}[t]
+\begin{kbox}{理想抽样过程：波形与频谱对照}
+    理想抽样可以看作是模拟信号 $m(t)$ 与单位冲激脉冲序列 $\delta_T(t)$ 在时域的\textbf{乘积}。
+    根据卷积定理：\textbf{时域相乘，对应频域卷积}。
+
+    \centering
+    % [调整] 将 xscale 调整为 1.1 以利用全宽空间
+    \begin{tikzpicture}[xscale=1.1, yscale=0.8, >=Latex]
+        % 定义样式
+        \tikzstyle{signal} = [thick, mainblue]
+        \tikzstyle{spectrum} = [thick, mainblue, fill=mainblue!10]
+        \tikzstyle{axis} = [->, gray]
+        
+        % --- 第一行：原始信号 ---
+        % 时域 m(t)
+        \begin{scope}[xshift=-5cm, yshift=3cm]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$m(t)$};
+            \draw[signal] plot[domain=-2:2, samples=50] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+            \node at (0, -0.8) {\small (a) 模拟信号};
+        \end{scope}
+        
+        % 箭头：转换
+        \draw[<->, thick, gray] (-0.8, 3.5) -- (0.8, 3.5);
+
+        % 频域 M(f)
+        \begin{scope}[xshift=5cm, yshift=3cm]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$|M(f)|$};
+            \draw[spectrum] (-1.2,0) -- (0,1.2) -- (1.2,0) -- cycle;
+            \node[below] at (-1.2,0) {$-f_H$};
+            \node[below] at (1.2,0) {$f_H$};
+            \node at (0, -0.8) {\small (b) 信号频谱};
+        \end{scope}
+
+        % --- 运算符号 ---
+        \node[font=\bfseries\large, text=textgreen] at (-5, 1.8) {$\times$ (相乘)};
+        \node[font=\bfseries\large, text=textgreen] at (5, 1.8) {$*$ (卷积)};
+
+        % --- 第二行：抽样脉冲 ---
+        % 时域 delta_T(t)
+        \begin{scope}[xshift=-5cm, yshift=0cm]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$\delta_T(t)$};
+            \foreach \x in {-2,-1.5,...,2} {
+                \draw[->, thick] (\x,0) -- (\x,1);
+            }
+            \node[below, text=red] at (0.5,0) {$T_s$}; 
+            \node[below, text=red] at (-0.5,0) {$-T_s$};
+            \node at (0, -0.8) {\small (c) 冲激序列};
+        \end{scope}
+        
+        \draw[<->, thick, gray] (-0.8, 0.5) -- (0.8, 0.5);
+
+        % 频域 Delta(f)
+        \begin{scope}[xshift=5cm, yshift=0cm]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$\delta_T(f)$};
+            \foreach \x in {-2,-1,0,1,2} {
+                \draw[->, thick] (\x,0) -- (\x,1);
+            }
+            \node[below, text=red] at (1,0) {$f_s$};
+            % 标注带宽 f_s
+            \draw[<->, red, dashed] (0, 0.6) -- (1, 0.6) node[midway, above] {$f_s$};
+            \node at (0, -0.8) {\small (d) 脉冲频谱};
+        \end{scope}
+
+        % --- 等号 ---
+        \draw[double, double distance=2pt, gray] (-5, -1.2) -- (-5, -1.8);
+        \draw[double, double distance=2pt, gray] (5, -1.2) -- (5, -1.8);
+
+        % --- 第三行：已抽样信号 ---
+        % 时域 m_s(t)
+        \begin{scope}[xshift=-5cm, yshift=-3.5cm]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$m_s(t)$};
+            % 包络虚线
+            \draw[dashed, gray] plot[domain=-2.2:2.2, samples=50] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+            % 抽样点
+            \foreach \x in {-2,-1.5,...,2} {
+                \draw[->, thick, mainblue] (\x,0) -- (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+                \fill[mainblue] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)}) circle (1.5pt);
+            }
+            \node[right, font=\footnotesize] at (0.2, 1.2) {$m(nT_s)$};
+            \node at (0, -0.8) {\small (e) 抽样信号波形};
+        \end{scope}
+        
+        \draw[<->, thick, gray] (-0.8, -3) -- (0.8, -3);
+
+        % 频域 M_s(f)
+        \begin{scope}[xshift=5cm, yshift=-3.5cm]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$M_s(f)$};
+            
+            % 周期性频谱
+            \foreach \k in {-2,-1,0,1,2} {
+                \draw[spectrum] (\k-0.4, 0) -- (\k, 1.2) -- (\k+0.4, 0) -- cycle;
+            }
+            
+            % 滤波器框
+            \draw[thick, dashed, red] (-0.5, -0.1) rectangle (0.5, 1.4);
+            \node[red, font=\footnotesize] at (0.7, 1.3) {低通滤波};
+            
+            % 标注
+            \node[below] at (0,0) {$0$};
+            \node[below] at (1,0) {$f_s$};
+            \node[below] at (-1,0) {$-f_s$};
+            \node[below, font=\scriptsize] at (0.4,0) {$f_H$};
+            \node[below, font=\scriptsize] at (0.6,0) {}; 
+            
+            % 混叠条件标注
+            \node[draw, rounded corners, fill=gray!10, font=\bfseries\small] at (1.8, 1.8) {$f_s \ge 2f_H$};
+            
+            \node at (0, -0.8) {\small (f) 周期延拓频谱};
+        \end{scope}
+
+    \end{tikzpicture}
+    
+    \tcblower
+    
+    \textbf{核心数学推导}:
+    \begin{itemize}
+        \item \textbf{时域表达式}：
+        \begin{equation}
+            m_s(t) = m(t) \cdot \delta_T(t) = m(t) \sum_{n=-\infty}^{\infty} \delta(t - nT_s)
+        \end{equation}
+        \item \textbf{频域表达式}（应用卷积定理 $M_s(f) = M(f) * \Delta_T(f)$）：
+        \begin{equation}
+            \begin{aligned}
+                M_s(f) &= M(f) * \left[ \frac{1}{T_s} \sum_{n=-\infty}^{\infty} \delta(f - n f_s) \right] \\
+                       &= \frac{1}{T_s} \sum_{n=-\infty}^{\infty} M(f) * \delta(f - n f_s) \\
+                       &= \frac{1}{T_s} \sum_{n=-\infty}^{\infty} M(f - n f_s)
+            \end{aligned}
+        \end{equation}
+    \end{itemize}
+    \textbf{物理意义}：抽样后信号的频谱 $M_s(f)$ 是原信号频谱 $M(f)$ 以 $f_s$ 为周期进行\textbf{无限周期延拓}，且幅度缩减为原来的 $1/T_s$。
+\end{kbox}
+\end{figure*}
+
+% --- Part 3: 定理定义提取 ---
+\begin{kbox}{低通抽样定理 (Nyquist Sampling Theorem)}
+    
+    \textbf{定理内容}：
+    对于最高频率小于 $f_H$ 的模拟信号 $m(t)$，若要由其等间隔的抽样值唯一确定（无失真恢复）原信号，抽样间隔 $T_s$ 或抽样速率 $f_s$ 应满足以下条件：
+
+    \begin{itemize}
+        \item \textbf{抽样速率条件}：
+        \begin{equation}
+            \boxed{f_s \ge 2f_H}
+        \end{equation}
+        即抽样频率必须大于等于信号最高频率的2倍。
+        
+        \item \textbf{抽样间隔条件}：
+        \begin{equation}
+            \boxed{T_s \le \frac{1}{2f_H}}
+        \end{equation}
+    \end{itemize}
+
+    \textbf{关键术语定义}：
+    \begin{enumerate}
+        \item \textbf{奈奎斯特速率 (Nyquist Rate)}：允许的\textbf{最低}抽样速率。
+        \begin{equation}
+            f_s = 2f_H
+        \end{equation}
+        \item \textbf{奈奎斯特间隔 (Nyquist Interval)}：允许的\textbf{最大}抽样间隔。
+        \begin{equation}
+            T_s = \frac{1}{2f_H}
+        \end{equation}
+    \end{enumerate}
+
+    \tcblower % 分割线，下方放例子
+    
+    \textbf{典型应用实例}：
+    对于典型电话信号，其最高频率通常限制为 $f_H = 3400\text{Hz}$。
+    根据定理，无失真恢复所需的：
+    \begin{itemize}
+        \item 理论最低抽样速率 (奈奎斯特速率)：$f_s = 2 \times 3400 = 6800\text{Hz}$。
+        \item \textbf{实际工程标准}：为了留有保护频带 (Guard Band) 便于滤波，通常取 $f_s = \mathbf{8000\text{Hz}}$。
+    \end{itemize}
+\end{kbox}
