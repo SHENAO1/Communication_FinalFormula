@@ -8,39 +8,31 @@
     \begin{tikzpicture}[
         grow=right,
         level 1/.style={sibling distance=3.5cm, level distance=3.5cm},
-        level 2/.style={sibling distance=1.2cm, level distance=3.5cm},
+        level 2/.style={sibling distance=1.2cm, level distance=4.5cm}, % 稍微增加 level distance 以容纳更长的灰色文字
         edge from parent/.style={draw, thick, gray},
         root/.style={rectangle, rounded corners, draw=mainblue, fill=mainblue!10, text centered, font=\bfseries\large, inner sep=10pt},
         node1/.style={rectangle, rounded corners, draw=blue!80, fill=blue!5, text centered, font=\bfseries, minimum height=0.8cm},
         node2/.style={rectangle, rounded corners, draw=gray!60, fill=white, text centered, font=\small, minimum height=0.6cm},
+        % 定义一个统一的 label 样式，方便复用
+        note/.style={label={[font=\scriptsize, text=gray, align=left, xshift=0.1cm]right:#1}}
         ]
 
         % 根节点
         \node[root] {抽样}
             % 分支 3：按脉冲形状
             child {node[node1] {3. 按脉冲形状}
-                child {node[node2] {实际抽样 (平顶/自然)}
-                    node[right=0.2cm, font=\scriptsize, gray] {脉冲有宽度}
-                }
-                child {node[node2] {理想抽样 (冲激)}
-                    node[right=0.2cm, font=\scriptsize, gray] {$\delta(t)$序列}
-                }
+                child {node[node2, note={脉冲有宽度}] {实际抽样 (平顶/自然)}}
+                child {node[node2, note={$\delta(t)$序列}] {理想抽样 (冲激)}}
             }
             % 分支 2：按时间间隔
             child {node[node1] {2. 按时间间隔}
                 child {node[node2] {非均匀抽样 (随机)}}
-                child {node[node2] {均匀抽样 (等间隔)}
-                    node[right=0.2cm, font=\scriptsize, gray] {$T_s = \text{const}$}
-                }
+                child {node[node2, note={$T_s = \text{const}$}] {均匀抽样 (等间隔)}}
             }
             % 分支 1：按信号频谱
             child {node[node1] {1. 按信号频谱}
-                child {node[node2] {带通抽样}
-                     node[right=0.2cm, font=\scriptsize, gray] {对应带通信号}
-                }
-                child {node[node2] {低通抽样}
-                     node[right=0.2cm, font=\scriptsize, gray] {对应基带信号}
-                }
+                child {node[node2, note={对应带通信号}] {带通抽样}}
+                child {node[node2, note={对应基带信号}] {低通抽样}}
             };
     \end{tikzpicture}
     }
@@ -49,7 +41,7 @@
     \begin{itemize}
         \item \textbf{1. 信号类型 (频谱特性)}：
         \begin{itemize}
-            \item \textbf{低通抽样}：针对基带信号，满足 $f_s \ge 2f_H$ (本章重点)。
+            \item \textbf{低通抽样}：针对基带信号，满足 $f_s \ge 2f_H$ 。
             \item \textbf{带通抽样}：针对频谱在 $[f_L, f_H]$ 的信号，采样率可低于 $2f_H$。
         \end{itemize}
         
