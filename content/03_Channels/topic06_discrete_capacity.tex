@@ -22,7 +22,7 @@
         \end{itemize}
     \end{intuitionbox}
 
-    % [修复] 使用 align* 环境并拆分长公式，防止溢出
+    % [修复] 使用 align* 环境并拆分长公式，防止溢出 (参考 image_9bc048.png)
     \textbf{2. 深入理解：逻辑连接与实际意义}
     
     \textbf{(1) 为什么两者相等？（快递包裹类比）}
@@ -56,12 +56,17 @@
 \end{kbox}
 
 \begin{examplebox}{推导实例：二进对称信道 (BSC) 的容量}
-    \textbf{1. 模型定义}
-    假设信道是对称的，误码率为 $\epsilon$ (或 $p$)：
+    % 
+    \textbf{1. 模型定义与对称性含义}
+    
+    “离散二进对称信道”的含义如下：
     \begin{itemize}
-        \item 正确传输：$P(0|0) = P(1|1) = 1 - \epsilon$
-        \item 错误传输：$P(1|0) = P(0|1) = \epsilon$
+        \item \textbf{正确传递概率相等}：
+        \[ P(0|0) = P(1|1) = 1 - \epsilon \]
+        \item \textbf{错误传递概率相等}：
+        \[ P(0|1) = P(1|0) = \epsilon \]
     \end{itemize}
+    且满足概率归一性：$P(1|1) + P(0|1) = 1$。
 
     \begin{center}
     \begin{tikzpicture}[scale=0.8, >=Stealth]
@@ -69,45 +74,81 @@
         \node (x1) at (0, 0) {$1$};
         \node (y0) at (3, 1.5) {$0$};
         \node (y1) at (3, 0) {$1$};
-        
         \draw[->, thick, mainblue] (x0) -- (y0) node[midway, above] {\scriptsize $1-\epsilon$};
         \draw[->, thick, mainblue] (x1) -- (y1) node[midway, below] {\scriptsize $1-\epsilon$};
         \draw[->, thick, alertred, dashed] (x0) -- (y1) node[pos=0.25, below] {\scriptsize $\epsilon$};
         \draw[->, thick, alertred, dashed] (x1) -- (y0) node[pos=0.25, above] {\scriptsize $\epsilon$};
-        
         \node at (-0.5, 0.75) {Input $X$};
         \node at (3.5, 0.75) {Output $Y$};
     \end{tikzpicture}
     \end{center}
 
-    \textbf{2. 计算噪声熵 $H(Y|X)$}
+    \textbf{2. 第一步：计算噪声熵 $H(Y|X)$}
     \[ H(Y|X) = \sum_{x} P(x) H(Y|X=x) \]
-    由于信道对称，无论发送 0 还是 1，其条件熵都是一样的。
-    % [修复] 使用 align* 拆分过长的熵公式
+    由于信道对称，无论发0还是发1，其条件熵相同：
     \begin{align*}
         H(Y|X=0) &= H(Y|X=1) \\
                  &= -[\epsilon \log_2 \epsilon + (1-\epsilon)\log_2(1-\epsilon)] \\
                  &\triangleq H(\epsilon)
     \end{align*}
-    \textbf{关键点}：$H(Y|X) = H(\epsilon)$ 仅取决于信道特性，与信源分布 $P(x)$ \textbf{无关}。
+    \textbf{结论}：$H(Y|X)$ 仅由信道特性 $\epsilon$ 决定，与信源 $P(x)$ 无关。
 
     \tcbline
 
-    \textbf{3. 计算输出熵 $H(Y)$ 并最大化}
-    \[ C = \max_{P(x)} [H(Y) - H(\epsilon)] = \max_{P(x)} H(Y) - H(\epsilon) \]
+    % 
+    \textbf{3. 第二步：输出概率推导}
     
-    设信源概率 $P(X=0) = \alpha$，则 $P(X=1) = 1-\alpha$。由全概率公式：
-    % [修复] 使用 align* 拆分过长的全概率公式
+    为了使 $C = \max [H(Y) - H(\epsilon)]$ 最大，需最大化 $H(Y)$。
+    我们考察\textbf{输入等概}的情况，即 $P(X=0)=P(X=1)=\frac{1}{2}$。
+    
+    利用全概率公式，分别计算输出端收到 0 和 1 的概率：
     \begin{align*}
-        P(Y=0) &= P(0|0)\alpha + P(0|1)(1-\alpha) \\
-               &= (1-\epsilon)\alpha + \epsilon(1-\alpha)
+        P(Y=0) &= P(X=0)P(0|0) + P(X=1)P(0|1) \\
+               &= \frac{1}{2}(1-\epsilon) + \frac{1}{2}(\epsilon) = \frac{1}{2} \\[1em]
+        P(Y=1) &= P(X=1)P(1|1) + P(X=0)P(1|0) \\
+               &= \frac{1}{2}(1-\epsilon) + \frac{1}{2}(\epsilon) = \frac{1}{2}
     \end{align*}
     
-    \textbf{分析}：
-    要使 $C$ 最大，需使 $H(Y)$ 最大。对于二进制变量，$H(Y)$ 的最大值为 1 bit，条件是输出概率相等，即 $P(Y=0)=P(Y=1)=0.5$。
+    \textbf{推导结论}：离散二进制对称信道，若\textbf{输入等概}，则\textbf{输出也等概}。
+
+    \tcbline
     
-    \textbf{4. 最终容量公式}
-    当信源等概分布 ($P(X=0)=0.5$) 且信道对称时，输出也等概，此时达到容量：
-    \[ \Large \boxed{ C = 1 - H(\epsilon) \quad (\text{b/symbol}) } \]
+    % 
+    \textbf{4. 第三步：验证转移概率与后验概率的关系}
+    
+    基于“输入等概($1/2$)”导致“输出等概($1/2$)”的条件，利用贝叶斯公式推导后验概率。
+    
+    \small
+    \begin{align*}
+        P(X=0|Y=0) &= \frac{P(Y=0|X=0) \cdot \cancel{0.5}}{\cancel{0.5}} = P(Y=0|X=0) \\
+        P(X=1|Y=0) &= \frac{P(Y=0|X=1) \cdot \cancel{0.5}}{\cancel{0.5}} = P(Y=0|X=1) \\
+        P(X=0|Y=1) &= \frac{P(Y=1|X=0) \cdot \cancel{0.5}}{\cancel{0.5}} = P(Y=1|X=0) \\
+        P(X=1|Y=1) &= \frac{P(Y=1|X=1) \cdot \cancel{0.5}}{\cancel{0.5}} = P(Y=1|X=1)
+    \end{align*}
+    \normalsize
+
+    % 
+    \begin{itemize}
+        \item \textbf{思考：分子上的 0.5 和分母上的 0.5 物理意义相同吗？}
+        \begin{itemize}
+            \item \textbf{分子上的 0.5}：代表\textbf{先验概率} $P(X)$（信源发送的统计特性）。
+            \item \textbf{分母上的 0.5}：代表\textbf{输出概率} $P(Y)$（接收端收到的统计特性）。
+            \item \textbf{结论}：两者\textbf{物理来源不同}。正是因为“信道对称”且“输入等概”，才使得经全概率公式计算出的 $P(Y)$ 恰好在数值上等于 $P(X)$，从而可以被约去。
+        \end{itemize}
+    \end{itemize}
+
+    \vspace{5pt}
+    \textbf{重要性质}：
+    \textcolor{alertred}{在输入等概时，离散二进对称信道的转移概率等于后验概率。}
+    
+    {\Large
+    \[ \boxed{ P(y_j | x_i) = P(x_i | y_j) } \]
+    }
+
+    \tcbline
+    
+    \textbf{5. 最终容量公式}
+    当输出等概时，$H(Y)$ 达到最大值 1 bit。
+    \[ C = 1 - H(\epsilon) \quad (\text{b/symbol}) \]
     
 \end{examplebox}

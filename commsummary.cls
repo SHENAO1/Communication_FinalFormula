@@ -8,6 +8,7 @@
 \RequirePackage[left=1.5cm, right=1.5cm, bottom=1.5cm, top=2.2cm, headheight=15pt, columnsep=0.8cm]{geometry}
 \RequirePackage{amsmath, amssymb, amsthm, bm} 
 \RequirePackage{graphicx}
+\RequirePackage{cancel}
 
 % --- 绘图支持 ---
 \RequirePackage{tikz}
