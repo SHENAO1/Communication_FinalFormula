@@ -1,0 +1,71 @@
+% file: content/03_Channels/topic07_ex_shannon_analysis.tex
+
+\begin{examplebox}{推导：香农极限 (Shannon Limit Derivation)}
+    \textbf{问题}：当信道带宽 $B \to \infty$ 时，信道容量 $C_t$ 是否无限增加？
+    
+    \[ \lim_{B \to \infty} C_t = \lim_{B \to \infty} B \log_2 \left( 1 + \frac{S}{n_0 B} \right) \]
+    
+        
+    \tcbline
+    
+    \textbf{方法一：重要极限法 (PPT思路)} 
+    
+    利用重要极限 $\lim_{z \to \infty} (1 + \frac{1}{z})^z = e$ 进行凑形。
+    
+    令 $x = \frac{n_0 B}{S}$。当 $B \to \infty$ 时， $x \to \infty$。且 $B = \frac{S}{n_0} x$。
+    
+    \begin{align*}
+        \lim_{B \to \infty} C_t &= \lim_{x \to \infty} \frac{S}{n_0} x \cdot \log_2 \left( 1 + \frac{1}{x} \right) \\
+        &= \frac{S}{n_0} \lim_{x \to \infty} \log_2 \left( 1 + \frac{1}{x} \right)^x \\
+        &= \frac{S}{n_0} \log_2 e \approx 1.44 \frac{S}{n_0}
+    \end{align*}
+
+    \tcbline
+    
+    \textbf{方法二：变量代换与等价无穷小 (手写笔记思路)} 
+    
+    利用 $\lim_{u \to 0} \ln(1+u) \sim u$ 简化计算。
+    
+    令 $t = \frac{1}{B}$。当 $B \to \infty$ 时， $t \to 0$。原式变形为 $\frac{0}{0}$ 型极限：
+    
+    \begin{align*}
+        \lim_{B \to \infty} C_t &= \lim_{t \to 0} \frac{\log_2 (1 + \frac{S}{n_0} t)}{t} \\
+        \text{\small (换底公式)} \quad &= \lim_{t \to 0} \frac{\ln (1 + \frac{S}{n_0} t)}{t \cdot \ln 2} \\
+        \text{\small (等价无穷小)} \quad &= \frac{1}{\ln 2} \lim_{t \to 0} \frac{\frac{S}{n_0} t}{t} \\
+        &= \frac{1}{\ln 2} \frac{S}{n_0} \approx 1.44 \frac{S}{n_0}
+    \end{align*}
+
+    \tcbline
+    
+    \textbf{结论}：
+    \begin{itemize}
+        \item 当带宽 $B \to \infty$ 时，信道容量趋于定值 $1.44 \frac{S}{n_0}$ (即 $C_\infty$)。
+        \item 这表明：在给定噪声功率谱密度的情况下，仅靠增加带宽，信道容量是有上限的。
+    \end{itemize}
+\end{examplebox}
+
+\begin{kbox}{工程应用：三要素的互换与权衡}
+        
+    根据公式，给定信道容量 $C_t$，带宽 $B$、信噪比 $S/N$ 及传输时间三者可以互换：
+    
+    \begin{enumerate}
+        \item \textbf{以带宽换信噪比 (宽带/扩频通信)}：
+        \begin{itemize}
+            \item \textbf{原理}：提高带宽 $B$，可以容忍更低的信噪比 $S/N$ 而保持 $C_t$ 不变。
+            \item \textbf{应用}：深空通信（信号极其微弱）、CDMA、扩频通信。
+            \item \textbf{直观}：将信号能量分散在很宽的频带上，使信号淹没在噪声中，接收端再通过扩频码提取。
+        \end{itemize}
+        
+        \item \textbf{以信噪比换带宽 (窄带通信)}：
+        \begin{itemize}
+            \item \textbf{原理}：提高信噪比 $S/N$（增加发射功率），可以降低对带宽 $B$ 的需求。
+            \item \textbf{应用}：有线载波电话、频带拥挤的场合。
+            \item \textbf{直观}：使用高阶调制（如 256-QAM），在有限带宽内传输更多比特，但要求信号非常干净（高SNR）。
+        \end{itemize}
+        
+        \item \textbf{以带宽换时间}：
+        \begin{itemize}
+            \item 信噪比不变，提高带宽 $B$ 可以增加容量 $C_t$，从而降低传输同样数据量所需的时间。
+        \end{itemize}
+    \end{enumerate}
+\end{kbox}

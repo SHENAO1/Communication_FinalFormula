@@ -1,30 +1,45 @@
 % file: content/03_Channels/topic07_continuous_capacity.tex
 
-\begin{kbox}{6. 连续信道容量 (Shannon Formula)}
-    
-    对于带宽受限、存在高斯白噪声的连续信道，其容量由\textbf{香农公式}给出：
-    
-    \[ C = B \log_2 \left( 1 + \frac{S}{N} \right) \quad (\text{b/s}) \]
+\begin{kbox}{6. 连续信道容量 (Continuous Channel Capacity)}
+
+    \subsection*{6.1 无扰信道 vs. 有扰信道}
+        
+    在讨论香农公式前，需区分两种信道环境下的极限：
     
     \begin{itemize}
-        \item $B$：信道带宽 (Hz)。
-        \item $S$：信号平均功率 (W)。
-        \item $N = n_0 B$：噪声功率 (W)，其中 $n_0$ 为单边噪声功率谱密度。
+        \item \textbf{无扰信道 (奈奎斯特定理)}：
+        对于带宽为 $B$ (Hz) 的理想无噪声信道，若信号采用 $M$ 进制传输，其极限信息速率为：
+        \[ C_t = 2B \log_2 M \quad (\text{b/s}) \]
+        \textit{注：这限制的是码元速率以避免码间串扰 (ISI)，未考虑噪声影响。}
+        
+        \item \textbf{有扰信道 (香农公式)}：
+        对于带宽为 $B$ (Hz)、存在加性高斯白噪声 (AWGN) 的信道，其无差错传输的最大信息速率为：
+        \[ C_t = B \log_2 \left( 1 + \frac{S}{N} \right) \quad (\text{b/s}) \]
     \end{itemize}
 
     \tcbline
+
+    \subsection*{6.2 香农公式 (Shannon Formula)}
     
-    \textbf{物理意义与权衡 (Trade-off)}：
-    \begin{enumerate}
-        \item \textbf{带宽与信噪比互换}：为了保持 $C$ 不变，可以降低信噪比 $S/N$，但必须增加带宽 $B$（扩频通信的基础）。
-        \item \textbf{无误码传输}：只要信息传输速率 $R \le C$，理论上就存在某种编码方式，可以实现无误码传输。
-    \end{enumerate}
+    \[ C_t = B \log_2 \left( 1 + \frac{S}{n_0 B} \right) \]
+    
+    \textbf{核心三要素}：
+    \begin{itemize}
+        \item $B$：信道带宽 (Hz)。
+        \item $S$：信号平均功率 (W)。
+        \item $n_0$：噪声单边功率谱密度 (W/Hz)，噪声功率 $N = n_0 B$。
+    \end{itemize}
+    
+    \textbf{信道编码定理 (Channel Coding Theorem)}：
+    \begin{itemize}
+        \item 若信息传输速率 $R_b \le C_t$，理论上\textbf{总能找到}一种编码方式，实现无差错传输。
+        \item 若 $R_b > C_t$，则\textbf{不可能}实现无差错传输。
+    \end{itemize}
 \end{kbox}
 
-\begin{intuitionbox}{极限情况分析：带宽 $B \to \infty$}
-    当带宽趋于无穷大时，信道容量\textbf{不会}趋于无穷大，而是趋于一个定值。这是因为噪声功率 $N=n_0 B$ 也会随带宽增加而增加。
+\begin{intuitionbox}{香农公式的“存在性”本质}
+    \textbf{存在性定理 (Existence Theorem)}：
+    香农公式仅证明了理想通信系统极限信息率的“存在性”，即指出了理论上的上限（Upper Bound）和无差错传输的可能性，但\textbf{未给出具体实现方法}（Constructive Method）。
     
-    \[ \lim_{B \to \infty} C = \lim_{B \to \infty} B \log_2 \left( 1 + \frac{S}{n_0 B} \right) \approx 1.44 \frac{S}{n_0} \]
-    
-    这表明：在给定信号功率 $S$ 和噪声密度 $n_0$ 的情况下，仅靠增加带宽所能获得的容量是有上限的。
+    这意味着它告诉我们“可以做到”，但没告诉我们“怎么做”。现代通信技术（如Turbo码、LDPC码、Polar码）的发展正是为了不断逼近这一理论极限。
 \end{intuitionbox}
