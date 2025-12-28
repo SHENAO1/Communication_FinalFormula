@@ -1,47 +1,71 @@
 % content/04_SourceCoding/topic00_intro.tex
 
-\begin{kbox}{信源编码 vs. 信道编码}
+\begin{kbox}{信源编码概述}
     \begin{itemize}
-        \item \textbf{定义与核心目的}
+        \item \textbf{信源编码的两大作用}
+        \begin{enumerate}
+            \item \textbf{压缩编码}：减少冗余，提高有效性。
+            \item \textbf{模/数转换 (A/D)}：将模拟信号转换为数字信号。
+        \end{enumerate}
+
+        \item \textbf{为什么要数字化？}
         \begin{itemize}
-            \item \textbf{信源编码 (Source Coding)}：
-            \begin{itemize}
-                \item \textbf{目的}：提高通信的\textbf{有效性} (Efficiency)。
-                \item \textbf{手段}：\textbf{减少冗余}。通过压缩算法（如哈夫曼、PCM、JPEG）去除原始信息中不必要的成分，降低数据率，节省带宽/存储。
-                \item \textbf{核心指标}：压缩比、失真度。
-            \end{itemize}
-            \item \textbf{信道编码 (Channel Coding)}：
-            \begin{itemize}
-                \item \textbf{目的}：提高通信的\textbf{可靠性} (Reliability)。
-                \item \textbf{手段}：\textbf{增加冗余}。人为添加监督位（校验位），使接收端能发现或纠正传输中的错误（如奇偶校验、CRC、卷积码）。
-                \item \textbf{核心指标}：误码率、编码增益。
-            \end{itemize}
+            \item 数字通信系统已成为通信的发展方向。
+            \item 自然界的许多信息（如声音、图像）经传感器感知后都是模拟量，必须经处理才能进入数字系统。
         \end{itemize}
-        
-        \item \textbf{对比总结表}
-        \begin{center}
-        \footnotesize
-        \begin{tabular}{|c|c|c|}
-            \hline
-            \textbf{维度} & \textbf{信源编码} & \textbf{信道编码} \\
-            \hline
-            \textbf{作用} & “瘦身” (压缩) & “穿甲” (保护) \\
-            \hline
-            \textbf{冗余操作} & \textbf{去除}冗余 & \textbf{增加}冗余 \\
-            \hline
-            \textbf{关键目标} & 有效性 (省带宽) & 可靠性 (抗干扰) \\
-            \hline
-        \end{tabular}
-        \end{center}
+
+        \item \textbf{A/D转换 (数字化编码) 的技术分类}
+        \begin{itemize}
+            \item \textbf{波形编码} (Waveform Coding)：如 PCM, DPCM, $\Delta$M。特点是还原度高，但码率较高。
+            \item \textbf{参量编码} (Parametric Coding)：提取特征参数（如声码器）。
+            \item \textbf{混合编码} (Hybrid Coding)：结合上述两者。
+        \end{itemize}
     \end{itemize}
 \end{kbox}
 
-\begin{intuitionbox}{直观理解：冗余的减法与加法}
-    \begin{itemize}
-        \item \textbf{信源编码 (减法)}：类似于\textbf{写缩写}。
-        \par 把 ``For Your Information'' 缩写为 ``FYI''。这去除了多余的字母，让书写和阅读更快（提高了有效性）。
-        
-        \item \textbf{信道编码 (加法)}：类似于\textbf{打电话时的确认}。
-        \par 说 ``我是张三，弓长张，一二三的三''。额外多说的几句话就是“冗余”，目的是为了防止对方听错（提高了可靠性）。
-    \end{itemize}
+\begin{intuitionbox}{模拟信号数字化传输的三个环节}
+    根据，数字化传输包含以下全过程：
+    
+    \begin{center}
+    % --- 修改说明：使用了 resizebox 确保图片自动缩放以适应栏宽 ---
+    \resizebox{\linewidth}{!}{
+    \begin{tikzpicture}[
+        % --- 修改说明：将水平间距(第二个参数)从 0.8cm 减小到 0.45cm，缩短箭头 ---
+        node distance=1.2cm and 0.45cm,
+        box/.style={rectangle, draw=mainblue, fill=white, thick, minimum height=0.8cm, minimum width=1.5cm, align=center, font=\small},
+        arrow/.style={-Latex, thick, mainblue},
+        labeltext/.style={font=\scriptsize\color{gray}, align=center}
+    ]
+        % 节点
+        \node[box, fill=orange!20] (src) {模拟\\信号源};
+        \node[box, fill=red!10, right=of src] (ad) {A/D\\变换};
+        \node[box, fill=green!10, right=of ad] (sys) {数字\\通信系统};
+        \node[box, fill=red!10, right=of sys] (da) {D/A\\变换};
+        \node[coordinate, right=of da] (end) {};
+
+        % 连线
+        \draw[arrow] (src) -- (ad);
+        \draw[arrow] (ad) -- (sys);
+        \draw[arrow] (sys) -- (da);
+        \draw[arrow] (da) -- (end);
+
+        % 下方标注 (模拟/数字序列)
+        \node[labeltext, below=0.2cm of src] (l1) {模拟随机\\信号};
+        \node[labeltext, below=0.2cm of ad] (l2) {数字随机\\序列};
+        \node[labeltext, below=0.2cm of sys] (l3) {数字随机\\序列};
+        \node[labeltext, below=0.2cm of da] (l4) {模拟随机\\信号};
+
+        \draw[dashed, gray, ->] (l1) -- (src);
+        \draw[dashed, gray, ->] (l2) -- (ad);
+        \draw[dashed, gray, ->] (l3) -- (sys);
+        \draw[dashed, gray, ->] (l4) -- (da);
+
+    \end{tikzpicture}
+    }
+    \end{center}
+
+    \textbf{波形编码的三步曲}：
+    \begin{equation*}
+        \text{模拟信号} \xrightarrow{\textbf{抽样}} \text{抽样信号} \xrightarrow{\textbf{量化}} \text{量化信号} \xrightarrow{\textbf{编码}} \text{数字信号}
+    \end{equation*}
 \end{intuitionbox}

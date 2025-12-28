@@ -1,0 +1,134 @@
+% content/04_SourceCoding/topic01_sampling_intuition.tex
+
+\begin{intuitionbox}{抽样定理的直观解释：操场跑步与照相机}
+    有些初学者难以理解为什么“离散采样会导致频域周期延拓”，以及为什么“采样频率必须大于两倍”。我们可以用“操场跑步拍照”的例子来直观解释。
+
+    \subsubsection*{1. 为什么时域离散 $\to$ 频域周期延拓？}
+    \begin{itemize}
+        \item \textbf{场景设定}：
+        \begin{itemize}
+            \item \textbf{信号相位 $\leftrightarrow$ 操场跑道}：假设操场是一个圆圈，人在上面跑。
+            \item \textbf{信号幅度/位置 $\leftrightarrow$ 人所在的位置}：你看到的照片里人在哪里。
+            \item \textbf{采样 $\leftrightarrow$ 拍照}：你手里有一台相机，每分钟按下一次快门。
+        \end{itemize}
+        
+        \item \textbf{无法区分的圈数 (混叠)}：
+        假设甲的速度是 \textbf{0.3 圈/分钟}。每过一分钟你拍一张照，甲相对于上一张向前移动了 0.3 圈。
+        但是，如果乙的速度是 \textbf{1.3 圈/分钟}，每过一分钟他跑了一整圈多 0.3 圈，照片里他的位置和甲\textbf{完全一样}。
+        同理，2.3 圈/分钟、3.3 圈/分钟的人，拍出来的照片位置都重叠了。
+    \end{itemize}
+
+    \begin{center}
+    \begin{tikzpicture}[scale=0.9, >=Latex]
+        % 跑道
+        \draw[thick, gray!50] (0,0) circle (2.0cm);
+        
+        % 辅助线
+        \draw[gray, dashed] (0,0) -- (90:2.0) node[above, text=black] {\small 起点 (0)};
+        \node[text=gray] at (0,0) {位置重叠};
+        
+        % 甲：0.3圈
+        \draw[->, line width=1.5pt, mainblue] (90:2.1) arc (90:-18:2.1);
+        \node[mainblue, right] at (45:2.2) {甲: 0.3圈};
+        
+        % 乙：1.3圈
+        \draw[->, line width=1.5pt, red] (90:1.8) arc (90:-270:1.8) coordinate (aux);
+        \draw[line width=1.5pt, red] (aux) arc (90:-18:1.8);
+        \node[red, left] at (180:1.8) {乙: 1.3圈};
+        
+        % 终点
+        \filldraw [black] (-18:2.0) circle (3pt);
+        \node[right, font=\small, yshift=-0.3cm] at (-18:2.0) {拍照时刻位置};
+    \end{tikzpicture}
+    \end{center}
+
+    \subsubsection*{2. 为什么采样频率必须大于两倍 ($f_s > 2f_H$)？}
+    采样定理要求 $f_s > 2f_H$，本质是因为频率不仅有大小，还有\textbf{方向}（正负频率）。照片只能记录“位置”，大脑在重建信号时，默认物体走的是\textbf{近道}（移动不超过半圈）。
+    
+    \vspace{0.5em}
+    \textbf{场景分析}：假设某人真实速度为 \textbf{顺时针 1.3 圈/分钟} ($f_H=1.3$)。
+
+    \vspace{1em}
+    \begin{center}
+    % 使用 scale 调整整体大小，防止垂直方向过长
+    \begin{tikzpicture}[
+        scale=0.85, transform shape,
+        clock/.style={circle, draw=black!60, very thick, minimum size=3.5cm},
+        hand/.style={-Latex, line width=2pt, line cap=round},
+        dot/.style={fill=red, circle, inner sep=2.5pt},
+        textbox/.style={text width=9cm, align=center, font=\small, anchor=north}, % 文字居中
+        title/.style={font=\bfseries\large}
+    ]
+        % 定义垂直间距 (根据时钟大小和文字高度调整)
+        \def\vdist{7.5}
+
+        % ====== 情况一：采样太慢 (混叠) ======
+        \begin{scope}[yshift=0cm]
+            % 时钟
+            \node[clock] (c1) at (0,0) {};
+            \node[above] at (c1.north) {12点};
+            \node[below] at (c1.south) {6点};
+            
+            % 路径
+            \draw[hand, mainblue!40, dashed] (90:1.4) arc (90:-144:1.4); 
+            \node[mainblue!60, font=\scriptsize] at (0,0.5) {真实: 0.65圈};
+            
+            \draw[hand, red] (90:1.75) arc (90:216:1.75);
+            \node[red, font=\footnotesize, left] at (150:1.9) {观测: -0.35圈};
+            \node[dot] at (216:1.75) {};
+
+            % 下方文字
+            \node[textbox] at (0, -2.2) {
+                \textbf{\textcolor{red}{1. 采样太慢 ($f_s < 2f_H$)}}\\
+                $f_s=2$ (每0.5min拍一张)\\
+                \vspace{0.2cm}
+                \textbf{混叠错误}：真实跑了\textbf{过半圈} (0.65)，但因为拍照间隔太长，
+                被误判为\textbf{倒着跑}小圈 (-0.35)。\\
+                结果：$1.3 \to -0.7$ (方向错了)
+            };
+        \end{scope}
+
+        % ====== 情况二：临界采样 (方向丢失) ======
+        \begin{scope}[yshift=-\vdist cm]
+            \node[clock] (c2) at (0,0) {};
+            \node[above] at (c2.north) {12点};
+            \node[below] at (c2.south) {6点};
+            
+            \draw[hand, mainblue, dashed] (91:1.5) arc (91:-89:1.5);
+            \draw[hand, mainblue, dashed] (89:1.5) arc (89:269:1.5);
+            \node[dot] at (270:1.75) {}; 
+            
+            \node[textbox] at (0, -2.2) {
+                \textbf{\textcolor{orange}{2. 临界采样 ($f_s = 2f_H$)}}\\
+                $f_s=2.6$ (每0.38min拍一张)\\
+                \vspace{0.2cm}
+                \textbf{方向丢失}：刚好跑了半圈 (到达6点)。\\
+                此时顺时针跑半圈和逆时针跑半圈落点一样，\textbf{分不清方向}。
+            };
+        \end{scope}
+
+        % ====== 情况三：采样足够快 (无失真) ======
+        \begin{scope}[yshift=-2*\vdist cm]
+            \node[clock] (c3) at (0,0) {};
+            \node[above] at (c3.north) {12点};
+            \node[below] at (c3.south) {6点};
+            
+            \draw[hand, green!50!black] (90:1.5) arc (90:-27:1.5);
+            \node[green!50!black, font=\footnotesize] at (30:0.8) {< 0.5圈};
+            \node[dot] at (-27:1.75) {};
+            
+            \node[textbox] at (0, -2.2) {
+                \textbf{\textcolor{green!40!black}{3. 采样足够快 ($f_s > 2f_H$)}}\\
+                $f_s=4$ (每0.25min拍一张)\\
+                \vspace{0.2cm}
+                \textbf{唯一确定}：两次拍照之间移动\textbf{少于半圈}。\\
+                根据“近道原则”，可以唯一确定他是顺时针跑过来的。
+            };
+        \end{scope}
+    \end{tikzpicture}
+    \end{center}
+
+    \begin{quote}
+        \textbf{总结}：为了不让正频率（顺时针）和负频率（逆时针）发生混淆，采样频率必须足够快，保证两次拍照之间物体移动\textbf{不超过半圈}。这就是 $f_s > 2f_{max}$ 的本质。
+    \end{quote}
+\end{intuitionbox}

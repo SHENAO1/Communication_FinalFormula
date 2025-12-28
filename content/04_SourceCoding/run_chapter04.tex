@@ -2,20 +2,28 @@
 \documentclass{../../commsummary}
 \graphicspath{{./figures/}{../../figures/}}
 
+% 引入必要的 TikZ 库用于绘图
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc, backgrounds}
+
 \begin{document}
 
 \section{信源编码 (Source Coding)}
 
-% 0. 概述：为什么要信源编码？(新增)
+% 0.1 概述：定义、目的与分类 (基于图片 e3dd94, e3dd99)
 \input{topic00_intro}
 
-% 1. 抽样定理 (低通/带通)
-\input{topic01_sampling}
+% 0.2 波形编码的三个步骤：抽样、量化、编码 (基于图片 e3ddb5)
+\input{topic00_waveform}
+\input{topic01_sampling_classification}
 
-% 2. 量化 (均匀/非均匀, A律/mu律)
+% 1. 抽样定理 (理论基础)
+\input{topic01_sampling}
+\input{topic01_sampling_intuition}
+
+% 2. 量化 (理论基础)
 \input{topic02_quantization}
 
-% 3. 脉冲编码调制 (PCM原理与噪声)
+% 3. 脉冲编码调制 (PCM原理与系统框图)
 \input{topic03_pcm}
 
 \end{document}

@@ -1,0 +1,68 @@
+% content/04_SourceCoding/topic01_sampling_classification.tex
+
+\begin{kbox}{抽样技术的分类体系}
+    根据手写笔记整理，抽样技术通常可以从以下三个维度进行分类：
+
+    \begin{center}
+    \resizebox{\linewidth}{!}{
+    \begin{tikzpicture}[
+        grow=right,
+        level 1/.style={sibling distance=3.5cm, level distance=3.5cm},
+        level 2/.style={sibling distance=1.2cm, level distance=3.5cm},
+        edge from parent/.style={draw, thick, gray},
+        root/.style={rectangle, rounded corners, draw=mainblue, fill=mainblue!10, text centered, font=\bfseries\large, inner sep=10pt},
+        node1/.style={rectangle, rounded corners, draw=blue!80, fill=blue!5, text centered, font=\bfseries, minimum height=0.8cm},
+        node2/.style={rectangle, rounded corners, draw=gray!60, fill=white, text centered, font=\small, minimum height=0.6cm},
+        ]
+
+        % 根节点
+        \node[root] {抽样}
+            % 分支 3：按脉冲形状
+            child {node[node1] {3. 按脉冲形状}
+                child {node[node2] {实际抽样 (平顶/自然)}
+                    node[right=0.2cm, font=\scriptsize, gray] {脉冲有宽度}
+                }
+                child {node[node2] {理想抽样 (冲激)}
+                    node[right=0.2cm, font=\scriptsize, gray] {$\delta(t)$序列}
+                }
+            }
+            % 分支 2：按时间间隔
+            child {node[node1] {2. 按时间间隔}
+                child {node[node2] {非均匀抽样 (随机)}}
+                child {node[node2] {均匀抽样 (等间隔)}
+                    node[right=0.2cm, font=\scriptsize, gray] {$T_s = \text{const}$}
+                }
+            }
+            % 分支 1：按信号频谱
+            child {node[node1] {1. 按信号频谱}
+                child {node[node2] {带通抽样}
+                     node[right=0.2cm, font=\scriptsize, gray] {对应带通信号}
+                }
+                child {node[node2] {低通抽样}
+                     node[right=0.2cm, font=\scriptsize, gray] {对应基带信号}
+                }
+            };
+    \end{tikzpicture}
+    }
+    \end{center}
+
+    \begin{itemize}
+        \item \textbf{1. 信号类型 (频谱特性)}：
+        \begin{itemize}
+            \item \textbf{低通抽样}：针对基带信号，满足 $f_s \ge 2f_H$ (本章重点)。
+            \item \textbf{带通抽样}：针对频谱在 $[f_L, f_H]$ 的信号，采样率可低于 $2f_H$。
+        \end{itemize}
+        
+        \item \textbf{2. 抽样间隔 (时间特性)}：
+        \begin{itemize}
+            \item \textbf{均匀抽样}：抽样时刻 $t_n = nT_s$，间隔恒定。通信原理主要讨论此类。
+            \item \textbf{非均匀抽样}：间隔随机或变化。
+        \end{itemize}
+
+        \item \textbf{3. 脉冲序列 (物理实现)}：
+        \begin{itemize}
+            \item \textbf{理想抽样}：使用冲激脉冲序列 $\delta_T(t)$，便于理论分析。
+            \item \textbf{实际抽样}：使用具有一定宽度的脉冲（如矩形脉冲），会引入孔径失真（如平顶抽样）。
+        \end{itemize}
+    \end{itemize}
+\end{kbox}

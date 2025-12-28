@@ -1,0 +1,85 @@
+% content/04_SourceCoding/topic00_waveform.tex
+
+\begin{kbox}{波形编码的三个步骤 (详解)}
+    根据，波形编码（如PCM）将模拟信号转化为数字信号主要经过以下三步：
+
+    \begin{center}
+    % 使用 resizebox 确保整体宽度适应双栏
+    \resizebox{\linewidth}{!}{
+    \begin{tikzpicture}[
+        scale=1, 
+        every node/.style={transform shape},
+        % 定义描述文本框样式
+        desc/.style={
+            align=left, 
+            fill=gray!10, 
+            text width=8.5cm, 
+            rounded corners, 
+            font=\small,
+            inner sep=6pt,
+            anchor=north
+        }
+    ]
+        
+        % --- 第一步：抽样 ---
+        \begin{scope}[yshift=0cm]
+            \draw[->] (-0.5,0) -- (7.5,0) node[right] {$t$};
+            \draw[->] (0,-1.2) -- (0,1.8) node[right] {$m(t), m_s(t)$};
+            \draw[gray, thick, dashed] plot[domain=0:7, samples=50] (\x, {sin(\x r * 1.5) + 0.2});
+            
+            \foreach \x in {0.5, 1.5, ..., 6.5} {
+                \draw[blue, thick, -Latex] (\x,0) -- (\x, {sin(\x r * 1.5) + 0.2});
+            }
+            \node[blue, font=\bfseries] at (6, 1.8) {抽样信号};
+            
+            \node[desc, fill=blue!5] at (3.5, -1.6) {
+                \textbf{1. 抽样 (Sampling)}\\
+                $m_s(t)$：\textbf{时间上离散}，但取值(幅度)仍然连续。\\
+                称为：离散模拟信号。
+            };
+        \end{scope}
+
+        % --- 第二步：量化 ---
+        \begin{scope}[yshift=-6cm] 
+            \draw[->] (-0.5,0) -- (7.5,0) node[right] {$t$};
+            \draw[->] (0,-1.2) -- (0,1.8) node[right] {$m_q(t)$};
+            \foreach \y in {-1, -0.5, 0, 0.5, 1, 1.5} {
+                \draw[gray!30, dashed] (0,\y) -- (7,\y);
+            }
+            
+            \foreach \x in {0.5, 1.5, ..., 6.5} {
+                \pgfmathsetmacro{\val}{sin(\x r * 1.5) + 0.2}
+                \pgfmathsetmacro{\quantized}{round(\val*2)/2} 
+                \draw[magenta, line width=2pt] (\x,0) -- (\x, \quantized);
+                \draw[magenta, fill=white] (\x, \quantized) circle (2pt);
+            }
+            \node[magenta, font=\bfseries] at (6, 1.8) {量化信号};
+
+            \node[desc, fill=magenta!5] at (3.5, -1.6) {
+                \textbf{2. 量化 (Quantization)}\\
+                $m_q(t)$：\textbf{时间上离散}，\textbf{取值(幅度)也离散}。\\
+                此时脉冲的\textbf{长短不一}，直接反映信号幅度大小。
+            };
+        \end{scope}
+
+        % --- 第三步：编码 ---
+        \begin{scope}[yshift=-12cm] 
+            \draw[->] (-0.5,0) -- (7.5,0) node[right] {$t$};
+            
+            \foreach \x in {0.5, 1.5, ..., 6.5} {
+                \node[above, font=\scriptsize] at (\x, 1.0) {011}; 
+                \draw[mainblue, fill=mainblue] (\x-0.15, 0) rectangle (\x+0.15, 0.7);
+            }
+            \node[mainblue, font=\bfseries] at (6, 1.8) {编码信号};
+
+            % --- 在此处加入了解释 ---
+            \node[desc, fill=mainblue!5] at (3.5, -0.5) {
+                \textbf{3. 编码 (Encoding)}\\
+                将量化电平映射为二进制码组 (如 010, 011)。\\
+                \textbf{注意}：此时脉冲\textbf{高度恒定}，仅代表数字逻辑电平(如5V)。原始信号的幅度信息已转化为\textbf{二进制数值}，不再由脉冲高度承载。
+            };
+        \end{scope}
+    \end{tikzpicture}
+    }
+    \end{center}
+\end{kbox}

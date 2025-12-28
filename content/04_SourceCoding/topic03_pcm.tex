@@ -1,22 +1,93 @@
 % content/04_SourceCoding/topic03_pcm.tex
 
-\begin{kbox}{脉冲编码调制 (PCM)}
+\begin{kbox}{脉冲编码调制 (PCM) 系统原理}
     \begin{itemize}
-        \item \textbf{基本参数} \pptpage{72}
+        \item \textbf{PCM原理框图}
+        \begin{center}
+        \resizebox{\linewidth}{!}{
+        \begin{tikzpicture}[
+            node distance=1.5cm,
+            blk/.style={rectangle, draw=blue!80!black, thick, fill=blue!5, minimum height=1cm, align=center, font=\small},
+            txt/.style={font=\small},
+            arrow/.style={-Latex, thick, blue!80!black}
+        ]
+            % --- 发端 (A/D) ---
+            \node[blk] (src) {模拟信源};
+            
+            % [修改] 显著增加间距到 2.2cm，确保 x(t) 远离红色虚线
+            \node[blk, right=2.2cm of src] (lpf) {预滤波器\\$(0, f_H)$};
+            \node[blk, right=0.8cm of lpf] (samp) {抽样};
+            \node[blk, right=0.8cm of samp] (enc) {波形编码器:\\量化、编码};
+            
+            % 信号标注 (此时位于长箭头的中间，完全在虚线框外)
+            \draw[arrow] (src) -- node[above]{$x(t)$} (lpf);
+            \draw[arrow] (lpf) -- (samp);
+            \draw[arrow] (samp) -- node[above]{$x(n)$} (enc);
+
+            % 发端虚线框
+            \node[draw=red, dashed, thick, inner sep=10pt, fit=(lpf) (samp) (enc), label={[red]above:发端 (A/D)}] (sender) {};
+            
+            % 黄色注释：抗混叠
+            \node[fill=yellow!30, above=1.0cm of lpf, font=\footnotesize] (note1) {抗混叠、频带失真};
+            \draw[green!60!black, ->] (note1) -- (lpf.north);
+
+            % --- 信道 ---
+            \node[blk, below=1.2cm of enc] (chn) {数字信道};
+            \draw[arrow, double] (enc) -- (chn);
+
+            % --- 收端 (D/A) ---
+            \node[blk, below=1.2cm of chn] (dec) {波形解码器};
+            \node[blk, left=0.8cm of dec] (rec) {重建滤波器:\\$x/\sin x$、低通};
+            
+            % [修改] 显著增加间距到 2.2cm
+            \node[blk, left=2.2cm of rec] (dest) {模拟终端};
+
+            % 收端信号
+            \draw[arrow, double] (chn) -- (dec);
+            \draw[arrow] (dec) -- node[above]{$\hat{x}(n)$} (rec);
+            \draw[arrow] (rec) -- node[above]{$\hat{x}(t)$} (dest);
+
+            % 收端虚线框
+            \node[draw=red, dashed, thick, inner sep=10pt, fit=(dec) (rec), label={[red]below:收端 (D/A)}] (receiver) {};
+
+            % 黄色注释：频率补偿
+            \node[fill=yellow!30, below=1.0cm of rec, font=\footnotesize] (note2) {频率补偿 (孔径失真)};
+            \draw[green!60!black, ->] (note2) -- (rec.south);
+
+        \end{tikzpicture}
+        }
+        \end{center}
+
+        \item \textbf{关键模块功能}
+        \begin{itemize}
+            \item \textbf{预滤波器}：限制带宽至 $f_H$，防止抽样\textbf{混叠}。
+            \item \textbf{重建滤波器}：包含 $x/\sin x$ 滤波器（补偿平顶抽样引起的\textbf{孔径失真}）和低通滤波器。
+        \end{itemize}
+
+        \item \textbf{基本参数计算} \pptpage{72}
         设模拟信号最高频率为 $f_H$，抽样率为 $f_s$，编码位数为 $N$。
-        \item \textbf{信息传输速率 (比特率)}：
-        \begin{equation}
-            R_b = f_s \cdot N \ge 2f_H \cdot N
-        \end{equation}
-        \item \textbf{传输带宽} (第一零点带宽)：
-        \begin{equation}
-            B = R_b = f_s \cdot N \quad (\text{NRZ矩形})
-        \end{equation}
+        \begin{itemize}
+            \item \textbf{信息传输速率 (比特率)}：
+            \begin{equation}
+                R_b = f_s \cdot N \ge 2f_H \cdot N
+            \end{equation}
+            \item \textbf{传输带宽} (第一零点带宽)：
+            \begin{equation}
+                B = R_b = f_s \cdot N \quad (\text{NRZ矩形脉冲})
+            \end{equation}
+        \end{itemize}
+
         \item \textbf{典型应用：数字电话}
         \begin{itemize}
-            \item 话音带宽 $B \approx 3.4\text{kHz} \to f_s = 8000\text{Hz}$
-            \item 量化位数 $N=8$ (A律13折线)
-            \item \textbf{比特率}：$R_b = 8000 \times 8 = \mathbf{64\text{kbps}}$
+            \item \textbf{参数设定}：
+            \begin{itemize}
+                \item 话音带宽 $B_{voice} \approx 3.4\text{kHz} \to$ 取抽样率 $f_s = 8000\text{Hz}$。
+                \item 量化位数 $N=8$ (采用A律13折线编码)。
+            \end{itemize}
+            \item \textbf{系统比特率}：
+            \[ R_b = 8000 \times 8 = \mathbf{64\text{kbps}} \]
+            \item \textbf{E1载波 (PCM 30/32路)}：
+            \[ R_{E1} = 64\text{kbps} \times 32 = 2.048\text{Mbps} \]
         \end{itemize}
     \end{itemize}
 \end{kbox}
