@@ -1,0 +1,37 @@
+% 文件路径: content/02_RandomProcesses/run_chapter02.tex
+
+% 1. 调用根目录 cls (../../ 指向项目根目录)
+\documentclass{../../commsummary}
+
+% 2. 修正图片路径
+\graphicspath{{./figures/}{../../figures/}}
+
+\begin{document}
+
+% 3. 临时标题 (Dev Mode)
+\section{随机过程 (独立编译)}
+
+% 4. 导入本章 Topic
+% (顺序已与 main.tex 保持一致)
+
+% 基础定义与平稳性
+\input{topic01_definitions}
+\input{topic02_stationary}
+
+% 自相关与功率谱
+\input{topic03_autocorr_psd}
+
+% 高斯过程与线性系统
+\input{topic04_gaussian}
+\input{topic05_linear_system}
+
+% --- 窄带随机过程与噪声 (核心难点) ---
+\input{topic06_narrowband_noise}
+\input{topic06_narrowband_noise_detail}
+\input{topic06_sine_plus_noise_detail} 
+\input{topic06_whitenoise_detail}
+
+% 例题与总结
+\input{topic07_examples}
+
+\end{document}

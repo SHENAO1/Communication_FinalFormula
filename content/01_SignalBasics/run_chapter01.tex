@@ -1,0 +1,25 @@
+% content/01_SignalBasics/run_chapter01.tex
+
+% 1. 调用根目录 cls (相对路径 ../../ 指向项目根目录)
+\documentclass{../../commsummary}
+
+% 2. 修正图片路径 (可选，如果你以后有图片的话)
+\graphicspath{{./figures/}{../../figures/}}
+
+\begin{document}
+
+% 3. 临时标题
+\section{绪论与信号基础 (独立编译)}
+
+% 4. 引入本章 Topic
+% (直接写文件名，不需要 content/01... 前缀)
+\input{topic01_fourier_core}
+\input{topic01_time_freq_relation}
+\input{topic01_fourier_supplement}
+\input{topic02_fourier_ref}
+\input{topic03_determin_signals}
+\input{topic04_info_theory}
+\input{topic05_channel_models}
+\input{topic06_metrics}
+
+\end{document}
