@@ -1,22 +1,71 @@
 % content/03_Channels/topic05_mutual_info_analysis.tex
 
+% --- 1. 直观理解 ---
 \begin{intuitionbox}{1. 互信息的物理直观：不确定性的消除}
     \textbf{核心概念}：信息量 = 不确定度的减小量。
     \begin{itemize}
         \item \textbf{发送前}：对发送端 $X$ 的不确定度是 $H(X)$。
         \item \textbf{接收后}：收到符号 $y$ 后，对 $X$ 依然存在的不确定度是 $H(X|Y)$（条件熵）。
-        \item \textbf{获得的信息}：
+        \item \textbf{获得的信息}（不确定性的消除）：
         \[
             \begin{aligned}
-            I(X;Y) &= \text{原本不确定度} - \text{剩余不确定度} \\
+            I(X;Y) &= \text{发送前的不确定度} - \text{接收后的不确定度} \\
                    &= H(X) - H(X|Y)
             \end{aligned}
         \]
     \end{itemize}
 \end{intuitionbox}
 
+% --- [新增] 互信息 Venn 图 (最终优化版) ---
+% 调整：缩小中间字体，拉近圆心距离使交集更宽
+\begin{center}
+\begin{tikzpicture}[thick, scale=1.0]
+    % 1. 定义参数 
+    \def\R{1.8}   % 半径继续稍微加大
+    \def\D{2.2}   % 圆心间距 (保持这个比例，交集会比较饱满)
+    
+    % --- 2. 填充颜色 ---
+    % 左圆 H(X)
+    \fill[mainblue!10] (0,0) circle (\R);
+    % 右圆 H(Y)
+    \fill[alertred!10] (\D,0) circle (\R);
+    
+    % 中间交集 I(X;Y)
+    \begin{scope}
+        \clip (0,0) circle (\R);
+        \fill[mainblue!40] (\D,0) circle (\R); 
+    \end{scope}
+
+    % --- 3. 绘制轮廓 ---
+    \draw[mainblue, thick] (0,0) circle (\R);
+    \draw[alertred, thick] (\D,0) circle (\R);
+
+    % --- 4. 内部标注 (字体缩小优化) ---
+    % 中间：互信息 [修改] 使用 \small 缩小主文字，\tiny 缩小注释
+    \node[align=center] at (\D/2, 0) {\small $\bm{I(X;Y)}$\\[1pt]{\tiny 有用信息}};
+    
+    % 左边：疑义度 [修改] 位置向左微调 (-0.4) 以适应更大的圆
+    \node[align=center] at (-0.4, 0) {$H(X|Y)$ \\[-1pt] {\tiny (损失/疑义度)}};
+    
+    % 右边：噪声熵 [修改] 位置向右微调
+    \node[align=center] at (\D+0.4, 0) {$H(Y|X)$ \\[-1pt] {\tiny (噪声熵)}};
+
+    % --- 5. 外部标注 (向两侧展开) ---
+    
+    % H(X) 标注：向左上方引出箭头
+    \draw[->, thick, gray] (-0.5, \R-0.3) -- (-1.5, \R+0.5) node[above left, black, align=right] {$\bm{H(X)}$ \\[-2pt] \scriptsize (信源熵)};
+    
+    % H(Y) 标注：向右上方引出箭头
+    \draw[->, thick, gray] (\D+0.5, \R-0.3) -- (\D+1.5, \R+0.5) node[above right, black, align=left] {$\bm{H(Y)}$ \\[-2pt] \scriptsize (接收熵)};
+    
+    % H(X,Y) 联合熵 (底部横跨)
+    \draw[<->, thin, gray] (-\R, -\R-0.3) -- (\D+\R, -\R-0.3) node[midway, fill=white] {$H(X,Y)$ \scriptsize (联合熵)};
+
+\end{tikzpicture}
+\end{center}
+
+% --- 2. 详细推导 ---
 \begin{kbox}{2. 条件期望视角的详细推导 (Handwritten Note)}
-    % [修改] 使用 \small 缩小字号以防止公式溢出
     \small
     此部分采用\textbf{分层理解}的方法，解释 $E[I(x_i|y_j)]$ 是如何推导为 $H(X|Y)$ 的。
     
@@ -24,35 +73,39 @@
     
     \textbf{第一步：理解期望的层次}
     
-    $E(\cdot)$ 是求期望。式子含义是在 $Y=y_j$ 发生的概率下，求 $X=x_i$ 的相关期望。可以理解为：\textbf{首先假设 $Y=y_j$ 其实是确定的}。
+    $E(\cdot)$ 是求期望。其物理含义是：在 $Y=y_j$ 发生的概率下，求 $X=x_i$ 的相关期望。\textbf{我们可以先固定 $Y$，再对外层求平均。}
     
     \textbf{第二步：构建“方框”结构}
     
     整个期望可以拆解为外层对 $Y$ 的加权和内层对 $X$ 的计算：
     
-    \[ \sum_{j} P(Y=y_j) \times \tikzmarknode{boxnode}{\framebox[1.2em]{\vphantom{M}}} \]
+    \[ \sum_{j} P(y_j) \times \tikzmarknode{boxnode}{\framebox[1.2em]{\vphantom{M}}} \]
     
     \begin{itemize}
         \item \textbf{方框 $\square$ 中的内容}：
         这是在已知 $Y=y_j$ (确定) 的情况下，关于 $X$ 的信息量期望。
-        \[ \text{方框内容} = \sum_{i} P(x_i|y_j) \cdot \log_2 \frac{1}{P(x_i|y_j)} \]
-        这实际上就是\textbf{特定条件下的熵} $H(X|Y=y_j)$。
+        \[ \text{方框内容} = \sum_{i} P(x_i|y_j) \cdot \log_2 \frac{1}{P(x_i|y_j)} = H(X|Y=y_j) \]
     \end{itemize}
 
     \begin{center}
-    \begin{tikzpicture}[>=Stealth, node distance=1.0cm]
-        % 绘制结构图
-        \node (outer) [draw=mainblue, fill=mainblue!5, rounded corners, inner sep=6pt, font=\scriptsize] {
-            $\displaystyle \sum_{j} P(y_j) \times \left[ \mathbf{\dots} \right]$
-        };
+    \begin{tikzpicture}[>=Stealth, node distance=0.8cm]
+        % 样式定义
+        \tikzstyle{block} = [rectangle, rounded corners, align=center, font=\scriptsize, drop shadow, inner sep=4pt, fill=white]
         
-        \node (inner) [draw=alertred, fill=alertred!5, rounded corners, below=of outer, align=center, font=\scriptsize] {
-            \textbf{内部方框 (固定 $y_j$)} \\
-            $\displaystyle \sum_{i} P(x_i|y_j) \log_2 \frac{1}{P(x_i|y_j)}$ \\
-            $= H(X|Y=y_j)$
+        % 外层节点
+        \node (outer) [block, draw=mainblue, fill=mainblue!5] {
+            $\displaystyle \text{外层：} \sum_{j} P(y_j) \times \left[ \mathbf{\dots} \right]$
         };
-        
-        \draw[->, thick, mainblue] (outer) -- node[right, font=\tiny] {代入方框} (inner);
+
+        % 内层节点
+        \node (inner) [block, draw=alertred, fill=alertred!5, below=of outer] {
+            \textbf{内层方框 (固定 $y_j$)}\\[3pt]
+            $\displaystyle \sum_{i} P(x_i|y_j) \log_2 \frac{1}{P(x_i|y_j)}$ \\[3pt]
+            $= H(X|Y=y_j)$ \quad (特定条件下的熵)
+        };
+
+        % 连接线
+        \draw[->, thick, mainblue] (outer) -- node[right, font=\tiny, text=gray] {代入计算} (inner);
     \end{tikzpicture}
     \end{center}
 
@@ -68,32 +121,33 @@
     \]
 \end{kbox}
 
+% --- 3. 严谨推导 ---
 \begin{kbox}{3. 严谨推导：联合概率法 (Derivation)}
-    % [修改] 使用 \small 缩小字号，防止长公式溢出
     \small
     \textit{这是前文基于联合概率定义的另一种推导路径。}
     
     \[ I(X;Y) = E[I(x_i)] - E[I(x_i|y_j)] \]
     
-    利用数学期望定义（双重求和，权重为联合概率）：
-    % [修改] 强制换行并调整间距
+    对于第二项 $E[I(x_i|y_j)]$，利用数学期望定义（双重求和）：
     \[
     \begin{aligned}
-        &E[I(x_i|y_j)] \\
+        E[I(x_i|y_j)] 
         &= \sum_{j=1}^m \sum_{i=1}^n \underbrace{P(x_i, y_j)}_{\text{联合概率}} \log_2 \frac{1}{P(x_i|y_j)} \\
-        &\text{代入贝叶斯} \ P(x_i, y_j) = P(y_j)P(x_i|y_j): \\
+        &\quad \text{\scriptsize (代入贝叶斯公式 $P(x_i, y_j) = P(y_j)P(x_i|y_j)$)} \\
         &= \sum_{j=1}^m P(y_j) \underbrace{\left[ \sum_{i=1}^n P(x_i|y_j) \log_2 \frac{1}{P(x_i|y_j)} \right]}_{H(X|Y=y_j)} \\
+        &= \sum_{j=1}^m P(y_j) H(X|Y=y_j) \\
         &= H(X|Y)
     \end{aligned}
     \]
     \textbf{最终结论}：$I(X;Y) = H(X) - H(X|Y)$
 \end{kbox}
 
+% --- 4. 对称性 ---
 \begin{kbox}{4. 互信息的对称性 (Symmetry)}
     \[
     \begin{aligned}
-        I(X;Y) &= H(X) - H(X|Y) \quad (\text{发送} - \text{损失}) \\
-               &= H(Y) - H(Y|X) \quad (\text{接收} - \text{噪声})
+        I(X;Y) &= H(X) - H(X|Y) \quad (\text{信源熵} - \text{信道疑义度}) \\
+               &= H(Y) - H(Y|X) \quad (\text{接收熵} - \text{噪声熵})
     \end{aligned}
     \]
 \end{kbox}

@@ -12,8 +12,10 @@
 
 % --- 绘图支持 ---
 \RequirePackage{tikz}
-% [修改] 在这里增加了 patterns 库，解决 "You need to say \usetikzlibrary{patterns}" 错误
-\usetikzlibrary{arrows.meta, positioning, calc, patterns, tikzmark}\RequirePackage{pgfplots}
+% [修改] 增加了 shadows 库以支持绘图阴影
+\usetikzlibrary{arrows.meta, positioning, calc, patterns, tikzmark, shadows}
+
+\RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
 
 \RequirePackage{xcolor}

@@ -1,0 +1,113 @@
+% file: content/03_Channels/topic08_example_bsc.tex
+
+\begin{examplebox}{例 3.3：BSC信道建模与容量计算}
+    \textbf{题目描述}：
+    设信源由两种符号 “0” 和 “1” 组成，符号传输速率为 $R_B = 1000$ 符号/s。
+    且这两种符号的出现概率相等，均等于 $1/2$。
+    信道为对称信道 (BSC)，其传输的符号错误概率为 $P_e = 1/128$。
+    
+    \textbf{任务}：试画出此信道模型，并求此信道的容量 $C$ 和 $C_t$。
+    
+    \tcbline
+    
+    \textbf{解：1. 建立信道模型图}
+    
+    根据题意，输入概率 $P(x=0)=P(x=1)=\frac{1}{2}$。
+    错误转移概率 $P(0|1) = P(1|0) = \frac{1}{128}$。
+    正确转移概率 $P(0|0) = P(1|1) = 1 - \frac{1}{128} = \frac{127}{128}$。
+    
+    模型图如下：
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, scale=1.2]
+            % 定义节点
+            \node (x0) at (0, 2) {$0$};
+            \node (x1) at (0, 0) {$1$};
+            \node (y0) at (4, 2) {$0$};
+            \node (y1) at (4, 0) {$1$};
+            
+            % 添加输入概率标注
+            \node[left] at (x0) {$P(x_0)=\frac{1}{2}$};
+            \node[left] at (x1) {$P(x_1)=\frac{1}{2}$};
+            
+            % 绘制连线与概率
+            % 直通 (正确)
+            \draw[->, thick, mainblue] (x0) -- (y0) node[midway, above] {$\frac{127}{128}$};
+            \draw[->, thick, mainblue] (x1) -- (y1) node[midway, below] {$\frac{127}{128}$};
+            
+            % 交叉 (错误)
+            \draw[->, dashed, alertred] (x0) -- (y1) node[near end, above right, font=\footnotesize] {$\frac{1}{128}$};
+            \draw[->, dashed, alertred] (x1) -- (y0) node[near end, below right, font=\footnotesize] {$\frac{1}{128}$};
+            
+            % 标题
+            \node[above] at (0, 2.5) {输入 $X$};
+            \node[above] at (4, 2.5) {输出 $Y$};
+        \end{tikzpicture}
+    \end{center}
+
+    \tcbline
+
+    \textbf{2. 求解输出概率分布 $P(y)$}
+    
+    由于输入等概且信道对称，输出也应等概。验证如下：
+    \[
+    \begin{aligned}
+        P(y=0) &= P(x=0)P(y=0|x=0) + P(x=1)P(y=0|x=1) \\
+               &= \frac{1}{2} \cdot \frac{127}{128} + \frac{1}{2} \cdot \frac{1}{128} \\
+               &= \frac{1}{2} \left( \frac{127+1}{128} \right) = \frac{1}{2}
+    \end{aligned}
+    \]
+    同理，$P(y=1) = 1/2$。
+    
+    \textbf{结论}：输出端熵达到最大值：
+    \[ H(Y) = -\sum P(y)\log_2 P(y) = 1 \text{ bit/symbol} \]
+
+    \tcbline
+    
+    \textbf{3. 求解信道容量 $C$ (bits/symbol)}
+    
+    根据信道容量定义：
+    \[ C = \max_{P(x)} I(X;Y) = \max_{P(x)} [H(Y) - H(Y|X)] \]
+    
+    \textbf{(1) 计算条件熵 $H(Y|X)$}：
+    对于BSC信道，条件熵只与转移概率有关，与输入分布无关：
+    \[
+    \begin{aligned}
+        H(Y|X) &= \sum_{x} P(x) H(Y|X=x) \\
+               &= - \sum_{i=0}^{1} \sum_{j=0}^{1} P(x_i) P(y_j|x_i) \log_2 P(y_j|x_i)
+    \end{aligned}
+    \]
+    代入数值计算：
+    \[
+    \begin{aligned}
+        H(Y|X) &= - \left( \frac{127}{128} \log_2 \frac{127}{128} + \frac{1}{128} \log_2 \frac{1}{128} \right) \\
+               &\approx - (0.992 \times (-0.011) + 0.0078 \times (-7)) \\
+               &\approx 0.0109 + 0.0546 \\
+               &\approx 0.0659 \text{ bits/symbol}
+    \end{aligned}
+    \]
+    
+    \textbf{(2) 计算容量 $C$}：
+    由于 $P(x)$ 已经是均匀分布，此时 $H(Y)$ 已取最大值 1，故：
+    \[
+    \begin{aligned}
+        C &= H(Y)_{\max} - H(Y|X) \\
+          &= 1 - 0.0659 \\
+          &= 0.9341 \text{ bits/symbol}
+    \end{aligned}
+    \]
+
+    \tcbline
+    
+    \textbf{4. 求解信道容量 $C_t$ (bits/s)}
+    
+    已知符号速率 $R_B = 1000$ Baud。
+    \[
+    \begin{aligned}
+        C_t &= R_B \cdot C \\
+            &= 1000 \times 0.9341 \\
+            &= 934.1 \text{ bits/s}
+    \end{aligned}
+    \]
+    
+    \textit{注：这意味着在每秒传输的 1000 个符号中，扣除用于纠错的冗余度（由信道噪声引起的不确定性），实际有效的信息传输速率约为 934.1 bit/s。}
+\end{examplebox}
