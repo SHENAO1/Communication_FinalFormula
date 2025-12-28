@@ -1,0 +1,123 @@
+% content/04_SourceCoding/topic01_sampling_recovery.tex
+\begin{kbox}{信号的无失真恢复：时域内插与频域滤波}
+    抽样定理不仅规定了“怎么抽”，更告诉我们“怎么复原”。
+    理想低通滤波器在时域上等效于\textbf{内插 (Interpolation)} 过程。
+
+    \subsubsection*{1. 频域分析：理想低通滤波}
+    在频域，我们要从周期延拓的频谱 $M_s(f)$ 中提取出原始频谱 $M(f)$。
+    只需让信号通过一个截止频率为 $f_c$ 的\textbf{理想低通滤波器} $H(f)$：
+    \begin{equation}
+        H(f) = \begin{cases} 
+            T_s, & |f| \le f_c \\
+            0, & \text{其他}
+        \end{cases}
+        \quad \text{其中 } f_H \le f_c \le f_s - f_H
+    \end{equation}
+    通常取 $f_c = f_s/2$ (奈奎斯特频率)。输出频谱为 $M(f) = M_s(f) \cdot H(f)$。
+
+    \subsubsection*{2. 时域分析：Sinc 函数内插 (图解核心)}
+    根据卷积定理：\textbf{频域相乘，对应时域卷积}。
+    理想低通滤波器 $H(f)$ 的时域冲激响应是 Sinc 函数：
+    \begin{equation}
+        h(t) = \text{sinc}\left( \frac{t}{T_s} \right) = \frac{\sin(\pi t/T_s)}{\pi t/T_s}
+    \end{equation}
+    
+    恢复出的模拟信号 $m(t)$ 是抽样序列与 $h(t)$ 的卷积。这导出了著名的 \textbf{Whittaker–Shannon 插值公式}：
+    
+    \begin{equation}
+        \boxed{ m(t) = \sum_{n=-\infty}^{\infty} m(nT_s) \cdot \text{sinc}\left( \frac{t - nT_s}{T_s} \right) }
+    \end{equation}
+
+    \textbf{图解分析}：原始模拟信号可以看作是无穷多个\textbf{移位 Sinc 函数}的线性叠加，每个 Sinc 函数的幅度由该点的抽样值 $m(nT_s)$ 决定。
+
+    \vspace{0.5em}
+    \centering
+    % === Sinc 插值叠加图 (复现 image_fbffce.jpg 右下角) ===
+    % [修复] 使用 resizebox 包裹，确保图片宽度严格适应文档宽度，不会超出边界
+    \resizebox{\linewidth}{!}{
+    \begin{tikzpicture}[>=Latex]
+        % --- 样式定义 ---
+        \definecolor{myblue}{RGB}{0, 114, 189}
+        \definecolor{myred}{RGB}{217, 83, 25}
+        \tikzstyle{stem} = [thick, myblue, ->]
+        \tikzstyle{sinc} = [thin, gray!70, samples=100, smooth]
+        \tikzstyle{sum} = [line width=1.5pt, myred, samples=100, smooth] % 加粗合成线
+        
+        % --- 坐标轴 ---
+        % 稍微缩短 x 轴范围，使图形更紧凑
+        \draw[->, thick] (-3.8, 0) -- (3.8, 0) node[right] {$t$};
+        \draw[->, thick] (0, -0.5) -- (0, 1.5) node[above] {$m(t)$};
+
+        % --- 定义参数 ---
+        \def\valA{0.2}  % n = -2
+        \def\valB{0.8}  % n = -1
+        \def\valC{1.0}  % n = 0
+        \def\valD{0.8}  % n = 1
+        \def\valE{0.2}  % n = 2
+        
+        % --- 辅助函数 ---
+        \tikzset{
+            declare function={
+                sinc(\t) = (abs(\t) < 0.001) ? 1 : sin(180*\t)/(3.14159*\t);
+            }
+        }
+
+        % --- 1. 绘制 Sinc 分量 (灰色细线) ---
+        \foreach \n/\val in {-2/\valA, -1/\valB, 0/\valC, 1/\valD, 2/\valE} {
+            % 绘制 Sinc 曲线
+            \draw[sinc] plot[domain=-3.5:3.5] (\x, {\val * sinc(\x - \n)});
+        }
+
+        % --- 2. 绘制合成曲线 (红色粗线) ---
+        \draw[sum] plot[domain=-3.5:3.5] (\x, {
+            \valA * sinc(\x + 2) +
+            \valB * sinc(\x + 1) +
+            \valC * sinc(\x) +
+            \valD * sinc(\x - 1) +
+            \valE * sinc(\x - 2)
+        });
+
+        % --- 3. 绘制抽样点 (蓝色箭头) - 放在最上层
+        \foreach \n/\val in {-2/\valA, -1/\valB, 0/\valC, 1/\valD, 2/\valE} {
+            \draw[stem] (\n, 0) -- (\n, \val);
+            \fill[myblue] (\n, \val) circle (2pt); % 稍微加大圆点
+            
+            % 坐标刻度
+            \ifnum\n=0
+                \node[below, font=\small] at (\n, 0) {$0$};
+            \else
+                \ifnum\n=1
+                    \node[below, font=\small] at (\n, 0) {$T_s$};
+                \else
+                    \ifnum\n=-1
+                        \node[below, font=\small] at (\n, 0) {$-T_s$};
+                    \else
+                        \node[below, font=\small] at (\n, 0) {$\n T_s$};
+                    \fi
+                \fi
+            \fi
+        }
+
+        % --- 标注 ---
+        % 重构信号标签
+        \node[myred, right, font=\bfseries] at (1.5, 1.2) {重构信号 $m(t)$};
+        
+        % Sinc 分量标签
+        \node[gray, right, font=\footnotesize] at (2.4, 0.3) {Sinc 分量};
+        \draw[->, thin, gray] (2.4, 0.3) -- (1.8, 0.2);
+
+        % 中心点值
+        \node[myblue, font=\footnotesize, inner sep=1pt, fill=white] at (0, 1.1) {$m(0)$};
+
+    \end{tikzpicture}
+    } % 结束 resizebox
+    
+    \tcblower
+    
+    \textbf{总结}：
+    \begin{itemize}
+        \item 抽样是将连续信号分解为加权冲激序列。
+        \item 恢复是将这些冲激序列每一个都变成 Sinc 函数，然后叠加。
+        \item 如果抽样速率不够 ($f_s < 2f_H$)，Sinc 函数之间会发生混叠，导致叠加后的波形无法还原。
+    \end{itemize}
+\end{kbox}
