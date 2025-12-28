@@ -12,8 +12,7 @@
 % --- 绘图支持 ---
 \RequirePackage{tikz}
 % [修改] 在这里增加了 patterns 库，解决 "You need to say \usetikzlibrary{patterns}" 错误
-\usetikzlibrary{arrows.meta, positioning, calc, patterns} 
-\RequirePackage{pgfplots}
+\usetikzlibrary{arrows.meta, positioning, calc, patterns, tikzmark}\RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
 
 \RequirePackage{xcolor}
