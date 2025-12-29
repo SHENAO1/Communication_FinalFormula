@@ -110,22 +110,21 @@
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
             \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$|M(f)|$};
             \draw[spectrum] (-1.2,0) -- (0,1.2) -- (1.2,0) -- cycle;
+            % [新增] 频谱幅值 A，位置在顶点右上方
+            \node[above right, font=\small] at (0, 1.2) {$A$}; 
             \node[below] at (-1.2,0) {$-f_H$};
             \node[below] at (1.2,0) {$f_H$};
             \node[labeltext] at (0, -0.8) {(b) 信号频谱};
         \end{scope}
 
         % =================================================
-        % [修改处] 运算符号 (乘法与卷积) - 上移且放大
+        % 运算符号 (乘法与卷积)
         % =================================================
-        % 计算新的 Y 位置：在两行中间的基础上，增加 0.5 的偏移量向上提
         \def\opY{{(\yRowA+\yRowB)/2 + 0.5}} 
 
         % 左侧：乘法
         \node[font=\bfseries\huge, text=mygreen] at (\xColL, \opY) {$\times$};
-        % 增大文字字号至 small 并加粗，稍微右移至 1.0 防止和变大的符号重叠
         \node[align=center, font=\bfseries\small, text=mygreen] at (\xColL+1.0, \opY) {时域\\相乘};
-        
         % 右侧：卷积
         \node[font=\bfseries\huge, text=mygreen] at (\xColR, \opY) {$*$};
         \node[align=center, font=\bfseries\small, text=mygreen] at (\xColR+1.0, \opY) {频域\\卷积};
@@ -152,6 +151,8 @@
             \foreach \x in {-2,-1,0,1,2} {
                 \draw[->, thick, black] (\x,0) -- (\x,1);
             }
+            % [新增] 冲激强度 fs，位置在中心箭头顶点右上方
+            \node[above right, font=\small] at (0, 1) {$f_s$};
             \draw[<->, red, dashed] (0, 0.6) -- (1, 0.6) node[midway, above, font=\scriptsize] {$f_s$};
             \node[below, text=red] at (1,0) {$f_s$};
             \node[labeltext] at (0, -0.8) {(d) 脉冲频谱};
@@ -164,11 +165,13 @@
         \draw[double, double distance=2pt, gray] (\xColR, {\yRowB - 1.2}) -- (\xColR, {\yRowB - 1.8});
 
         % =================================================
-        % 第三行：已抽样信号
+        % 第三行：已抽样信号 (修改后：Y轴拉高)
         % =================================================
         \begin{scope}[shift={(\xColL, \yRowC)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
-            \draw[axis] (0,-0.5) -- (0,1.6) node[above] {$m_s(t)$};
+            % [修改] Y轴高度由 1.6 改为 2.0，增加视觉空间
+            \draw[axis] (0,-0.5) -- (0,2.0) node[above] {$m_s(t)$};
+            
             \draw[dashed, gray!80] plot[domain=-2.2:2.2, samples=100] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
             \foreach \x in {-2,-1.5,...,2} {
                 \draw[-, thick, myblue] (\x,0) -- (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
@@ -180,18 +183,35 @@
         
         \draw[<->, thick, gray!50] (\xColL+4, \yRowC+0.5) -- (\xColR-4, \yRowC+0.5);
 
+        % =================================================
+        % 第三行右侧：(f) 周期延拓频谱 (修改后：Y轴大幅拉高防遮挡)
+        % =================================================
         \begin{scope}[shift={(\xColR, \yRowC)}]
             \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
-            \draw[axis] (0,-0.5) -- (0,1.6) node[above] {$M_s(f)$};
+            % [修改] Y轴高度由 1.6 改为 2.4，确保轴标签 M_s(f) 高于“低通滤波”文字
+            \draw[axis] (0,-0.5) -- (0,2.4) node[above] {$M_s(f)$};
+            
+            % 绘制频谱三角形
             \foreach \k in {-2,-1,0,1,2} {
                 \draw[spectrum] (\k-0.4, 0) -- (\k, 1.2) -- (\k+0.4, 0) -- cycle;
             }
+            % 抽样后频谱幅值 Afs
+            \node[above right, font=\small] at (0, 1.5) {$Af_s$};
+            
+            % --- 滤波器标注 ---
             \draw[thick, dashed, red] (-0.55, -0.1) rectangle (0.55, 1.45);
-            \node[red, font=\scriptsize, fill=white, inner sep=1pt] at (0, 1.45) {低通滤波};
+            
+            % 低通滤波文字 (y=1.9)，现在位于轴标签 (y>2.4) 下方，互不遮挡
+            \node[red, font=\scriptsize] (filterLabel) at (-1.3, 1.9) {低通滤波};
+            \draw[->, red, dashed, thick] (filterLabel) -- (-0.55, 1.45);
+
+            % 坐标轴刻度与标注
             \node[below] at (0,0) {$0$};
             \node[below] at (1,0) {$f_s$};
             \node[below] at (-1,0) {$-f_s$};
             \node[below, font=\scriptsize] at (0.4,0) {$f_H$};
+            
+            % 采样定理条件框
             \node[draw, rounded corners, fill=yellow!10, font=\bfseries\small, text=red] at (1.8, 1.5) {$f_s \ge 2f_H$};
             \node[labeltext] at (0, -0.8) {(f) 周期延拓频谱};
         \end{scope}
@@ -212,6 +232,7 @@
                 M_s(f) &= M(f) * \left[ \frac{1}{T_s} \sum_{n=-\infty}^{\infty} \delta(f - n f_s) \right] \\
                        &= \frac{1}{T_s} \sum_{n=-\infty}^{\infty} M(f) * \delta(f - n f_s) \\
                        &= \frac{1}{T_s} \sum_{n=-\infty}^{\infty} M(f - n f_s)
+                       &= \frac{1}{T_s} \sum_{n=-\infty}^{\infty} M(f - n / T_s)
             \end{aligned}
         \end{equation}
     \end{itemize}

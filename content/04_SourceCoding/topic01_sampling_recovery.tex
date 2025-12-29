@@ -45,10 +45,31 @@
         \end{equation}
     \end{itemize}
 
-    \subsubsection*{2. 重建滤波器的时域推导 (手写笔记解析)}
+        % --- 2. 滤波器增益的直观理解 ---
+        \begin{intuitionbox}{思考：为什么滤波器增益是 $T_s$ (即 $1/f_s$)？}
+            \textbf{问题}：一般的理想低通滤波器增益通常为1，但为何重建时 $H_L(f)$ 的通带增益必须是 $T_s$？
+            
+            \textbf{笔记解析}：
+            \begin{itemize}
+                \item 在理想抽样后的频谱 $M_s(f)$ 中，包含了幅度因子 $f_s$（即 $1/T_s$）。
+                \item 为了\textcolor{alertred}{恢复原始信号的真实幅值}，滤波器的增益必须抵消这个因子。
+            \end{itemize}
+            
+            \textbf{结论}：
+            \begin{equation}
+                H_L(f) = \begin{cases} 
+                    T_s, & |f| \le f_H \\
+                    0, & |f| > f_H 
+                \end{cases}
+                \quad \text{其中 } T_s = \frac{1}{f_s}
+            \end{equation}
+        \end{intuitionbox}
+
+
+    \subsubsection*{2. 重建滤波器的时域推导}
     \textbf{目标}：求解理想低通滤波器 $H_L(f)$ 的时域冲击响应 $h_L(t)$。
     
-    根据手写笔记，重建在频域表示为 $M_s(f) \cdot H_L(f)$，对应时域卷积。我们需要找到频域门函数对应的时域信号。推导过程严格如下：
+    重建在频域表示为 $M_s(f) \cdot H_L(f)$，对应时域卷积。我们需要找到频域门函数对应的时域信号。推导过程严格如下：
 
     \textbf{Step 1: 引入基础变换对}
     设 $g_{2\tau}(t)$ 为时域宽度为 $2\tau$ 的门函数。已知其傅里叶变换为：
@@ -120,7 +141,7 @@
     \begin{equation}
         h_L(t) = \int_{-f_H}^{f_H} 1 \cdot e^{j2\pi f t} df = \frac{e^{j2\pi f_H t} - e^{-j2\pi f_H t}}{j2\pi t}
     \end{equation}
-    化简得到笔记中的核心结论：
+    化简得到结论：
     \begin{equation}
         h_L(t) = \frac{\sin(2\pi f_H t)}{\pi t} = 2f_H \Sa(2\pi f_H t)
     \end{equation}
@@ -199,4 +220,7 @@
         \draw[->, thin, gray] (2.4, 0.3) -- (1.8, 0.2);
     \end{tikzpicture}
     }
+
+
+    
 \end{kbox}
