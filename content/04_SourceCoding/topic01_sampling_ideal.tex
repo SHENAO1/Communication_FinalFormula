@@ -1,0 +1,180 @@
+% content/topic01_sampling_ideal.tex
+
+% --- Part 1: 数学基础回顾 ---
+\begin{intuitionbox}{数学预备：从傅里叶级数到冲激串变换}
+    理解抽样定理频谱搬移的关键，在于掌握\textbf{周期信号的频谱特性}。
+    
+    \subsubsection*{1. 傅里叶级数 (Fourier Series, FS) 回顾}
+    对于周期为 $T_0$ 的周期信号 $f(t)$，角频率 $\omega_0 = \frac{2\pi}{T_0}$ (或基频 $f_0 = \frac{1}{T_0}$)。
+    
+    \begin{itemize}
+        \item \textbf{三角形式}：
+        \begin{equation}
+            f(t) = a_0 + \sum_{n=1}^{\infty} \left[ a_n \cos(n\omega_0 t) + b_n \sin(n\omega_0 t) \right]
+        \end{equation}
+        其中系数为：
+        \begin{equation}
+        \begin{cases}
+            \displaystyle a_0 = \frac{1}{T_0}\int_{T_0} f(t)dt \\[10pt]
+            \displaystyle a_n = \frac{2}{T_0}\int_{T_0} f(t)\cos(n\omega_0 t)dt \\[10pt]
+            \displaystyle b_n = \frac{2}{T_0}\int_{T_0} f(t)\sin(n\omega_0 t)dt
+        \end{cases}
+        \end{equation}
+
+        \item \textbf{指数形式}：
+        \begin{equation}
+            f(t) = \sum_{n=-\infty}^{\infty} F_n e^{j n \omega_0 t}, \quad F_n = \frac{1}{T_0} \int_{-T_0/2}^{T_0/2} f(t) e^{-j n \omega_0 t} dt
+        \end{equation}
+    \end{itemize}
+
+    \subsubsection*{2. 周期单位冲激串的傅里叶变换}
+    设周期单位冲激串为 $\delta_T(t) = \sum_{n=-\infty}^{\infty} \delta(t - nT_s)$。
+    
+    \begin{itemize}
+        \item \textbf{时域}：周期为 $T_s$ 的冲激串。
+        \item \textbf{频域}：周期为 $f_s$ 的冲激串，且幅度加权为 $f_s$。
+        \begin{equation}
+            \Delta_T(f) = \mathcal{F}[\delta_T(t)] = \frac{1}{T_s} \sum_{n=-\infty}^{\infty} \delta(f - n f_s)
+        \end{equation}
+    \end{itemize}
+\end{intuitionbox}
+
+% --- Part 2: 理想抽样定理图解与推导 ---
+\begin{figure*}[t]
+\begin{kbox}{理想抽样过程：波形与频谱对照}
+    理想抽样可以看作是模拟信号 $m(t)$ 与单位冲激脉冲序列 $\delta_T(t)$ 在时域的\textbf{乘积}。
+    根据卷积定理：\textbf{时域相乘，对应频域卷积}。
+
+    \centering
+    \begin{tikzpicture}[>=Latex, xscale=1.1, yscale=1]
+        % --- 定义颜色 ---
+        \definecolor{myblue}{RGB}{0, 114, 189} 
+        \definecolor{mygreen}{RGB}{119, 172, 48} 
+        \tikzstyle{signal} = [thick, myblue]
+        \tikzstyle{spectrum} = [thick, myblue, fill=myblue!10]
+        \tikzstyle{axis} = [->, gray, thin]
+        \tikzstyle{labeltext} = [font=\small]
+        
+        % --- 布局参数 ---
+        \def\yRowA{4.2}   \def\yRowB{0}     \def\yRowC{-5.0}
+        \def\xColL{-5}    \def\xColR{5}
+
+        % =================================================
+        % 第一行：模拟信号
+        % =================================================
+        \begin{scope}[shift={(\xColL, \yRowA)}]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$m(t)$};
+            \draw[signal] plot[domain=-2:2, samples=100] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+            \node[labeltext] at (0, -0.8) {(a) 模拟信号};
+        \end{scope}
+
+        \draw[<->, thick, gray!50] (\xColL+4, \yRowA+0.5) -- (\xColR-4, \yRowA+0.5);
+        \begin{scope}[shift={(\xColR, \yRowA)}]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$|M(f)|$};
+            \draw[spectrum] (-1.2,0) -- (0,1.2) -- (1.2,0) -- cycle;
+            \node[above right, font=\small] at (0, 1.2) {$A$};
+            \node[below] at (-1.2,0) {$-f_H$};
+            \node[below] at (1.2,0) {$f_H$};
+            \node[labeltext] at (0, -0.8) {(b) 信号频谱};
+        \end{scope}
+
+        % =================================================
+        % 运算符号
+        % =================================================
+        \def\opY{{(\yRowA+\yRowB)/2 + 0.5}} 
+        \node[font=\bfseries\huge, text=mygreen] at (\xColL, \opY) {$\times$};
+        \node[align=center, font=\bfseries\small, text=mygreen] at (\xColL+1.0, \opY) {时域\\相乘};
+        \node[font=\bfseries\huge, text=mygreen] at (\xColR, \opY) {$*$};
+        \node[align=center, font=\bfseries\small, text=mygreen] at (\xColR+1.0, \opY) {频域\\卷积};
+
+        % =================================================
+        % 第二行：冲激序列
+        % =================================================
+        \begin{scope}[shift={(\xColL, \yRowB)}]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$\delta_T(t)$};
+            \foreach \x in {-2,-1.5,...,2} { \draw[->, thick, black] (\x,0) -- (\x,1); }
+            \node[below, text=red] at (0.5,0) {$T_s$};
+            \node[labeltext] at (0, -0.8) {(c) 冲激序列};
+        \end{scope}
+        
+        \draw[<->, thick, gray!50] (\xColL+4, \yRowB+0.5) -- (\xColR-4, \yRowB+0.5);
+        \begin{scope}[shift={(\xColR, \yRowB)}]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[axis] (0,-0.5) -- (0,1.5) node[above] {$\delta_T(f)$};
+            \foreach \x in {-2,-1,0,1,2} { \draw[->, thick, black] (\x,0) -- (\x,1); }
+            \node[above right, font=\small] at (0, 1) {$f_s$};
+            \node[labeltext] at (0, -0.8) {(d) 脉冲频谱};
+        \end{scope}
+
+        % =================================================
+        % 等号
+        % =================================================
+        \draw[double, double distance=2pt, gray] (\xColL, {\yRowB - 1.2}) -- (\xColL, {\yRowB - 1.8});
+        \draw[double, double distance=2pt, gray] (\xColR, {\yRowB - 1.2}) -- (\xColR, {\yRowB - 1.8});
+
+        % =================================================
+        % 第三行：已抽样信号
+        % =================================================
+        \begin{scope}[shift={(\xColL, \yRowC)}]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$t$};
+            \draw[axis] (0,-0.5) -- (0,2.0) node[above] {$m_s(t)$};
+            \draw[dashed, gray!80] plot[domain=-2.2:2.2, samples=100] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+            \foreach \x in {-2,-1.5,...,2} {
+                \draw[-, thick, myblue] (\x,0) -- (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)});
+                \fill[myblue] (\x, {0.8*cos(50*\x) + 0.3*cos(120*\x)}) circle (1.8pt);
+            }
+            \node[labeltext] at (0, -0.8) {(e) 抽样信号波形};
+        \end{scope}
+        
+        \draw[<->, thick, gray!50] (\xColL+4, \yRowC+0.5) -- (\xColR-4, \yRowC+0.5);
+        \begin{scope}[shift={(\xColR, \yRowC)}]
+            \draw[axis] (-2.5,0) -- (2.5,0) node[right] {$f$};
+            \draw[axis] (0,-0.5) -- (0,2.4) node[above] {$M_s(f)$};
+            \foreach \k in {-2,-1,0,1,2} {
+                \draw[spectrum] (\k-0.4, 0) -- (\k, 1.2) -- (\k+0.4, 0) -- cycle;
+            }
+            \node[above right, font=\small] at (0, 1.5) {$Af_s$};
+            % 滤波器标注
+            \draw[thick, dashed, red] (-0.55, -0.1) rectangle (0.55, 1.45);
+            \node[red, font=\scriptsize] (filterLabel) at (-1.3, 1.9) {低通滤波};
+            \draw[->, red, dashed, thick] (filterLabel) -- (-0.55, 1.45);
+            % 坐标轴
+            \node[below] at (0,0) {$0$}; \node[below] at (1,0) {$f_s$}; \node[below] at (-1,0) {$-f_s$};
+            % 条件框
+            \node[draw, rounded corners, fill=yellow!10, font=\bfseries\small, text=red] at (1.8, 1.5) {$f_s \ge 2f_H$};
+            \node[labeltext] at (0, -0.8) {(f) 周期延拓频谱};
+        \end{scope}
+    \end{tikzpicture}
+    
+    \tcblower
+    
+    \textbf{核心数学推导}:
+    \begin{itemize}
+        \item \textbf{时域表达式}：
+        \begin{equation}
+            m_s(t) = m(t) \cdot \delta_T(t) = m(t) \sum_{n=-\infty}^{\infty} \delta(t - nT_s)
+        \end{equation}
+        \item \textbf{频域表达式}（应用卷积定理）：
+        \begin{equation}
+            \begin{aligned}
+                M_s(f) &= M(f) * \left[ \frac{1}{T_s} \sum_{n=-\infty}^{\infty} \delta(f - n f_s) \right] \\
+                       &= \frac{1}{T_s} \sum_{n=-\infty}^{\infty} M(f - n f_s)
+            \end{aligned}
+        \end{equation}
+    \end{itemize}
+\end{kbox}
+\end{figure*}
+
+% --- Part 3: 定理定义提取 ---
+\begin{kbox}{低通抽样定理 (Nyquist Sampling Theorem)}
+    \textbf{定理内容}：对于最高频率为 $f_H$ 的模拟信号，无失真恢复条件为：
+    \begin{itemize}
+        \item \textbf{抽样速率条件}：$\boxed{f_s \ge 2f_H}$
+        \item \textbf{抽样间隔条件}：$\boxed{T_s \le \frac{1}{2f_H}}$
+    \end{itemize}
+
+    \textbf{应用实例}：电话信号 $f_H \approx 3.4\text{kHz}$，理论 $f_s \ge 6.8\text{kHz}$，工程标准取 $f_s = 8\text{kHz}$。
+\end{kbox}

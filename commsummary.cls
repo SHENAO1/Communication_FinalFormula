@@ -18,7 +18,7 @@
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
 
-\RequirePackage{xcolor}
+\RequirePackage[table]{xcolor}
 \RequirePackage{enumitem} 
 \RequirePackage{hyperref} 
 

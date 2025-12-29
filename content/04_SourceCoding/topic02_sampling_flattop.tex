@@ -1,0 +1,173 @@
+% content/topic02_sampling_flattop.tex
+% 
+% 重点：平顶抽样 (Flat-top Sampling) 与孔径效应 (Aperture Effect)
+
+% 确保在导言区定义了 sinc
+\providecommand{\sinc}{\operatorname{sinc}}
+
+% --- Part 1: 系统模型图解 ---
+\begin{kbox}{平顶抽样 (Flat-top Sampling) 系统模型}
+    与理想抽样不同，实际抽样输出的脉冲具有一定的宽度 $\tau$。这通常通过\textbf{脉冲保持电路 (Zero-order Hold)} 来实现。
+    
+    \vspace{5pt}
+    \centering
+    \begin{tikzpicture}[auto, >=Latex, node distance=1.5cm]
+        % 样式定义
+        \tikzstyle{block} = [draw, rectangle, fill=blue!5, minimum height=2em, minimum width=3em, rounded corners]
+        \tikzstyle{sum} = [draw, circle, inner sep=1pt]
+        \tikzstyle{input} = [coordinate]
+        \tikzstyle{output} = [coordinate]
+
+        % 节点定义
+        \node [input] (input) {};
+        \node [sum, right=1cm of input] (mixer) {$\times$};
+        \node [above=0.6cm of mixer, text=red] (pulse) {$\delta_{T_s}(t)$};
+        \node [block, right=1.5cm of mixer, align=center] (hold) {\textbf{脉冲保持}\\ $h_{Hold}(t)$};
+        \node [output, right=1.5cm of hold] (output) {};
+
+        % 连线与标注
+        \draw [->, thick] (input) -- node {$m(t)$} (mixer);
+        \draw [->, thick] (pulse) -- (mixer);
+        \draw [->, thick] (mixer) -- node {$m_s(t)$} (hold);
+        \draw [->, thick] (hold) -- node {$m_H(t)$} (output);
+        
+        % 备注
+        \node [below=0.2cm of mixer, align=center, font=\scriptsize, gray] {理想抽样\\(冲激串)};
+        \node [below=0.2cm of hold, align=center, font=\scriptsize, gray] {线性系统\\(门电路)};
+        \node [below=0.2cm of output, align=center, font=\scriptsize, gray] {平顶脉冲\\序列};
+    \end{tikzpicture}
+\end{kbox}
+
+% --- Part 2: 时频域详细对照表 (核心笔记还原) ---
+\begin{kbox}{理想抽样 vs 平顶抽样：时频域对照表}
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    % [修改] 使用 resizebox 强制将表格缩放到栏宽
+    \resizebox{\linewidth}{!}{
+        \begin{tabular}{|c|l|l|}
+            \hline
+            \rowcolor{subbg} 
+            \textbf{阶段} & \textbf{时域表达式 (Time)} & \textbf{频域表达式 (Freq)} \\ 
+            \hline
+            
+            % 第一行：理想抽样
+            \textbf{1. 理想抽样} & 
+            $\begin{aligned} m_s(t) &= m(t) \cdot \delta_T(t) \\ &= \sum m(nT_s)\delta(t-nT_s) \end{aligned}$ & 
+            $\begin{aligned} M_s(f) &= M(f) * \Delta_T(f) \\ &= f_s \sum M(f-nf_s) \end{aligned}$ \\ 
+            \hline
+            
+            % 第二行：保持滤波器
+            \textbf{2. 脉冲保持} & 
+            $h_{Hold}(t) = \text{rect}(t/\tau)$ & 
+            $H_{Hold}(f) = A\tau \sinc(f\tau) e^{-j\pi f \tau}$ \\ 
+            \hline
+            
+            % 第三行：系统输出
+            \textbf{3. 平顶输出} & 
+            $\begin{aligned} m_H(t) &= m_s(t) * h_{Hold}(t) \\ &= \sum m(nT_s) h(t-nT_s) \end{aligned}$ & 
+            $\begin{aligned} M_H(f) &= M_s(f) \cdot H_{Hold}(f) \\ &\text{(包络受 Sinc 加权)} \end{aligned}$ \\ 
+            \hline
+        \end{tabular}
+    }
+\end{kbox}
+
+% --- Part 3: 直观理解与混淆辨析 ---
+\begin{intuitionbox}{核心辨析：脉冲保持是“单脉冲”还是“周期序列”？}
+    初学者常误认为保持电路本身是周期性的。根据笔记强调：
+    
+    \begin{itemize}
+        \item \textbf{输入信号 $m_s(t)$}：是\textbf{周期性}的冲激序列（理想抽样结果）。
+        \item \textbf{系统响应 $h(t)$}：是脉冲保持电路的\textbf{单位冲激响应}。它是一个\textbf{孤立的、单个}矩形门信号（Single Gate），而不是周期门信号。
+    \end{itemize}
+    
+    \textbf{物理图像}：
+    卷积 $m_H(t) = m_s(t) * h(t)$ 相当于把“单个印章” $h(t)$，按照 $m_s(t)$ 指定的位置（每隔 $T_s$）和力度（幅度）盖在纸上，从而形成了一串平顶脉冲。
+\end{intuitionbox}
+
+% --- Part 4: 详细数学推导 ---
+\begin{kbox}{平顶抽样谱与孔径效应推导}
+
+    \subsubsection*{1. 保持电路 $h_{Hold}(t)$ 的定义}
+    根据笔记，设 $h_{Hold}(t)$ 为宽度 $\tau$，幅度 $A$ 的矩形脉冲。为了保证因果性（从 $t=0$ 开始），其表达式为：
+    \begin{equation}
+        h_{Hold}(t) = A \cdot g_\tau \left( t - \frac{\tau}{2} \right) = \begin{cases} A, & 0 \le t \le \tau \\ 0, & \text{其他} \end{cases}
+    \end{equation}
+
+    \subsubsection*{2. 频谱 $H_{Hold}(f)$ 的推导}
+    利用傅里叶变换的时移性质 $\mathcal{F}\{x(t-t_0)\} = X(f)e^{-j2\pi f t_0}$：
+    矩形脉冲 $g_\tau(t) \leftrightarrow \tau \sinc(f\tau)$。
+    
+    \begin{equation}
+    \begin{split}
+        H_{Hold}(f) &= A \cdot \left[ \tau \sinc(f\tau) \right] \cdot e^{-j2\pi f \cdot \frac{\tau}{2}} \\
+                    &= A\tau \cdot \sinc(f\tau) \cdot e^{-j\pi f \tau}
+    \end{split}
+    \end{equation}
+    \textbf{注}：此处 $\sinc(x) = \frac{\sin(\pi x)}{\pi x}$。相移因子 $e^{-j\pi f \tau}$ 仅代表线性相位延迟，不影响幅度谱形状。
+
+    \subsubsection*{3. 输出信号频谱 $M_H(f)$}
+    将 $M_s(f)$ 和 $H_{Hold}(f)$ 相乘：
+    \begin{equation}
+        M_H(f) = \left[ f_s \sum_{n=-\infty}^{+\infty} M(f-nf_s) \right] \cdot \left[ A\tau \sinc(f\tau) e^{-j\pi f \tau} \right]
+    \end{equation}
+    
+    只关注幅度谱（忽略相位延迟）：
+    \begin{equation}
+        \boxed{ |M_H(f)| = \underbrace{\frac{A\tau}{T_s}}_{\text{增益}} \cdot \left| \sum_{n=-\infty}^{+\infty} M(f-nf_s) \right| \cdot \underbrace{|\sinc(f\tau)|}_{\text{孔径失真}} }
+    \end{equation}
+
+    \tcblower
+    
+    \subsubsection*{4. 孔径效应 (Aperture Effect)}
+    由于引入了 $\sinc(f\tau)$ 项，信号频谱在高频处会发生衰减（不仅是高频噪声，\textbf{有用信号的高频分量也会被衰减}）。
+    
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            % --- 尺寸调整 ---
+            width=0.95\linewidth, 
+            height=6cm, 
+            % --- 坐标轴设置 ---
+            axis lines=middle, 
+            xmin=-0.2, xmax=2.8, 
+            ymin=0, ymax=1.4, 
+            % --- 标签内容 ---
+            xlabel={频率 $f$},
+            ylabel={幅度 $|H(f)|$},
+            % --- 刻度设置 ---
+            xtick={1, 2},
+            xticklabels={$\frac{1}{\tau}$, $\frac{2}{\tau}$},
+            ytick={1},
+            yticklabels={$A\tau$},
+            % --- 标签位置微调 ---
+            every axis x label/.style={at={(current axis.right of origin)}, anchor=west},
+            every axis y label/.style={at={(current axis.above origin)}, anchor=south},
+            % --- 绘图数据 ---
+            samples=200, 
+            domain=0.01:2.6,
+            clip=false 
+        ]
+            % 1. 绘制 Sinc 函数曲线 (主蓝色)
+            \addplot [thick, mainblue] {abs(sin(deg(pi*x))/(pi*x))};
+
+            % 2. 绘制理想保持线 (灰色虚线)
+            \draw[dashed, gray, thick] (axis cs:0, 1) -- (axis cs:2.6, 1);
+            % 文字放在线的上方，且靠右
+            \node[gray, font=\small] at (axis cs: 2.0, 1.1) {理想保持 (无衰减)};
+            
+            % 3. 绘制衰减指示 (红色双向箭头)
+            \draw[<->, red, thick] (axis cs:0.6, 0.98) -- (axis cs:0.6, 0.48);
+            % 文字放在箭头右侧
+            \node[red, align=left, font=\small, anchor=west] at (axis cs: 0.65, 0.75) {高频\\严重衰减};
+
+            % 4. 补充零点提示
+            \node[font=\scriptsize, fill=white, inner sep=1pt] at (axis cs:1, 0.15) {零点};
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+    
+    \begin{itemize}
+        \item \textbf{现象}：抽样脉冲宽度 $\tau$ 越大，Sinc 函数主瓣越窄，高频衰减越严重。
+        \item \textbf{对策}：在接收端使用\textbf{均衡器} $H_{eq}(f) = \frac{1}{\sinc(f\tau)}$ 进行补偿。
+    \end{itemize}
+\end{kbox}
