@@ -12,8 +12,11 @@
 
 % --- 绘图支持 ---
 \RequirePackage{tikz}
-% [修改] 增加了 shadows 库以支持绘图阴影
-\usetikzlibrary{arrows.meta, positioning, calc, patterns, tikzmark, shadows}
+
+\usetikzlibrary{
+    arrows.meta, positioning, calc, patterns, tikzmark, shadows, % 原有库
+    shapes.geometric, fit, backgrounds                           % 新增库
+}
 
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.17}
