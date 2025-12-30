@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{commsummary}[2025/12/24 Communication Theory Summary Class]
+\ProvidesClass{commsummary}[2025/12/30 Communication Theory Summary Class]
 
 % 基于 article 类，默认双栏，10pt字号
 \LoadClass[twocolumn, 10pt]{article}
@@ -52,7 +52,6 @@
 \newcommand{\pptpage}[1]{\hfill {\scriptsize\sffamily\color{gray} (P#1)}}
 
 % [新增] 定义 Sa 函数算子
-% 需要 amsmath 宏包支持 (前面已经加载了)
 \DeclareMathOperator{\Sa}{Sa}
 
 % [可选] 如果你也用 sinc，可以顺便定义一下
@@ -60,14 +59,17 @@
 
 
 % --- 核心环境：知识点盒子 (Blue Box) ---
-\newtcolorbox{kbox}[1]{
+% [修改说明] 改为接受2个参数：[1]是可选配置，#2是标题
+% 这样可以在使用时通过 [breakable=false] 覆盖默认设置
+\newtcolorbox{kbox}[2][]{
     breakable, enhanced,
     colframe=mainblue, colback=white, coltitle=white,
-    fonttitle=\bfseries\sffamily, title={#1},
+    fonttitle=\bfseries\sffamily, title={#2},
     arc=3pt, boxrule=1pt,
     left=2pt, right=2pt, top=2pt, bottom=2pt,
     toptitle=2pt, bottomtitle=2pt,
-    drop shadow, after skip=10pt
+    drop shadow, after skip=10pt,
+    #1 % 这一行允许传入额外参数
 }
 
 % --- 环境：例题盒子 (Red Box) ---

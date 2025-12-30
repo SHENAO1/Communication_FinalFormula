@@ -1,5 +1,3 @@
-% content/topic01_sampling_ideal.tex
-
 % --- Part 1: 数学基础回顾 ---
 \begin{intuitionbox}{数学预备：从傅里叶级数到冲激串变换}
     理解抽样定理频谱搬移的关键，在于掌握\textbf{周期信号的频谱特性}。
@@ -41,7 +39,8 @@
 
 % --- Part 2: 理想抽样定理图解与推导 ---
 \begin{figure*}[t]
-\begin{kbox}{理想抽样过程：波形与频谱对照}
+% [修改说明] 这里添加了 [breakable=false]，强制禁止跨页，修复遮挡问题
+\begin{kbox}[breakable=false]{理想抽样过程：波形与频谱对照}
     理想抽样可以看作是模拟信号 $m(t)$ 与单位冲激脉冲序列 $\delta_T(t)$ 在时域的\textbf{乘积}。
     根据卷积定理：\textbf{时域相乘，对应频域卷积}。
 
@@ -142,7 +141,8 @@
             \node[red, font=\scriptsize] (filterLabel) at (-1.3, 1.9) {低通滤波};
             \draw[->, red, dashed, thick] (filterLabel) -- (-0.55, 1.45);
             % 坐标轴
-            \node[below] at (0,0) {$0$}; \node[below] at (1,0) {$f_s$}; \node[below] at (-1,0) {$-f_s$};
+            \node[below] at (0,0) {$0$};
+            \node[below] at (1,0) {$f_s$}; \node[below] at (-1,0) {$-f_s$};
             % 条件框
             \node[draw, rounded corners, fill=yellow!10, font=\bfseries\small, text=red] at (1.8, 1.5) {$f_s \ge 2f_H$};
             \node[labeltext] at (0, -0.8) {(f) 周期延拓频谱};
@@ -169,6 +169,7 @@
 \end{figure*}
 
 % --- Part 3: 定理定义提取 ---
+% [注] 这里的用法仍然兼容，因为 [2][] 允许省略可选参数
 \begin{kbox}{低通抽样定理 (Nyquist Sampling Theorem)}
     \textbf{定理内容}：对于最高频率为 $f_H$ 的模拟信号，无失真恢复条件为：
     \begin{itemize}
