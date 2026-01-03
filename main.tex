@@ -30,6 +30,7 @@
     \input{content/01_SignalBasics/topic05_channel_models}
     \input{content/01_SignalBasics/topic06_metrics}
 
+    
 \clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,36 +40,82 @@
     \input{content/02_RandomProcesses/topic02_stationary}
     \input{content/02_RandomProcesses/topic03_autocorr_psd}
     \input{content/02_RandomProcesses/topic04_gaussian}
+
     \input{content/02_RandomProcesses/topic05_linear_system}
     
     % --- 窄带随机过程与噪声 ---
     \input{content/02_RandomProcesses/topic06_narrowband_noise}      
     \input{content/02_RandomProcesses/topic06_narrowband_noise_detail} 
     \input{content/02_RandomProcesses/topic06_sine_plus_noise_detail} 
-    \input{content/02_RandomProcesses/topic06_whitenoise_detail}     
+    \input{content/02_RandomProcesses/topic06_whitenoise_detail}
+
     \input{content/02_RandomProcesses/topic07_examples}
 
 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{信道}
-    \input{content/03_Channels/topic01_models}
-    \input{content/03_Channels/topic02_constant_param}
-    \input{content/03_Channels/topic02_constant_param_intuition} % 物理直观
-    \input{content/03_Channels/topic03_random_param}
-    \input{content/03_Channels/topic03_multipath_derivation}
-    \input{content/03_Channels/topic04_noise}
-    \input{content/03_Channels/topic05_mutual_info_analysis}
-    \input{content/03_Channels/topic06_capacity}
+\input{content/03_Channels/topic01_models}
+
+% --- 恒参信道 ---
+\input{content/03_Channels/topic02_constant_param}
+\input{content/03_Channels/topic02_constant_param_intuition}
+% --- 随参信道 ---
+\input{content/03_Channels/topic03_random_param}
+\input{content/03_Channels/topic03_multipath_derivation}
+
+% --- 信道噪声 ---
+\input{content/03_Channels/topic04_noise}
+
+% --- 信息论分析 ---
+\input{content/03_Channels/topic05_mutual_info_analysis}
+
+% --- 信道容量 ---
+\input{content/03_Channels/topic06_discrete_capacity}    % 离散容量 & BSC推导
+\input{content/03_Channels/topic07_continuous_capacity}  % 香农公式基础
+\input{content/03_Channels/topic07_ex_shannon_analysis}  % 香农极限推导与三要素权衡
+
+% --- [NEW] 综合例题 ---
+\input{content/03_Channels/topic08_example_bsc}          % BSC信道建模与容量计算详细例题
 
 \clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{信源编码}
-    \input{content/04_SourceCoding/topic01_sampling}
-    \input{content/04_SourceCoding/topic02_quantization}
-    \input{content/04_SourceCoding/topic03_pcm}
+% --- 0. 概述与波形编码基础 ---
+% 0.1 概述：定义、目的与分类
+\input{content/04_SourceCoding/topic00_intro}
 
+% 0.2 波形编码的三个步骤：抽样、量化、编码
+\input{content/04_SourceCoding/topic00_waveform}
+
+% --- 1. 抽样 (Sampling) ---
+% 1.1 抽样的分类 (自然抽样、平顶抽样等概念引入)
+\input{content/04_SourceCoding/topic01_sampling_classification}
+% 1.2 [核心] 理想抽样推导与奈奎斯特低通抽样定理
+% (替代了原来的 topic01_sampling_derivation 和 topic01_sampling)
+\input{content/04_SourceCoding/topic01_sampling_ideal}
+
+% 1.3 抽样信号的恢复 (内插公式)
+\input{content/04_SourceCoding/topic01_sampling_recovery}
+
+% 1.4 [新增] 实际抽样：平顶抽样与孔径效应
+% (这是基于你手写笔记新增的详细推导部分，建议放在恢复之后，引入实际工程问题)
+\input{content/04_SourceCoding/topic02_sampling_flattop} % 注意：确保你保存的文件名是这个，或者改为 topic01_sampling_flattop 以保持编号一致
+
+% --- 以下旧文件建议检查是否重复，若已在 ideal 中涵盖则注释掉 ---
+% \input{topic01_sampling}          % 原抽样定理 (已融入 topic01_sampling_ideal)
+% \input{topic01_sampling_intuition}% 原直观理解 (已融入 topic01_sampling_ideal 的 intuitionbox)
+
+
+% --- 2. 量化 (Quantization) ---
+% 2.1 量化理论基础 (均匀量化、非均匀量化)
+\input{content/04_SourceCoding/topic02_quantization}
+
+
+% --- 3. 编码 (Coding / PCM) ---
+% 3.1 脉冲编码调制 (PCM原理与系统框图)
+\input{content/04_SourceCoding/topic03_pcm}
 \clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
